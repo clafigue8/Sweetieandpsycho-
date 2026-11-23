@@ -9,7 +9,6 @@ assets/store.css|js   Estilos y lógica de la tienda
 data/store.json       TODO el contenido: colores, colecciones, productos, envío…
 assets/products/      Fotos de productos (las sube el panel)
 admin/                Panel de administración
-CNAME                 Dominio personalizado para GitHub Pages
 ```
 
 ## Qué puedes hacer desde el panel (`/admin`)
@@ -48,7 +47,8 @@ en WhatsApp (o en su correo) listo para enviártelo.
    | A     | `@`    | `185.199.111.153`        |
 
 3. En **Settings → Pages → Custom domain** escribe `www.sweetieandpsycho.com` y guarda
-   (el archivo `CNAME` ya lo trae). Cuando GitHub verifique el DNS, activa **Enforce HTTPS**.
+   (esto crea el archivo `CNAME`; por ahora no existe porque la tienda se publica en
+   `https://clafigue8.github.io/Sweetieandpsycho-/` mientras se prepara). Cuando GitHub verifique el DNS, activa **Enforce HTTPS**.
    La propagación puede tardar desde minutos hasta 24 h.
 4. Recomendado: en **Settings (tu perfil) → Pages → Add a domain** verifica el dominio para
    que nadie más pueda usarlo en GitHub.
