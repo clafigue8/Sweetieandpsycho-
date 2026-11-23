@@ -171,6 +171,7 @@
     }
     data.home ??= { showCollections: true, sections: [{ type: "new", title: "Lo nuevo", collection: "", visible: true }, { type: "sale", title: "Ofertas", collection: "", visible: true }] };
     data.home.sections ??= [];
+    data.store.shippingOptions ??= Number(data.store.shippingCost) ? [{ name: "Envío", note: "", price: Number(data.store.shippingCost), address: true }] : [];
   }
 
   // ---------- Estado ----------
@@ -475,9 +476,33 @@
       el.value = v ?? "";
     }
     $("#radius-out").textContent = data.theme.radius ?? 14;
+    renderShipping();
     drawImgFields();
     drawSwatch();
   }
+
+  function renderShipping() {
+    const list = data.store.shippingOptions;
+    $("#ship-list").innerHTML = list.map((o, i) => `
+      <div class="sec-item" data-i="${i}">
+        <label>Nombre<input data-k="name" value="${esc(o.name)}" placeholder="Envío en Tegucigalpa"></label>
+        <label>Detalle (opcional)<input data-k="note" value="${esc(o.note || "")}" placeholder="Ej.: horario o zona"></label>
+        <label style="max-width:120px">Costo (0 = gratis)<input data-k="price" type="number" min="0" step="0.01" value="${Number(o.price) || 0}"></label>
+        <label class="check" style="flex:0 0 auto"><input type="checkbox" data-k="address" ${o.address === false ? "" : "checked"}> Pide dirección</label>
+        <div class="actions"><button type="button" class="btn ghost sm danger" data-del="${i}">Borrar</button></div>
+      </div>`).join("") || `<p class="empty">Sin formas de entrega: no se cobrará envío.</p>`;
+  }
+  $("#ship-list").addEventListener("input", (e) => {
+    const k = e.target.dataset.k; if (!k) return;
+    const o = data.store.shippingOptions[Number(e.target.closest("[data-i]").dataset.i)];
+    o[k] = k === "price" ? Number(e.target.value) || 0 : k === "address" ? e.target.checked : e.target.value;
+    changed();
+  });
+  $("#ship-list").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-del]"); if (!b) return;
+    data.store.shippingOptions.splice(Number(b.dataset.del), 1); renderShipping(); changed();
+  });
+  $("#ship-new").onclick = () => { data.store.shippingOptions.push({ name: "", note: "", price: 0, address: true }); renderShipping(); changed(); };
 
   function onField(e) {
     const el = e.target; if (!el.name) return;

@@ -430,12 +430,36 @@
     $("#cart-count").textContent = cart.reduce((n, l) => n + l.qty, 0);
   }
 
+  // Formas de entrega (si no hay, se usa un costo de envío único)
+  const SHIP_KEY = "sp-ship";
+  function shipOptions() {
+    const o = (DATA.store.shippingOptions || []).filter((x) => x.name);
+    return o.length ? o : [{ name: "Envío", price: Number(DATA.store.shippingCost) || 0, address: true }];
+  }
+  function currentShip() {
+    const o = shipOptions();
+    let i = Number(load(SHIP_KEY));
+    if (!(i >= 0 && i < o.length)) i = 0;
+    return { ...o[i], index: i };
+  }
+
   function totals() {
     const s = DATA.store;
     const sub = cart.reduce((n, l) => { const p = findProduct(l.id); return n + (p ? priceOf(p, l.opt) : 0) * l.qty; }, 0);
-    const free = Number(s.freeShippingOver) > 0 && sub >= Number(s.freeShippingOver);
-    const ship = cart.length && !free ? Number(s.shippingCost) || 0 : 0;
-    return { sub, ship, total: sub + ship, free };
+    const opt = currentShip();
+    const free = Number(opt.price) === 0 || (Number(s.freeShippingOver) > 0 && sub >= Number(s.freeShippingOver));
+    const ship = cart.length && !free ? Number(opt.price) || 0 : 0;
+    return { sub, ship, total: sub + ship, free, opt };
+  }
+
+  function shipPicker() {
+    const o = shipOptions();
+    if (o.length < 2) return "";
+    const cur = currentShip().index;
+    return `<fieldset class="ship"><legend>Entrega</legend>${o.map((x, i) => `
+      <label class="${i === cur ? "active" : ""}"><input type="radio" name="ship" value="${i}" ${i === cur ? "checked" : ""}>
+        <span><b>${esc(x.name)}</b>${x.note ? `<small>${esc(x.note)}</small>` : ""}</span>
+        <em>${Number(x.price) ? money(x.price) : "Gratis"}</em></label>`).join("")}</fieldset>`;
   }
 
   let checkoutStep = false;
@@ -457,7 +481,7 @@
         <form class="checkout-form" id="checkout-form">
           <label>Nombre<input name="name" required autocomplete="name"></label>
           <label>Teléfono<input name="phone" type="tel" required autocomplete="tel"></label>
-          <label>Dirección de envío<textarea name="address" rows="3" required autocomplete="street-address"></textarea></label>
+          ${t.opt.address === false ? "" : `<label>Dirección de envío<textarea name="address" rows="3" required autocomplete="street-address"></textarea></label>`}
           <label>Notas (opcional)<textarea name="notes" rows="2"></textarea></label>
           ${s.checkoutNote ? `<p class="hint">${esc(s.checkoutNote)}</p>` : ""}
         </form>`;
@@ -483,7 +507,7 @@
         <strong>${money(priceOf(p, l.opt) * l.qty)}</strong>
       </div>`;
     }).join("");
-    foot.innerHTML = totalsHtml(t) +
+    foot.innerHTML = shipPicker() + totalsHtml(t) +
       (missing > 0 && Number(s.freeShippingOver) > 0 ? `<p class="hint">Te faltan ${money(missing)} para envío gratis.</p>` : "") +
       `<button class="btn block" id="go-checkout">Finalizar pedido</button>`;
   }
@@ -491,7 +515,7 @@
   function totalsHtml(t) {
     return `<div class="totals">
       <div><span>Subtotal</span><span>${money(t.sub)}</span></div>
-      <div><span>Envío</span><span>${t.free ? "Gratis" : money(t.ship)}</span></div>
+      <div><span>${shipOptions().length > 1 ? esc(t.opt.name) : "Envío"}</span><span>${t.free ? "Gratis" : money(t.ship)}</span></div>
       <div class="grand"><span>Total</span><span>${money(t.total)}</span></div>
     </div>`;
   }
@@ -514,6 +538,12 @@
     drawCart();
   });
 
+  $("#cart-overlay").addEventListener("change", (e) => {
+    if (e.target.name !== "ship") return;
+    save(SHIP_KEY, Number(e.target.value));
+    drawCart();
+  });
+
   $("#cart-overlay").addEventListener("submit", (e) => {
     e.preventDefault();
     const via = e.submitter?.dataset.via || (DATA.store.whatsapp ? "wa" : "mail");
@@ -525,8 +555,8 @@
     });
     const msg = [
       `¡Hola ${s.name}! Quiero hacer este pedido:`, "", ...lines, "",
-      `Subtotal: ${money(t.sub)}`, `Envío: ${t.free ? "Gratis" : money(t.ship)}`, `Total: ${money(t.total)}`, "",
-      `Nombre: ${f.name}`, `Teléfono: ${f.phone}`, `Dirección: ${f.address}`,
+      `Subtotal: ${money(t.sub)}`, `Entrega: ${t.opt.name}${t.opt.note ? ` (${t.opt.note})` : ""} — ${t.free ? "Gratis" : money(t.ship)}`, `Total: ${money(t.total)}`, "",
+      `Nombre: ${f.name}`, `Teléfono: ${f.phone}`, f.address ? `Dirección: ${f.address}` : "",
       f.notes ? `Notas: ${f.notes}` : "",
     ].filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");
     const url = via === "wa"

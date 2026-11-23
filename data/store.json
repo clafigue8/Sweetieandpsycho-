@@ -9,9 +9,29 @@
   "whatsapp": "+50432857535",
   "email": "",
   "instagram": "sweetie.and.psycho",
-  "shippingCost": 0,
+  "shippingCost": 70,
   "freeShippingOver": 0,
-  "checkoutNote": "Al enviar tu pedido te contactaremos para confirmar disponibilidad, forma de pago y envío."
+  "checkoutNote": "Al enviar tu pedido te contactaremos para confirmar disponibilidad, forma de pago y envío.",
+  "shippingOptions": [
+   {
+    "name": "Envío en Tegucigalpa",
+    "note": "",
+    "price": 70,
+    "address": true
+   },
+   {
+    "name": "Entrega en la UNAH",
+    "note": "12:30 m",
+    "price": 0,
+    "address": false
+   },
+   {
+    "name": "Envío nacional",
+    "note": "A todo Honduras",
+    "price": 95,
+    "address": true
+   }
+  ]
  },
  "theme": {
   "primary": "#a855c9",
