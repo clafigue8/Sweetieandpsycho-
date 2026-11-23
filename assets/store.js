@@ -452,6 +452,15 @@
     return { sub, ship, total: sub + ship, free, opt };
   }
 
+  const payOptions = () => (DATA.store.paymentOptions || []).filter((x) => x.name);
+  function payPicker() {
+    const o = payOptions();
+    if (!o.length) return "";
+    return `<fieldset class="ship pay"><legend>¿Cómo quieres pagar?</legend>${o.map((x, i) => `
+      <label><input type="radio" name="pay" value="${i}" required>
+        <span><b>${esc(x.name)}</b>${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><em></em></label>`).join("")}</fieldset>`;
+  }
+
   function shipPicker() {
     const o = shipOptions();
     if (o.length < 2) return "";
@@ -482,6 +491,7 @@
           <label>Nombre<input name="name" required autocomplete="name"></label>
           <label>Teléfono<input name="phone" type="tel" required autocomplete="tel"></label>
           ${t.opt.address === false ? "" : `<label>Dirección de envío<textarea name="address" rows="3" required autocomplete="street-address"></textarea></label>`}
+          ${payPicker()}
           <label>Notas (opcional)<textarea name="notes" rows="2"></textarea></label>
           ${s.checkoutNote ? `<p class="hint">${esc(s.checkoutNote)}</p>` : ""}
         </form>`;
@@ -539,6 +549,10 @@
   });
 
   $("#cart-overlay").addEventListener("change", (e) => {
+    if (e.target.name === "pay") {
+      e.target.closest("fieldset").querySelectorAll("label").forEach((l) => l.classList.toggle("active", l.contains(e.target)));
+      return;
+    }
     if (e.target.name !== "ship") return;
     save(SHIP_KEY, Number(e.target.value));
     drawCart();
@@ -556,6 +570,7 @@
     const msg = [
       `¡Hola ${s.name}! Quiero hacer este pedido:`, "", ...lines, "",
       `Subtotal: ${money(t.sub)}`, `Entrega: ${t.opt.name}${t.opt.note ? ` (${t.opt.note})` : ""} — ${t.free ? "Gratis" : money(t.ship)}`, `Total: ${money(t.total)}`, "",
+      f.pay != null && payOptions()[f.pay] ? `Pago: ${payOptions()[f.pay].name}` : "",
       `Nombre: ${f.name}`, `Teléfono: ${f.phone}`, f.address ? `Dirección: ${f.address}` : "",
       f.notes ? `Notas: ${f.notes}` : "",
     ].filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");

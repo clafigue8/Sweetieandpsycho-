@@ -375,4 +375,6 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
 .ship label.active { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 7%, transparent); }
 .ship input { accent-color: var(--primary); margin: 0; }
 .ship small { display: block; color: var(--muted); font-size: .78rem; }
+.pay label { grid-template-columns: auto 1fr; }
+.pay em { display: none; }
 .ship em { font-style: normal; font-weight: 700; white-space: nowrap; }

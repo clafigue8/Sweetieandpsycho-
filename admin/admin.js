@@ -171,6 +171,7 @@
     }
     data.home ??= { showCollections: true, sections: [{ type: "new", title: "Lo nuevo", collection: "", visible: true }, { type: "sale", title: "Ofertas", collection: "", visible: true }] };
     data.home.sections ??= [];
+    data.store.paymentOptions ??= [];
     data.store.shippingOptions ??= Number(data.store.shippingCost) ? [{ name: "Envío", note: "", price: Number(data.store.shippingCost), address: true }] : [];
   }
 
@@ -477,6 +478,7 @@
     }
     $("#radius-out").textContent = data.theme.radius ?? 14;
     renderShipping();
+    renderPayments();
     drawImgFields();
     drawSwatch();
   }
@@ -503,6 +505,34 @@
     data.store.shippingOptions.splice(Number(b.dataset.del), 1); renderShipping(); changed();
   });
   $("#ship-new").onclick = () => { data.store.shippingOptions.push({ name: "", note: "", price: 0, address: true }); renderShipping(); changed(); };
+
+  function renderPayments() {
+    const list = data.store.paymentOptions;
+    $("#pay-list").innerHTML = list.map((o, i) => `
+      <div class="sec-item" data-i="${i}">
+        <label>Nombre<input data-k="name" value="${esc(o.name)}" placeholder="Tarjeta de crédito o débito"></label>
+        <label>Detalle (opcional)<input data-k="note" value="${esc(o.note || "")}" placeholder="Ej.: te enviamos un link de pago"></label>
+        <div class="actions">
+          <button type="button" class="btn ghost sm" data-mv="-1" data-i2="${i}" ${i === 0 ? "disabled" : ""}>↑</button>
+          <button type="button" class="btn ghost sm danger" data-del="${i}">Borrar</button>
+        </div>
+      </div>`).join("") || `<p class="empty">Sin formas de pago: no se le preguntará a la clienta.</p>`;
+  }
+  $("#pay-list").addEventListener("input", (e) => {
+    const k = e.target.dataset.k; if (!k) return;
+    data.store.paymentOptions[Number(e.target.closest("[data-i]").dataset.i)][k] = e.target.value;
+    changed();
+  });
+  $("#pay-list").addEventListener("click", (e) => {
+    const arr = data.store.paymentOptions;
+    const del = e.target.closest("[data-del]");
+    const mv = e.target.closest("[data-mv]");
+    if (del) arr.splice(Number(del.dataset.del), 1);
+    else if (mv) { const i = Number(mv.dataset.i2); [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]]; }
+    else return;
+    renderPayments(); changed();
+  });
+  $("#pay-new").onclick = () => { data.store.paymentOptions.push({ name: "", note: "" }); renderPayments(); changed(); };
 
   function onField(e) {
     const el = e.target; if (!el.name) return;

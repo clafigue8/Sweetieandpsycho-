@@ -11,7 +11,7 @@
   "instagram": "sweetie.and.psycho",
   "shippingCost": 70,
   "freeShippingOver": 0,
-  "checkoutNote": "Al enviar tu pedido te contactaremos para confirmar disponibilidad, forma de pago y envío.",
+  "checkoutNote": "Al enviar tu pedido te confirmamos disponibilidad y te enviamos el link de pago o los datos para pagar.",
   "shippingOptions": [
    {
     "name": "Envío en Tegucigalpa",
@@ -30,6 +30,20 @@
     "note": "A todo Honduras",
     "price": 95,
     "address": true
+   }
+  ],
+  "paymentOptions": [
+   {
+    "name": "Tarjeta de crédito o débito",
+    "note": "Te enviamos un link de pago seguro de TENGO por WhatsApp"
+   },
+   {
+    "name": "Transferencia o depósito",
+    "note": "Te enviamos los datos de la cuenta por WhatsApp"
+   },
+   {
+    "name": "Efectivo al recibir",
+    "note": ""
    }
   ]
  },
