@@ -1,0 +1,199 @@
+{
+ "collections": [
+  {
+   "id": 303455731889,
+   "title": "Accesorios",
+   "handle": "accesorios",
+   "description": "<p>Cuidado personal y cabello</p>",
+   "published_at": "2024-03-06T01:22:41-06:00",
+   "updated_at": "2026-11-23T06:08:13-06:00",
+   "image": {
+    "id": 1636301504689,
+    "created_at": "2024-03-06T01:22:51-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-2189.jpg?v=1768199111",
+    "alt": ""
+   },
+   "products_count": 208
+  },
+  {
+   "id": 348763488433,
+   "title": "Accesorios de Hombre",
+   "handle": "accesorios-de-hombre",
+   "description": null,
+   "published_at": "2026-01-25T01:21:54-06:00",
+   "updated_at": "2026-11-21T20:03:40-06:00",
+   "image": {
+    "id": 1640546009265,
+    "created_at": "2026-01-25T01:21:53-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-2999.jpg?v=1769325714",
+    "alt": ""
+   },
+   "products_count": 119
+  },
+  {
+   "id": 348762177713,
+   "title": "Anillos",
+   "handle": "anillos",
+   "description": null,
+   "published_at": "2026-01-24T23:42:23-06:00",
+   "updated_at": "2026-11-23T06:08:13-06:00",
+   "image": {
+    "id": 1640545747121,
+    "created_at": "2026-01-24T23:42:23-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-2979.jpg?v=1769319743",
+    "alt": ""
+   },
+   "products_count": 106
+  },
+  {
+   "id": 348762210481,
+   "title": "Aritos",
+   "handle": "aritos",
+   "description": null,
+   "published_at": "2026-01-24T23:43:51-06:00",
+   "updated_at": "2026-11-12T17:25:55-06:00",
+   "image": {
+    "id": 1640545779889,
+    "created_at": "2026-01-24T23:43:50-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-2989.jpg?v=1769319831",
+    "alt": ""
+   },
+   "products_count": 93
+  },
+  {
+   "id": 352723828913,
+   "title": "Black Fridays",
+   "handle": "ofertas",
+   "description": "<p>11-25 Noviembre</p>",
+   "published_at": "2026-04-18T22:08:26-06:00",
+   "updated_at": "2026-11-23T06:08:13-06:00",
+   "image": {
+    "id": 1640893186225,
+    "created_at": "2026-04-18T22:08:25-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/F7A036C3-7FE0-4198-8C7E-2C35285FD21B.jpg?v=1794452814",
+    "alt": ""
+   },
+   "products_count": 120
+  },
+  {
+   "id": 348762865841,
+   "title": "Carteras",
+   "handle": "carteras",
+   "description": "",
+   "published_at": "2026-01-25T00:32:15-06:00",
+   "updated_at": "2026-11-22T11:16:53-06:00",
+   "image": {
+    "id": 1640545812657,
+    "created_at": "2026-01-25T00:32:14-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-3001.jpg?v=1769322735",
+    "alt": ""
+   },
+   "products_count": 25
+  },
+  {
+   "id": 263162757297,
+   "title": "Collares",
+   "handle": "collares",
+   "description": "",
+   "published_at": "2021-03-17T20:00:58-06:00",
+   "updated_at": "2026-11-21T20:03:40-06:00",
+   "image": {
+    "id": 1607242416305,
+    "created_at": "2021-05-31T23:41:03-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-2192.jpg?v=1768199190",
+    "alt": ""
+   },
+   "products_count": 135
+  },
+  {
+   "id": 350780555441,
+   "title": "Joyería",
+   "handle": "accesorios-de-plata-925",
+   "description": "<p>Accesorios de plata 925 y Acero Inoxidable </p>",
+   "published_at": "2026-03-09T01:24:03-06:00",
+   "updated_at": "2026-11-23T06:08:13-06:00",
+   "image": {
+    "id": 1640732885169,
+    "created_at": "2026-03-09T01:24:02-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-5296.jpg?v=1773044779",
+    "alt": ""
+   },
+   "products_count": 86
+  },
+  {
+   "id": 263082246321,
+   "title": "Lentes",
+   "handle": "lentes",
+   "description": "<p>Lentes para el cuidado de la vista✨</p>",
+   "published_at": "2021-03-16T19:35:32-06:00",
+   "updated_at": "2026-11-12T17:25:02-06:00",
+   "image": {
+    "id": 1622174630065,
+    "created_at": "2022-10-06T18:22:35-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-2193.png?v=1768199209",
+    "alt": ""
+   },
+   "products_count": 96
+  },
+  {
+   "id": 289672495281,
+   "title": "Match",
+   "handle": "accesorios-match",
+   "description": "",
+   "published_at": "2022-10-13T23:01:03-06:00",
+   "updated_at": "2026-11-23T06:08:13-06:00",
+   "image": {
+    "id": 1625604587697,
+    "created_at": "2023-03-09T19:43:01-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-2179.jpg?v=1768199236",
+    "alt": ""
+   },
+   "products_count": 163
+  },
+  {
+   "id": 348763553969,
+   "title": "Medias",
+   "handle": "medias",
+   "description": null,
+   "published_at": "2026-01-25T01:23:25-06:00",
+   "updated_at": "2026-11-11T14:59:44-06:00",
+   "image": {
+    "id": 1640546042033,
+    "created_at": "2026-01-25T01:23:24-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-3007.jpg?v=1769325804",
+    "alt": ""
+   },
+   "products_count": 53
+  },
+  {
+   "id": 289618886833,
+   "title": "Pines Metálicos",
+   "handle": "pines-metalicos",
+   "description": "",
+   "published_at": "2022-10-11T00:39:08-06:00",
+   "updated_at": "2026-11-23T06:08:13-06:00",
+   "image": {
+    "id": 1622288859313,
+    "created_at": "2022-10-11T00:39:12-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-2194.jpg?v=1768199311",
+    "alt": ""
+   },
+   "products_count": 61
+  },
+  {
+   "id": 355575398577,
+   "title": "Ropa",
+   "handle": "ropa",
+   "description": "<p>Usado y Nuevo </p>",
+   "published_at": "2026-06-23T17:04:29-06:00",
+   "updated_at": "2026-11-14T19:01:42-06:00",
+   "image": {
+    "id": 1641105195185,
+    "created_at": "2026-06-23T17:04:28-06:00",
+    "src": "https://cdn.shopify.com/s/files/1/0553/9489/4001/collections/IMG-0810.jpg?v=1782255868",
+    "alt": ""
+   },
+   "products_count": 18
+  }
+ ]
+}

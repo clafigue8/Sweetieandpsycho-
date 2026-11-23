@@ -201,7 +201,7 @@
       const i = data.products.indexOf(p);
       const stock = p.stock === "" || p.stock == null ? "∞" : p.stock;
       return `<div class="item">
-        ${p.images[0] ? `<img class="thumb" src="${esc(imgSrc(p.images[0]))}" alt="">` : `<div class="thumb">${esc(p.name[0] || "?")}</div>`}
+        ${p.images[0] ? `<img class="thumb" src="${esc(imgSrc(p.images[0]))}" alt="" loading="lazy">` : `<div class="thumb">${esc(p.name[0] || "?")}</div>`}
         <div>
           <h3>${esc(p.name)} ${p.featured ? "★" : ""}</h3>
           <div class="meta">

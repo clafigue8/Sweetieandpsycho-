@@ -85,6 +85,7 @@
   const visibleCollections = () => DATA.collections.filter((c) => c.visible !== false &&
     activeProducts().some((p) => (p.collections || []).includes(c.id)));
   const findProduct = (id) => DATA.products.find((p) => p.id === id);
+  const priceOf = (p, opt) => (p.optionPrices && opt in p.optionPrices ? Number(p.optionPrices[opt]) : p.price);
   const inStock = (p) => p.stock == null || p.stock === "" || Number(p.stock) > 0;
 
   // ---------- Rutas: #/  #/coleccion/:id  #/producto/:id ----------
@@ -103,9 +104,12 @@
   let currentCollection = null;
   let sortMode = "featured";
   let query = "";
+  const PAGE = 48;
+  let shown = PAGE;
 
   function renderHome(collectionId = null) {
     currentCollection = collectionId;
+    shown = PAGE;
     const h = DATA.hero || {};
     const col = DATA.collections.find((c) => c.id === collectionId);
     const chips = visibleCollections().map((c) =>
@@ -136,7 +140,7 @@
       <div class="grid" id="grid"></div>`;
     $("#app").dataset.rendered = "1";
     $("#sort").value = sortMode;
-    $("#sort").onchange = (e) => { sortMode = e.target.value; renderGrid(); };
+    $("#sort").onchange = (e) => { sortMode = e.target.value; shown = PAGE; renderGrid(); };
     if (collectionId) window.scrollTo({ top: 0 });
     renderGrid();
   }
@@ -156,7 +160,12 @@
 
     const grid = $("#grid");
     if (!grid) return;
-    grid.innerHTML = list.length ? list.map(card).join("") : `<p class="empty">No encontramos productos.</p>`;
+    grid.innerHTML = list.length ? list.slice(0, shown).map(card).join("") : `<p class="empty">No encontramos productos.</p>`;
+    $("#more")?.remove();
+    if (list.length > shown) {
+      grid.insertAdjacentHTML("afterend", `<div class="more" id="more"><button class="btn ghost">Ver más (${list.length - shown})</button></div>`);
+      $("#more button").onclick = () => { shown += PAGE; renderGrid(); };
+    }
   }
 
   function media(p, i = 0) {
@@ -173,7 +182,7 @@
       <div class="card-media">${media(p)}${badge}</div>
       <div class="card-body">
         <h3>${esc(p.name)}</h3>
-        <div class="price">${money(p.price)}${sale ? `<s>${money(p.comparePrice)}</s>` : ""}</div>
+        <div class="price">${p.optionPrices ? "Desde " : ""}${money(p.price)}${sale ? `<s>${money(p.comparePrice)}</s>` : ""}</div>
       </div>
     </a>`;
   }
@@ -203,7 +212,7 @@
       </div>
       <div class="detail">
         <h2>${esc(p.name)}</h2>
-        <div class="price">${money(p.price)}${sale ? `<s>${money(p.comparePrice)}</s>` : ""}</div>
+        <div class="price">${money(priceOf(p, opt))}${sale ? `<s>${money(p.comparePrice)}</s>` : ""}</div>
         ${p.description ? `<p class="desc">${esc(p.description)}</p>` : ""}
         ${(p.options || []).length ? `<div>
           <div class="opt-label">${esc(p.optionName || "Opción")}: ${esc(opt)}</div>
@@ -265,7 +274,7 @@
 
   function totals() {
     const s = DATA.store;
-    const sub = cart.reduce((n, l) => n + (findProduct(l.id)?.price || 0) * l.qty, 0);
+    const sub = cart.reduce((n, l) => { const p = findProduct(l.id); return n + (p ? priceOf(p, l.opt) : 0) * l.qty; }, 0);
     const free = Number(s.freeShippingOver) > 0 && sub >= Number(s.freeShippingOver);
     const ship = cart.length && !free ? Number(s.shippingCost) || 0 : 0;
     return { sub, ship, total: sub + ship, free };
@@ -309,11 +318,11 @@
         <div>
           <h4>${esc(p.name)}</h4>
           ${l.opt ? `<small>${esc(p.optionName || "Opción")}: ${esc(l.opt)}</small>` : ""}
-          <small>${money(p.price)}</small>
+          <small>${money(priceOf(p, l.opt))}</small>
           <div class="qty" style="margin-top:.3rem"><button data-line="${i}" data-d="-1">−</button><span>${l.qty}</span><button data-line="${i}" data-d="1">+</button></div>
           <button class="remove" data-remove="${i}">Quitar</button>
         </div>
-        <strong>${money(p.price * l.qty)}</strong>
+        <strong>${money(priceOf(p, l.opt) * l.qty)}</strong>
       </div>`;
     }).join("");
     foot.innerHTML = totalsHtml(t) +
@@ -354,7 +363,7 @@
     const s = DATA.store, t = totals();
     const lines = cart.map((l) => {
       const p = findProduct(l.id);
-      return `• ${l.qty} × ${p.name}${l.opt ? ` (${p.optionName || "Opción"}: ${l.opt})` : ""} — ${money(p.price * l.qty)}`;
+      return `• ${l.qty} × ${p.name}${l.opt ? ` (${p.optionName || "Opción"}: ${l.opt})` : ""} — ${money(priceOf(p, l.opt) * l.qty)}`;
     });
     const msg = [
       `¡Hola ${s.name}! Quiero hacer este pedido:`, "", ...lines, "",
@@ -401,6 +410,7 @@
   };
   $("#search").addEventListener("input", (e) => {
     query = e.target.value.trim();
+    shown = PAGE;
     if (!$("#grid")) renderHome();
     renderGrid();
   });

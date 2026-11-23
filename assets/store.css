@@ -155,6 +155,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
 .card-body h3 { font-size: .98rem; font-weight: 600; margin: 0 0 .25rem; }
 .price { font-weight: 700; color: var(--primary); }
 .price s { color: var(--muted); font-weight: 400; margin-left: .4rem; font-size: .9em; }
+.more { text-align: center; margin-top: 2rem; }
 .empty { text-align: center; color: var(--muted); padding: 3rem 1rem; }
 
 /* Modales */

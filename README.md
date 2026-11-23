@@ -77,3 +77,20 @@ python3 -m http.server 8000
 # tienda:  http://localhost:8000
 # panel:   http://localhost:8000/admin  (botón "Probar sin conexión")
 ```
+
+## Migración desde Shopify (noviembre 2026)
+
+El catálogo público de la tienda Shopify (`sweetie-and-psycho.myshopify.com`) se copió aquí:
+
+- **362 productos** con descripción, precio, precio tachado, opciones (y precio por opción),
+  disponibilidad, etiquetas y su pertenencia a las **13 colecciones**.
+- **863 fotos de productos** descargadas y optimizadas (WebP, máx. 1600 px) en `assets/products/`,
+  imágenes de colecciones en `assets/collections/` y el logo en `assets/logo.webp`.
+- `respaldo-shopify/`: los datos originales tal como los entregó Shopify (`productos.json`,
+  `colecciones.json`, `tienda.json`, qué productos hay en cada colección) y las imágenes
+  de la página de inicio (`imagenes-sitio/`).
+
+**No se pudo copiar desde la tienda pública** (solo existe en el panel de Shopify):
+productos ocultos/borradores/archivados, cantidades exactas de inventario, pedidos y clientes.
+Antes de cancelar Shopify, expórtalos desde el panel: *Productos → Exportar*,
+*Pedidos → Exportar* y *Clientes → Exportar* (CSV).

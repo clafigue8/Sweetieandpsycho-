@@ -128,7 +128,7 @@
         <form class="card form narrow" id="checkout-form">
           <h2>Cómo te llegan los pedidos</h2>
           <p class="muted">Cuando un cliente finaliza su carrito, se le abre WhatsApp o su correo con el pedido completo listo para enviarte.</p>
-          <label>WhatsApp (con lada del país, ej. 5215512345678)<input name="store.whatsapp" inputmode="tel"></label>
+          <label>WhatsApp (con código de país, ej. 50499999999)<input name="store.whatsapp" inputmode="tel"></label>
           <label>Correo para pedidos<input name="store.email" type="email"></label>
           <label>Instagram (usuario)<input name="store.instagram" placeholder="@sweetieandpsycho"></label>
           <h2>Envío y moneda</h2>
@@ -139,6 +139,7 @@
           <div class="row">
             <label>Moneda
               <select name="store.currency">
+                <option value="HNL">HNL — Lempira</option>
                 <option value="MXN">MXN — Peso mexicano</option>
                 <option value="USD">USD — Dólar</option>
                 <option value="EUR">EUR — Euro</option>
@@ -152,6 +153,7 @@
             </label>
             <label>Formato regional
               <select name="store.locale">
+                <option value="es-HN">Honduras</option>
                 <option value="es-MX">México</option>
                 <option value="es-US">Estados Unidos (español)</option>
                 <option value="es-ES">España</option>
