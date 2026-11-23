@@ -52,6 +52,7 @@
     <nav class="tabs" id="tabs">
       <button data-tab="products" class="active">Productos</button>
       <button data-tab="collections">Colecciones</button>
+      <button data-tab="home">Inicio</button>
       <button data-tab="design">Diseño y colores</button>
       <button data-tab="checkout">Carrito y pedidos</button>
       <button data-tab="backup">Respaldo</button>
@@ -82,6 +83,30 @@
         <div id="c-list" class="list"></div>
       </div>
 
+      <!-- Inicio -->
+      <div class="tab" id="tab-home" hidden>
+        <div class="card form">
+          <div class="row" style="align-items:center">
+            <h2 class="grow">Carrusel de portada</h2>
+            <label style="flex:0 0 auto;min-width:0">Cambia cada
+              <select id="autoplay"><option value="3">3 s</option><option value="5">5 s</option><option value="7">7 s</option><option value="10">10 s</option></select>
+            </label>
+            <button class="btn" type="button" id="slide-new">+ Imagen</button>
+          </div>
+          <p class="muted">Si la imagen ya trae texto (como tus banners), deja el título vacío y solo pon el texto del botón. Ideal: imágenes horizontales 16:9 (por ejemplo 1600×900).</p>
+          <div id="slides-list" class="list"></div>
+        </div>
+        <div class="card form" style="margin-top:1rem">
+          <div class="row" style="align-items:center">
+            <h2 class="grow">Secciones del inicio</h2>
+            <button class="btn" type="button" id="section-new">+ Sección</button>
+          </div>
+          <label class="check"><input type="checkbox" id="show-cols"> Mostrar la fila de colecciones</label>
+          <p class="muted">Cada sección es una fila de productos que se desliza con el dedo. Debajo siempre aparece “Todos los productos”.</p>
+          <div id="sections-list" class="list"></div>
+        </div>
+      </div>
+
       <!-- Diseño -->
       <div class="tab" id="tab-design" hidden>
         <div class="cols">
@@ -92,11 +117,7 @@
             <div class="img-field" data-field="store.logo"><span>Logo (opcional, reemplaza el nombre)</span></div>
             <label>Barra de anuncio (vacío para ocultar)<input name="store.announcement"></label>
 
-            <h2>Portada</h2>
-            <label>Título<input name="hero.title"></label>
-            <label>Subtítulo<textarea name="hero.subtitle" rows="2"></textarea></label>
-            <label>Texto del botón<input name="hero.cta"></label>
-            <div class="img-field" data-field="hero.image"><span>Imagen de portada (opcional)</span></div>
+            <p class="muted">El carrusel y las secciones de la página de inicio se editan en la pestaña “Inicio”.</p>
           </form>
 
           <form class="card form" id="theme-form">

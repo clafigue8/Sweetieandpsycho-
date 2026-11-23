@@ -75,6 +75,11 @@
     if (s.instagram) links.push(`<a href="https://instagram.com/${esc(s.instagram.replace(/^@/, ""))}" target="_blank" rel="noopener">Instagram</a>`);
     if (s.whatsapp) links.push(`<a href="https://wa.me/${esc(onlyDigits(s.whatsapp))}" target="_blank" rel="noopener">WhatsApp</a>`);
     if (s.email) links.push(`<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`);
+    if (s.whatsapp) {
+      document.body.insertAdjacentHTML("beforeend", `<a class="wa-float" href="https://wa.me/${esc(onlyDigits(s.whatsapp))}?text=${encodeURIComponent("¡Hola " + s.name + "! Tengo una pregunta 😊")}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+        <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.7c-2 0-4-.5-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.7 10.7 0 1 1 16 26.7zm5.9-8c-.3-.2-1.9-1-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.3 1.4 3.5c.2.2 2.4 3.7 5.8 5.2 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5l-.6-.4z"/></svg>
+      </a>`);
+    }
     $("#footer").innerHTML = `<div>${links.join("")}</div><p>© ${new Date().getFullYear()} ${esc(s.name)}</p>`;
   }
 
@@ -85,23 +90,30 @@
   const visibleCollections = () => DATA.collections.filter((c) => c.visible !== false &&
     activeProducts().some((p) => (p.collections || []).includes(c.id)));
   const findProduct = (id) => DATA.products.find((p) => p.id === id);
-  const priceOf = (p, opt) => (p.optionPrices && opt in p.optionPrices ? Number(p.optionPrices[opt]) : p.price);
+  const priceOf = (p, opt) => (p.optionPrices && opt != null && opt in p.optionPrices ? Number(p.optionPrices[opt]) : p.price);
   const inStock = (p) => p.stock == null || p.stock === "" || Number(p.stock) > 0;
 
   // ---------- Rutas: #/  #/coleccion/:id  #/producto/:id ----------
+  let backHash = "#/";
   function route() {
     const [, kind, id] = location.hash.replace(/^#\/?/, "/").split("/");
     if (kind === "producto" && id) {
-      if (!$("#app").dataset.rendered) renderHome();
+      if (!$("#app").dataset.rendered) { backHash = "#/"; renderHome(); }
       openProduct(decodeURIComponent(id));
       return;
     }
     closeOverlay("product");
     closeOverlay("menu");
-    if (kind === "coleccion" && id) renderHome(decodeURIComponent(id));
+    stopSlider();
+    if (kind === "coleccion" && id) renderListing({ collection: decodeURIComponent(id) });
     else if (kind === "colecciones") renderCollectionsPage();
+    else if (kind === "nuevo") renderListing({ special: "new" });
+    else if (kind === "descuentos") renderListing({ special: "sale" });
+    else if (kind === "todo") renderListing({});
     else renderHome();
     drawMenu();
+    reveal();
+    backHash = location.hash || "#/";
   }
 
   function collectionCover(c) {
@@ -111,18 +123,19 @@
   }
   const countIn = (id) => activeProducts().filter((p) => (p.collections || []).includes(id)).length;
 
+  function colCard(c) {
+    const img = collectionCover(c);
+    return `<a class="col-card reveal" href="#/coleccion/${encodeURIComponent(c.id)}">
+      <div class="card-media">${img ? `<img src="${esc(img)}" alt="${esc(c.name)}" loading="lazy">` : `<div class="placeholder">${esc(c.name[0] || "?")}</div>`}</div>
+      <div class="col-name">${esc(c.name)} <small>${countIn(c.id)}</small></div>
+    </a>`;
+  }
+
   function renderCollectionsPage() {
-    currentCollection = null;
     $("#app").dataset.rendered = "";
     $("#app").innerHTML = `
       <h1 class="page-title">Colecciones</h1>
-      <div class="col-grid">${visibleCollections().map((c) => {
-        const img = collectionCover(c);
-        return `<a class="col-card" href="#/coleccion/${encodeURIComponent(c.id)}">
-          <div class="card-media">${img ? `<img src="${esc(img)}" alt="${esc(c.name)}" loading="lazy">` : `<div class="placeholder">${esc(c.name[0] || "?")}</div>`}</div>
-          <div class="col-name">${esc(c.name)} <small>${countIn(c.id)}</small></div>
-        </a>`;
-      }).join("")}</div>`;
+      <div class="col-grid">${visibleCollections().map(colCard).join("")}</div>`;
     window.scrollTo({ top: 0 });
   }
 
@@ -133,64 +146,160 @@
     $("#side-nav").innerHTML =
       link("#/", "Inicio", h === "") +
       link("#/colecciones", "Colecciones", h === "colecciones") +
+      link("#/nuevo", "Lo nuevo", h === "nuevo") +
+      (saleProducts().length ? link("#/descuentos", "Ofertas", h === "descuentos") : "") +
+      link("#/todo", "Todos los productos", h === "todo") +
       `<div class="group">Categorías</div>` +
       visibleCollections().map((c) =>
         link(`#/coleccion/${encodeURIComponent(c.id)}`, esc(c.name), h === "coleccion/" + encodeURIComponent(c.id), "sub")).join("");
   }
 
-  let currentCollection = null;
+  // ---------- Listas de productos ----------
+  const byNew = (a, b) => String(b.createdAt).localeCompare(String(a.createdAt));
+  const saleProducts = () => activeProducts().filter((p) => p.comparePrice > p.price);
+  const newestIds = () => new Set([...activeProducts()].sort(byNew).slice(0, 12).map((p) => p.id));
+
+  let listing = {};
   let sortMode = "featured";
   let query = "";
   const PAGE = 48;
   let shown = PAGE;
 
-  function renderHome(collectionId = null) {
-    currentCollection = collectionId;
-    shown = PAGE;
-    const h = DATA.hero || {};
-    const col = DATA.collections.find((c) => c.id === collectionId);
+  function listingProducts() {
+    let list = activeProducts();
+    if (listing.collection) list = list.filter((p) => (p.collections || []).includes(listing.collection));
+    if (listing.special === "sale") list = list.filter((p) => p.comparePrice > p.price);
+    if (query) {
+      const q = query.toLowerCase();
+      list = list.filter((p) => (p.name + " " + (p.description || "") + " " + (p.tags || []).join(" ")).toLowerCase().includes(q));
+    }
+    list = [...list];
+    const mode = listing.special === "new" && sortMode === "featured" ? "new" : sortMode;
+    if (mode === "featured") list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    if (mode === "new") list.sort(byNew);
+    if (mode === "price-asc") list.sort((a, b) => priceOf(a) - priceOf(b));
+    if (mode === "price-desc") list.sort((a, b) => priceOf(b) - priceOf(a));
+    return list;
+  }
 
-    $("#app").innerHTML = `
-      ${collectionId ? "" : `
-      <section class="hero ${h.image ? "has-image" : ""}" ${h.image ? `style="background-image:url('${esc(h.image)}')"` : ""}>
-        <h1>${esc(h.title || DATA.store.name)}</h1>
-        ${h.subtitle ? `<p>${esc(h.subtitle)}</p>` : ""}
-        <a class="btn light" href="#/colecciones">${esc(h.cta || "Comprar")}</a>
-      </section>`}
-      ${collectionId ? `<a class="back-link" href="#/colecciones">← Colecciones</a>` : ""}
+  function gridBlock(title, desc) {
+    return `
       <div class="section-head" id="productos">
         <div>
-          <h2>${esc(col ? col.name : "Productos")}</h2>
-          ${col && col.description ? `<p>${esc(col.description)}</p>` : ""}
+          <h2>${esc(title)}</h2>
+          ${desc ? `<p>${esc(desc)}</p>` : ""}
         </div>
         <select id="sort" aria-label="Ordenar">
-          <option value="featured">Destacados</option>
-          <option value="new">Más nuevos</option>
+          <option value="featured">${listing.special === "new" ? "Más nuevos" : "Destacados"}</option>
+          ${listing.special === "new" ? "" : `<option value="new">Más nuevos</option>`}
           <option value="price-asc">Precio: menor a mayor</option>
           <option value="price-desc">Precio: mayor a menor</option>
         </select>
       </div>
       <div class="grid" id="grid"></div>`;
+  }
+
+  function bindGrid() {
     $("#app").dataset.rendered = "1";
     $("#sort").value = sortMode;
     $("#sort").onchange = (e) => { sortMode = e.target.value; shown = PAGE; renderGrid(); };
-    if (collectionId) window.scrollTo({ top: 0 });
     renderGrid();
   }
 
-  function renderGrid() {
-    let list = activeProducts();
-    if (currentCollection) list = list.filter((p) => (p.collections || []).includes(currentCollection));
-    if (query) {
-      const q = query.toLowerCase();
-      list = list.filter((p) => (p.name + " " + (p.description || "")).toLowerCase().includes(q));
-    }
-    list = [...list];
-    if (sortMode === "featured") list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-    if (sortMode === "new") list.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
-    if (sortMode === "price-asc") list.sort((a, b) => a.price - b.price);
-    if (sortMode === "price-desc") list.sort((a, b) => b.price - a.price);
+  function renderListing(opts) {
+    listing = opts; shown = PAGE; sortMode = "featured";
+    const col = DATA.collections.find((c) => c.id === opts.collection);
+    const title = col ? col.name : opts.special === "new" ? "Lo nuevo" : opts.special === "sale" ? "Ofertas" : "Todos los productos";
+    $("#app").innerHTML = `
+      <a class="back-link" href="${col ? "#/colecciones" : "#/"}">← ${col ? "Colecciones" : "Inicio"}</a>
+      ${gridBlock(title, col && col.description)}`;
+    bindGrid();
+    window.scrollTo({ top: 0 });
+  }
 
+  // ---------- Inicio ----------
+  function slides() {
+    const h = DATA.hero || {};
+    const s = (h.slides || []).filter((x) => x.image || x.title);
+    return s.length ? s : [{ title: h.title || DATA.store.name, subtitle: h.subtitle, cta: h.cta || "Ver catálogo", link: "#/colecciones", image: h.image }];
+  }
+
+  function slideHtml(s, i) {
+    const textual = !!s.title;
+    const inner = textual
+      ? `<div class="slide-text"><h1>${esc(s.title)}</h1>${s.subtitle ? `<p>${esc(s.subtitle)}</p>` : ""}
+         ${s.cta ? `<span class="btn light">${esc(s.cta)}</span>` : ""}</div>`
+      : `${s.cta ? `<span class="btn light slide-cta">${esc(s.cta)}</span>` : ""}`;
+    return `<a class="slide ${textual ? "textual" : ""} ${s.image ? "has-image" : ""}" href="${esc(s.link || "#/colecciones")}"
+      ${s.image ? `style="background-image:url('${esc(s.image)}')"` : ""} aria-label="${esc(s.title || s.cta || "Ver")}" data-i="${i}">${inner}</a>`;
+  }
+
+  function homeSections() {
+    return (DATA.home && DATA.home.sections) || [
+      { type: "new", title: "Lo nuevo" },
+      { type: "sale", title: "Ofertas" },
+    ];
+  }
+
+  function sectionHtml(sec) {
+    let list = [], link = "#/todo";
+    if (sec.type === "new") { list = [...activeProducts()].sort(byNew); link = "#/nuevo"; }
+    else if (sec.type === "sale") { list = saleProducts(); link = "#/descuentos"; }
+    else if (sec.type === "featured") { list = activeProducts().filter((p) => p.featured); }
+    else if (sec.type === "collection") {
+      list = activeProducts().filter((p) => (p.collections || []).includes(sec.collection)).sort(byNew);
+      link = `#/coleccion/${encodeURIComponent(sec.collection)}`;
+    }
+    if (!list.length || sec.visible === false) return "";
+    const title = sec.title || DATA.collections.find((c) => c.id === sec.collection)?.name || "";
+    return `<section class="home-section reveal">
+      <div class="row-head"><h2>${esc(title)}</h2><a href="${link}">Ver todo →</a></div>
+      <div class="scroller">${list.slice(0, 12).map(card).join("")}<a class="see-all" href="${link}">Ver todo<span>→</span></a></div>
+    </section>`;
+  }
+
+  function renderHome() {
+    listing = {}; shown = PAGE;
+    const ss = slides();
+    const home = DATA.home || {};
+    const cols = visibleCollections();
+    $("#app").innerHTML = `
+      <section class="slider" id="slider">
+        <div class="slides" id="slides">${ss.map(slideHtml).join("")}</div>
+        ${ss.length > 1 ? `<div class="dots">${ss.map((_, i) => `<button data-dot="${i}" aria-label="Imagen ${i + 1}"></button>`).join("")}</div>` : ""}
+      </section>
+      ${home.showCollections === false || !cols.length ? "" : `
+      <section class="home-section reveal">
+        <div class="row-head"><h2>Colecciones</h2><a href="#/colecciones">Ver todas →</a></div>
+        <div class="scroller cols">${cols.map(colCard).join("")}</div>
+      </section>`}
+      ${homeSections().map(sectionHtml).join("")}
+      ${gridBlock("Todos los productos")}`;
+    bindGrid();
+    startSlider(ss.length);
+  }
+
+  // Carrusel: se desliza con el dedo (scroll-snap) y avanza solo.
+  let sliderTimer = null;
+  function stopSlider() { clearInterval(sliderTimer); sliderTimer = null; }
+  function startSlider(n) {
+    const track = $("#slides");
+    if (!track || n < 2) return;
+    const dots = [...document.querySelectorAll("[data-dot]")];
+    const idx = () => Math.round(track.scrollLeft / track.clientWidth);
+    const mark = () => dots.forEach((d, i) => d.classList.toggle("active", i === idx()));
+    const go = (i) => track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
+    mark();
+    track.addEventListener("scroll", () => requestAnimationFrame(mark), { passive: true });
+    dots.forEach((d) => (d.onclick = () => { go(Number(d.dataset.dot)); restart(); }));
+    const secs = Number(DATA.hero?.autoplay) || 5;
+    const restart = () => { stopSlider(); sliderTimer = setInterval(() => go((idx() + 1) % n), secs * 1000); };
+    track.addEventListener("pointerdown", restart, { passive: true });
+    restart();
+  }
+
+  function renderGrid() {
+    const list = listingProducts();
     const grid = $("#grid");
     if (!grid) return;
     grid.innerHTML = list.length ? list.slice(0, shown).map(card).join("") : `<p class="empty">No encontramos productos.</p>`;
@@ -199,6 +308,15 @@
       grid.insertAdjacentHTML("afterend", `<div class="more" id="more"><button class="btn ghost">Ver más (${list.length - shown})</button></div>`);
       $("#more button").onclick = () => { shown += PAGE; renderGrid(); };
     }
+    reveal();
+  }
+
+  // Aparición suave al bajar por la página
+  const io = "IntersectionObserver" in window ? new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+  }, { rootMargin: "0px 0px -40px 0px" }) : null;
+  function reveal() {
+    document.querySelectorAll(".reveal:not(.in)").forEach((el) => (io ? io.observe(el) : el.classList.add("in")));
   }
 
   function media(p, i = 0) {
@@ -208,11 +326,18 @@
       : `<div class="placeholder">${esc((p.name || "?").trim()[0] || "?")}</div>`;
   }
 
+  let NEWEST = null;
   function card(p) {
+    NEWEST ??= newestIds();
     const sale = p.comparePrice > p.price;
-    const badge = !inStock(p) ? `<span class="badge dark">Agotado</span>` : sale ? `<span class="badge">Oferta</span>` : "";
-    return `<a class="card" href="#/producto/${encodeURIComponent(p.id)}">
-      <div class="card-media">${media(p)}${badge}</div>
+    const pct = sale ? Math.round((1 - p.price / p.comparePrice) * 100) : 0;
+    const few = p.stock !== "" && p.stock != null && Number(p.stock) > 0 && Number(p.stock) <= 3;
+    const badges = !inStock(p) ? `<span class="badge dark">Agotado</span>`
+      : (sale ? `<span class="badge">−${pct}%</span>` : NEWEST.has(p.id) ? `<span class="badge new">Nuevo</span>` : "") +
+        (few ? `<span class="badge warn">Últimas piezas</span>` : "");
+    const alt = (p.images || [])[1];
+    return `<a class="card reveal" href="#/producto/${encodeURIComponent(p.id)}">
+      <div class="card-media">${media(p)}${alt ? `<img class="alt" src="${esc(alt)}" alt="" loading="lazy">` : ""}<div class="badges">${badges}</div></div>
       <div class="card-body">
         <h3>${esc(p.name)}</h3>
         <div class="price">${p.optionPrices ? "Desde " : ""}${money(p.price)}${sale ? `<s>${money(p.comparePrice)}</s>` : ""}</div>
@@ -281,7 +406,7 @@
   function closeProduct() {
     closeOverlay("product");
     if (location.hash.startsWith("#/producto/")) {
-      history.replaceState(null, "", currentCollection ? `#/coleccion/${encodeURIComponent(currentCollection)}` : "#/");
+      history.replaceState(null, "", backHash);
     }
   }
 
@@ -456,7 +581,7 @@
   $("#search").addEventListener("input", (e) => {
     query = e.target.value.trim();
     shown = PAGE;
-    if (!$("#grid")) renderHome();
+    if (!$("#grid")) location.hash = "#/todo";
     renderGrid();
   });
 

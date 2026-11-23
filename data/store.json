@@ -6,7 +6,7 @@
   "announcement": "Hacemos envíos a todo Honduras 🇭🇳",
   "currency": "HNL",
   "locale": "es-HN",
-  "whatsapp": "",
+  "whatsapp": "+50432857535",
   "email": "",
   "instagram": "sweetie.and.psycho",
   "shippingCost": 0,
@@ -25,10 +25,30 @@
   "radius": 14
  },
  "hero": {
-  "title": "Sweetie & Psycho",
-  "subtitle": "Accesorios lindos… y un poquito psycho. Envíos a todo Honduras.",
-  "image": "",
-  "cta": "Ver catálogo"
+  "autoplay": 5,
+  "slides": [
+   {
+    "image": "",
+    "title": "Sweetie & Psycho",
+    "subtitle": "Accesorios lindos… y un poquito psycho. Envíos a todo Honduras.",
+    "cta": "Ver catálogo",
+    "link": "#/colecciones"
+   },
+   {
+    "image": "assets/slides/catalogo.webp",
+    "title": "",
+    "subtitle": "",
+    "cta": "Ver catálogo",
+    "link": "#/colecciones"
+   },
+   {
+    "image": "assets/slides/kawaii.webp",
+    "title": "",
+    "subtitle": "",
+    "cta": "Ver novedades",
+    "link": "#/nuevo"
+   }
+  ]
  },
  "collections": [
   {
@@ -9874,5 +9894,34 @@
    ],
    "vendor": "Sweetie.and.psycho"
   }
- ]
+ ],
+ "home": {
+  "showCollections": true,
+  "sections": [
+   {
+    "type": "new",
+    "title": "Lo nuevo ✨",
+    "collection": "",
+    "visible": true
+   },
+   {
+    "type": "sale",
+    "title": "Ofertas",
+    "collection": "",
+    "visible": true
+   },
+   {
+    "type": "collection",
+    "title": "Accesorios Match ♥️",
+    "collection": "accesorios-match",
+    "visible": true
+   },
+   {
+    "type": "collection",
+    "title": "Collares",
+    "collection": "collares",
+    "visible": true
+   }
+  ]
+ }
 }

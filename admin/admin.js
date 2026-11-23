@@ -165,6 +165,12 @@
     data.store ??= {}; data.theme ??= {}; data.hero ??= {};
     data.collections ??= []; data.products ??= [];
     for (const p of data.products) { p.images ??= []; p.collections ??= []; p.options ??= []; p.status ??= "active"; }
+    if (!Array.isArray(data.hero.slides)) {
+      const h = data.hero;
+      data.hero = { autoplay: 5, slides: [{ image: h.image || "", title: h.title || data.store.name || "", subtitle: h.subtitle || "", cta: h.cta || "Ver catálogo", link: "#/colecciones" }] };
+    }
+    data.home ??= { showCollections: true, sections: [{ type: "new", title: "Lo nuevo", collection: "", visible: true }, { type: "sale", title: "Ofertas", collection: "", visible: true }] };
+    data.home.sections ??= [];
   }
 
   // ---------- Estado ----------
@@ -177,7 +183,7 @@
   window.addEventListener("beforeunload", (e) => { if (data && isDirty()) { e.preventDefault(); e.returnValue = ""; } });
 
   function renderAll() {
-    renderProducts(); renderCollections(); fillForms(); changed();
+    renderProducts(); renderCollections(); renderHomeTab(); fillForms(); changed();
   }
 
   // ---------- Pestañas ----------
@@ -524,6 +530,112 @@
     }
   }
 
+  // ---------- Inicio: carrusel y secciones ----------
+  function linkOptions(sel) {
+    const opts = [["#/colecciones", "Página de colecciones"], ["#/nuevo", "Lo nuevo"], ["#/descuentos", "Ofertas"], ["#/todo", "Todos los productos"],
+      ...data.collections.map((c) => [`#/coleccion/${encodeURIComponent(c.id)}`, "Colección: " + c.name])];
+    if (sel && !opts.some(([v]) => v === sel)) opts.push([sel, sel]);
+    return opts.map(([v, l]) => `<option value="${esc(v)}" ${v === sel ? "selected" : ""}>${esc(l)}</option>`).join("");
+  }
+
+  function renderHomeTab() {
+    const h = data.hero, home = data.home;
+    $("#autoplay").value = String(h.autoplay || 5);
+    $("#show-cols").checked = home.showCollections !== false;
+    $("#slides-list").innerHTML = h.slides.length ? h.slides.map((s, i) => `
+      <div class="slide-item" data-i="${i}">
+        <div>
+          <div class="slide-img" style="${s.image ? `background-image:url('${esc(imgSrc(s.image))}')` : ""}">${s.image ? "" : "Fondo de colores del tema"}</div>
+          <div class="row" style="margin-top:.4rem">
+            <label class="btn ghost sm file-btn">${s.image ? "Cambiar" : "Subir"}<input type="file" accept="image/*" data-up hidden></label>
+            <button type="button" class="btn ghost sm" data-s="url">URL</button>
+            ${s.image ? `<button type="button" class="btn ghost sm danger" data-s="noimg">Quitar</button>` : ""}
+          </div>
+        </div>
+        <div class="fields">
+          <div class="row">
+            <label>Título (opcional)<input data-f="title" value="${esc(s.title)}"></label>
+            <label>Texto del botón<input data-f="cta" value="${esc(s.cta)}"></label>
+          </div>
+          <label>Subtítulo (opcional)<input data-f="subtitle" value="${esc(s.subtitle)}"></label>
+          <label>Al tocar, ir a<select data-f="link">${linkOptions(s.link)}</select></label>
+          <div class="actions" style="justify-content:flex-start">
+            <button type="button" class="btn ghost sm" data-s="up" ${i === 0 ? "disabled" : ""}>↑</button>
+            <button type="button" class="btn ghost sm" data-s="down" ${i === h.slides.length - 1 ? "disabled" : ""}>↓</button>
+            <button type="button" class="btn ghost sm danger" data-s="del">Borrar</button>
+          </div>
+        </div>
+      </div>`).join("") : `<p class="empty">Sin imágenes: se mostrará una portada con el nombre de la tienda.</p>`;
+
+    const types = [["new", "Lo nuevo"], ["sale", "Ofertas (con precio tachado)"], ["featured", "Destacados ★"], ["collection", "Una colección"]];
+    $("#sections-list").innerHTML = home.sections.length ? home.sections.map((s, i) => `
+      <div class="sec-item" data-i="${i}">
+        <label>Título<input data-f="title" value="${esc(s.title)}"></label>
+        <label>Muestra<select data-f="type">${types.map(([v, l]) => `<option value="${v}" ${v === s.type ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+        ${s.type === "collection" ? `<label>Colección<select data-f="collection">${data.collections.map((c) =>
+          `<option value="${esc(c.id)}" ${c.id === s.collection ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></label>` : ""}
+        <div class="actions">
+          <button type="button" class="btn ghost sm" data-s="up" ${i === 0 ? "disabled" : ""}>↑</button>
+          <button type="button" class="btn ghost sm" data-s="down" ${i === home.sections.length - 1 ? "disabled" : ""}>↓</button>
+          <button type="button" class="btn ghost sm" data-s="toggle">${s.visible === false ? "Mostrar" : "Ocultar"}</button>
+          <button type="button" class="btn ghost sm danger" data-s="del">Borrar</button>
+        </div>
+      </div>`).join("") : `<p class="empty">Sin secciones.</p>`;
+  }
+
+  function listHandlers(listSel, getArr) {
+    const el = $(listSel);
+    el.addEventListener("input", (e) => {
+      const f = e.target.dataset.f; if (!f) return;
+      const i = Number(e.target.closest("[data-i]").dataset.i);
+      getArr()[i][f] = e.target.value;
+      if (f === "type") {
+        const s = getArr()[i];
+        if (s.type === "collection" && !s.collection) s.collection = data.collections[0]?.id || "";
+        renderHomeTab();
+      }
+      changed();
+    });
+    el.addEventListener("click", async (e) => {
+      const b = e.target.closest("button[data-s]"); if (!b) return;
+      const arr = getArr(), i = Number(b.closest("[data-i]").dataset.i);
+      const act = b.dataset.s;
+      if (act === "up") [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+      if (act === "down") [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]];
+      if (act === "del") { if (!confirm("¿Borrar este elemento?")) return; arr.splice(i, 1); }
+      if (act === "toggle") arr[i].visible = arr[i].visible === false;
+      if (act === "noimg") arr[i].image = "";
+      if (act === "url") {
+        const url = prompt("URL de la imagen (https://…)", /^https?:/.test(arr[i].image) ? arr[i].image : "");
+        if (url == null || !(url === "" || /^https?:\/\//.test(url))) return;
+        arr[i].image = url.trim();
+      }
+      renderHomeTab(); changed();
+    });
+    el.addEventListener("change", async (e) => {
+      if (!e.target.matches("[data-up]")) return;
+      const file = e.target.files[0]; if (!file) return;
+      const i = Number(e.target.closest("[data-i]").dataset.i);
+      try {
+        toast("Subiendo imagen…");
+        getArr()[i].image = await uploadImage(file, "assets/slides/slide");
+        renderHomeTab(); changed(); toast("Imagen lista");
+      } catch (err) { toast(err.status ? explain(err) : err.message, true); }
+    });
+  }
+  listHandlers("#slides-list", () => data.hero.slides);
+  listHandlers("#sections-list", () => data.home.sections);
+  $("#slide-new").onclick = () => {
+    data.hero.slides.push({ image: "", title: "", subtitle: "", cta: "Ver catálogo", link: "#/colecciones" });
+    renderHomeTab(); changed();
+  };
+  $("#section-new").onclick = () => {
+    data.home.sections.push({ type: "collection", title: "", collection: data.collections[0]?.id || "", visible: true });
+    renderHomeTab(); changed();
+  };
+  $("#autoplay").onchange = (e) => { data.hero.autoplay = Number(e.target.value); changed(); };
+  $("#show-cols").onchange = (e) => { data.home.showCollections = e.target.checked; changed(); };
+
   // ---------- Publicar / vista previa / respaldo ----------
   $("#preview-btn").onclick = () => {
     try { localStorage.setItem(PREVIEW_KEY, JSON.stringify(withLocalImages())); } catch { toast("No se pudo crear la vista previa", true); return; }
@@ -535,7 +647,8 @@
     const d = structuredClone(data);
     const fix = (s) => (localImages.has(s) ? localImages.get(s) : s);
     d.products.forEach((p) => (p.images = p.images.map(fix)));
-    d.store.logo = fix(d.store.logo); d.hero.image = fix(d.hero.image);
+    d.store.logo = fix(d.store.logo);
+    d.hero.slides.forEach((x) => (x.image = fix(x.image)));
     d.collections.forEach((c) => (c.image = fix(c.image)));
     return d;
   }
