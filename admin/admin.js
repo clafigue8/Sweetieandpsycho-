@@ -375,7 +375,8 @@
   function renderCollections() {
     const count = (id) => data.products.filter((p) => p.collections.includes(id)).length;
     $("#c-list").innerHTML = data.collections.length ? data.collections.map((c, i) => `
-      <div class="item no-thumb">
+      <div class="item">
+        ${c.image ? `<img class="thumb" src="${esc(imgSrc(c.image))}" alt="" loading="lazy">` : `<div class="thumb">${esc(c.name[0] || "?")}</div>`}
         <div>
           <h3>${esc(c.name)}</h3>
           <div class="meta">
@@ -395,6 +396,28 @@
   }
 
   let editingCol = -1;
+  let editingColImage = "";
+  function drawColImage() {
+    const v = editingColImage, row = $("#c-image");
+    row.innerHTML = `${v ? `<img src="${esc(imgSrc(v))}" alt="">` : ""}
+      <label class="btn ghost sm file-btn">${v ? "Cambiar" : "Subir"}<input type="file" accept="image/*" hidden></label>
+      <button type="button" class="btn ghost sm" data-url>URL</button>
+      ${v ? `<button type="button" class="btn ghost sm danger" data-clear>Quitar</button>` : ""}`;
+    row.querySelector("input").onchange = async (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      try {
+        toast("Subiendo portada…");
+        editingColImage = await uploadImage(file, "assets/collections/" + slug($("#c-form").name.value || "coleccion"));
+        drawColImage(); toast("Portada lista");
+      } catch (err) { toast(err.status ? explain(err) : err.message, true); }
+    };
+    row.querySelector("[data-url]").onclick = () => {
+      const url = prompt("URL de la imagen (https://…)", /^https?:/.test(v) ? v : "");
+      if (url != null && (url === "" || /^https?:\/\//.test(url))) { editingColImage = url.trim(); drawColImage(); }
+    };
+    const clr = row.querySelector("[data-clear]");
+    if (clr) clr.onclick = () => { editingColImage = ""; drawColImage(); };
+  }
   $("#c-new").onclick = () => openCollection(-1);
   function openCollection(i) {
     editingCol = i;
@@ -402,14 +425,15 @@
     const f = $("#c-form");
     $("#c-title").textContent = i >= 0 ? "Editar colección" : "Nueva colección";
     f.name.value = c.name; f.description.value = c.description || ""; f.visible.checked = c.visible !== false;
+    editingColImage = c.image || ""; drawColImage();
     $("#c-dialog").showModal();
   }
   $("#c-form").addEventListener("submit", (e) => {
     if (e.submitter?.value !== "save") return;
     const f = e.target;
-    const vals = { name: f.name.value.trim(), description: f.description.value.trim(), visible: f.visible.checked };
+    const vals = { name: f.name.value.trim(), description: f.description.value.trim(), visible: f.visible.checked, image: editingColImage };
     if (editingCol >= 0) Object.assign(data.collections[editingCol], vals);
-    else data.collections.push({ id: uniqueId(vals.name, data.collections), image: "", ...vals });
+    else data.collections.push({ id: uniqueId(vals.name, data.collections), ...vals });
     renderCollections(); renderProducts(); changed();
   });
   $("#c-list").addEventListener("click", (e) => {
@@ -512,6 +536,7 @@
     const fix = (s) => (localImages.has(s) ? localImages.get(s) : s);
     d.products.forEach((p) => (p.images = p.images.map(fix)));
     d.store.logo = fix(d.store.logo); d.hero.image = fix(d.hero.image);
+    d.collections.forEach((c) => (c.image = fix(c.image)));
     return d;
   }
 

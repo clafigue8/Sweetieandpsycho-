@@ -97,8 +97,45 @@
       return;
     }
     closeOverlay("product");
+    closeOverlay("menu");
     if (kind === "coleccion" && id) renderHome(decodeURIComponent(id));
+    else if (kind === "colecciones") renderCollectionsPage();
     else renderHome();
+    drawMenu();
+  }
+
+  function collectionCover(c) {
+    if (c.image) return c.image;
+    const p = activeProducts().find((x) => (x.collections || []).includes(c.id) && (x.images || []).length);
+    return p ? p.images[0] : "";
+  }
+  const countIn = (id) => activeProducts().filter((p) => (p.collections || []).includes(id)).length;
+
+  function renderCollectionsPage() {
+    currentCollection = null;
+    $("#app").dataset.rendered = "";
+    $("#app").innerHTML = `
+      <h1 class="page-title">Colecciones</h1>
+      <div class="col-grid">${visibleCollections().map((c) => {
+        const img = collectionCover(c);
+        return `<a class="col-card" href="#/coleccion/${encodeURIComponent(c.id)}">
+          <div class="card-media">${img ? `<img src="${esc(img)}" alt="${esc(c.name)}" loading="lazy">` : `<div class="placeholder">${esc(c.name[0] || "?")}</div>`}</div>
+          <div class="col-name">${esc(c.name)} <small>${countIn(c.id)}</small></div>
+        </a>`;
+      }).join("")}</div>`;
+    window.scrollTo({ top: 0 });
+  }
+
+  function drawMenu() {
+    const h = location.hash.replace(/^#\/?/, "");
+    const link = (href, label, active, cls = "") =>
+      `<a href="${href}" class="${cls} ${active ? "active" : ""}">${label}</a>`;
+    $("#side-nav").innerHTML =
+      link("#/", "Inicio", h === "") +
+      link("#/colecciones", "Colecciones", h === "colecciones") +
+      `<div class="group">Categorías</div>` +
+      visibleCollections().map((c) =>
+        link(`#/coleccion/${encodeURIComponent(c.id)}`, esc(c.name), h === "coleccion/" + encodeURIComponent(c.id), "sub")).join("");
   }
 
   let currentCollection = null;
@@ -112,20 +149,16 @@
     shown = PAGE;
     const h = DATA.hero || {};
     const col = DATA.collections.find((c) => c.id === collectionId);
-    const chips = visibleCollections().map((c) =>
-      `<a class="chip ${c.id === collectionId ? "active" : ""}" href="#/coleccion/${encodeURIComponent(c.id)}">${esc(c.name)}</a>`).join("");
 
     $("#app").innerHTML = `
       ${collectionId ? "" : `
       <section class="hero ${h.image ? "has-image" : ""}" ${h.image ? `style="background-image:url('${esc(h.image)}')"` : ""}>
         <h1>${esc(h.title || DATA.store.name)}</h1>
         ${h.subtitle ? `<p>${esc(h.subtitle)}</p>` : ""}
-        <a class="btn light" href="#productos">${esc(h.cta || "Comprar")}</a>
+        <a class="btn light" href="#/colecciones">${esc(h.cta || "Comprar")}</a>
       </section>`}
-      <nav class="chips" id="productos" aria-label="Colecciones">
-        <a class="chip ${collectionId ? "" : "active"}" href="#/">Todo</a>${chips}
-      </nav>
-      <div class="section-head">
+      ${collectionId ? `<a class="back-link" href="#/colecciones">← Colecciones</a>` : ""}
+      <div class="section-head" id="productos">
         <div>
           <h2>${esc(col ? col.name : "Productos")}</h2>
           ${col && col.description ? `<p>${esc(col.description)}</p>` : ""}
@@ -389,20 +422,32 @@
   }
   function closeOverlay(name) {
     $(`#${name}-overlay`).hidden = true;
-    if ($("#product-overlay").hidden && $("#cart-overlay").hidden) document.body.style.overflow = "";
+    if ($("#product-overlay").hidden && $("#cart-overlay").hidden && $("#menu-overlay").hidden) document.body.style.overflow = "";
   }
   document.addEventListener("click", (e) => {
     const c = e.target.closest("[data-close]");
     if (c) { c.dataset.close === "product" ? closeProduct() : closeOverlay(c.dataset.close); return; }
     if (e.target.id === "product-overlay") closeProduct();
     if (e.target.id === "cart-overlay") closeOverlay("cart");
+    if (e.target.id === "menu-overlay") closeOverlay("menu");
+    if (e.target.closest("#side-nav a")) closeOverlay("menu");
   });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    if (!$("#cart-overlay").hidden) closeOverlay("cart");
+    if (!$("#menu-overlay").hidden) closeOverlay("menu");
+    else if (!$("#cart-overlay").hidden) closeOverlay("cart");
     else if (!$("#product-overlay").hidden) closeProduct();
   });
   $("#cart-open").onclick = () => openOverlay("cart");
+  $("#menu-open").onclick = () => { drawMenu(); openOverlay("menu"); };
+  $("#brand").onclick = (e) => {
+    e.preventDefault();
+    query = ""; $("#search").value = ""; $("#search-bar").hidden = true;
+    closeOverlay("menu");
+    if (location.hash && location.hash !== "#/") location.hash = "#/";
+    else renderHome();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   $("#search-toggle").onclick = () => {
     const bar = $("#search-bar");
     bar.hidden = !bar.hidden;

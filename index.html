@@ -13,7 +13,12 @@
   <div id="announcement" class="announcement" hidden></div>
 
   <header class="site-header">
-    <a href="#/" class="brand" id="brand"></a>
+    <div class="header-left">
+      <button class="icon-btn" id="menu-open" aria-label="Menú">
+        <svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <a href="#/" class="brand" id="brand" aria-label="Inicio"></a>
+    </div>
     <nav class="header-actions">
       <button class="icon-btn" id="search-toggle" aria-label="Buscar">
         <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -38,6 +43,17 @@
   <!-- Ficha de producto -->
   <div class="overlay" id="product-overlay" hidden>
     <div class="modal" role="dialog" aria-modal="true" id="product-modal"></div>
+  </div>
+
+  <!-- Menú lateral -->
+  <div class="overlay" id="menu-overlay" hidden>
+    <aside class="drawer left" role="dialog" aria-modal="true" aria-label="Menú">
+      <div class="drawer-head">
+        <h2>Menú</h2>
+        <button class="icon-btn" data-close="menu" aria-label="Cerrar">✕</button>
+      </div>
+      <nav class="side-nav" id="side-nav"></nav>
+    </aside>
   </div>
 
   <!-- Carrito -->

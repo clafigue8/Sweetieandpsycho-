@@ -106,8 +106,8 @@ input[type="range"] { padding: 0; }
 .preset i { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
 
 .img-field { display: grid; gap: .4rem; font-weight: 600; font-size: .86rem; }
-.img-field .img-row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
-.img-field img { height: 56px; max-width: 140px; object-fit: contain; border-radius: 6px; background: var(--line); }
+.img-row, .img-field .img-row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+.img-row img, .img-field img { height: 56px; max-width: 140px; object-fit: contain; border-radius: 6px; background: var(--line); }
 
 .swatch-preview { border-radius: 12px; padding: 1rem; display: grid; gap: .7rem; justify-items: start; border: 1px solid var(--line); }
 .sp-title { font-weight: 800; font-size: 1.1rem; }
