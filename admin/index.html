@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administrar tienda</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- Inicio de sesión -->
+  <section id="login" class="login">
+    <form class="login-card" id="login-form">
+      <h1>Panel de la tienda</h1>
+      <p class="muted">Conecta el panel con el repositorio de GitHub donde vive la tienda. Los cambios se publican como commits y la página se actualiza en 1–2 minutos.</p>
+      <label>Usuario u organización de GitHub<input name="owner" required placeholder="clafigue8"></label>
+      <label>Repositorio<input name="repo" required placeholder="sweetieandpsycho"></label>
+      <label>Rama<input name="branch" required value="main"></label>
+      <label>Token de acceso (fine-grained)
+        <input name="token" type="password" required autocomplete="off" placeholder="github_pat_…">
+      </label>
+      <label class="check"><input type="checkbox" name="remember"> Recordar en este dispositivo</label>
+      <button class="btn" type="submit">Entrar</button>
+      <p class="error" id="login-error" hidden></p>
+      <details>
+        <summary>¿Cómo obtengo el token?</summary>
+        <ol>
+          <li>En GitHub ve a <b>Settings → Developer settings → Personal access tokens → Fine-grained tokens</b>.</li>
+          <li><b>Generate new token</b>. En “Repository access” elige <b>Only select repositories</b> y selecciona el repositorio de la tienda.</li>
+          <li>En “Permissions → Repository permissions” pon <b>Contents: Read and write</b>.</li>
+          <li>Copia el token y pégalo aquí. Nunca lo compartas.</li>
+        </ol>
+      </details>
+      <button class="link-btn" type="button" id="offline-btn">Probar sin conexión (los cambios se descargan como archivo)</button>
+    </form>
+  </section>
+
+  <!-- Panel -->
+  <section id="panel" hidden>
+    <header class="topbar">
+      <div class="brand"><span id="store-name">Tienda</span> <span class="pill" id="mode-pill"></span></div>
+      <div class="top-actions">
+        <span class="dirty" id="dirty" hidden>● Cambios sin publicar</span>
+        <button class="btn ghost" id="preview-btn">Vista previa</button>
+        <button class="btn" id="publish-btn">Publicar</button>
+        <button class="icon" id="logout-btn" title="Salir">⎋</button>
+      </div>
+    </header>
+
+    <nav class="tabs" id="tabs">
+      <button data-tab="products" class="active">Productos</button>
+      <button data-tab="collections">Colecciones</button>
+      <button data-tab="design">Diseño y colores</button>
+      <button data-tab="checkout">Carrito y pedidos</button>
+      <button data-tab="backup">Respaldo</button>
+    </nav>
+
+    <main class="content">
+      <!-- Productos -->
+      <div class="tab" id="tab-products">
+        <div class="toolbar">
+          <input type="search" id="p-search" placeholder="Buscar producto…">
+          <select id="p-filter">
+            <option value="all">Todos</option>
+            <option value="active">Activos</option>
+            <option value="draft">Borradores</option>
+            <option value="archived">Archivados</option>
+          </select>
+          <button class="btn" id="p-new">+ Nuevo producto</button>
+        </div>
+        <div id="p-list" class="list"></div>
+      </div>
+
+      <!-- Colecciones -->
+      <div class="tab" id="tab-collections" hidden>
+        <div class="toolbar">
+          <p class="muted grow">Las colecciones agrupan productos (un producto puede estar en varias). Ordénalas con las flechas.</p>
+          <button class="btn" id="c-new">+ Nueva colección</button>
+        </div>
+        <div id="c-list" class="list"></div>
+      </div>
+
+      <!-- Diseño -->
+      <div class="tab" id="tab-design" hidden>
+        <div class="cols">
+          <form class="card form" id="design-form">
+            <h2>Identidad</h2>
+            <label>Nombre de la tienda<input name="store.name"></label>
+            <label>Lema<input name="store.tagline"></label>
+            <div class="img-field" data-field="store.logo"><span>Logo (opcional, reemplaza el nombre)</span></div>
+            <label>Barra de anuncio (vacío para ocultar)<input name="store.announcement"></label>
+
+            <h2>Portada</h2>
+            <label>Título<input name="hero.title"></label>
+            <label>Subtítulo<textarea name="hero.subtitle" rows="2"></textarea></label>
+            <label>Texto del botón<input name="hero.cta"></label>
+            <div class="img-field" data-field="hero.image"><span>Imagen de portada (opcional)</span></div>
+          </form>
+
+          <form class="card form" id="theme-form">
+            <h2>Colores</h2>
+            <div class="presets" id="presets"></div>
+            <div class="color-grid">
+              <label>Principal (botones, precios)<input type="color" name="theme.primary"></label>
+              <label>Secundario (encabezados)<input type="color" name="theme.secondary"></label>
+              <label>Acento<input type="color" name="theme.accent"></label>
+              <label>Fondo<input type="color" name="theme.background"></label>
+              <label>Tarjetas<input type="color" name="theme.surface"></label>
+              <label>Texto<input type="color" name="theme.text"></label>
+            </div>
+            <h2>Tipografía y forma</h2>
+            <label>Letra del texto<select name="theme.font" id="font-select"></select></label>
+            <label>Letra de títulos<select name="theme.headingFont" id="heading-select"></select></label>
+            <label><span>Redondeo de esquinas: <output id="radius-out"></output> px</span><input type="range" min="0" max="28" name="theme.radius"></label>
+            <div class="swatch-preview" id="swatch-preview">
+              <div class="sp-title">Así se verá</div>
+              <div class="sp-card"><div class="sp-img"></div><div class="sp-name">Producto</div><div class="sp-price">$449.00</div></div>
+              <span class="sp-btn">Agregar al carrito</span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Carrito -->
+      <div class="tab" id="tab-checkout" hidden>
+        <form class="card form narrow" id="checkout-form">
+          <h2>Cómo te llegan los pedidos</h2>
+          <p class="muted">Cuando un cliente finaliza su carrito, se le abre WhatsApp o su correo con el pedido completo listo para enviarte.</p>
+          <label>WhatsApp (con lada del país, ej. 5215512345678)<input name="store.whatsapp" inputmode="tel"></label>
+          <label>Correo para pedidos<input name="store.email" type="email"></label>
+          <label>Instagram (usuario)<input name="store.instagram" placeholder="@sweetieandpsycho"></label>
+          <h2>Envío y moneda</h2>
+          <div class="row">
+            <label>Costo de envío<input name="store.shippingCost" type="number" min="0" step="0.01"></label>
+            <label>Envío gratis desde (0 = nunca)<input name="store.freeShippingOver" type="number" min="0" step="0.01"></label>
+          </div>
+          <div class="row">
+            <label>Moneda
+              <select name="store.currency">
+                <option value="MXN">MXN — Peso mexicano</option>
+                <option value="USD">USD — Dólar</option>
+                <option value="EUR">EUR — Euro</option>
+                <option value="COP">COP — Peso colombiano</option>
+                <option value="ARS">ARS — Peso argentino</option>
+                <option value="CLP">CLP — Peso chileno</option>
+                <option value="PEN">PEN — Sol</option>
+                <option value="GTQ">GTQ — Quetzal</option>
+                <option value="DOP">DOP — Peso dominicano</option>
+              </select>
+            </label>
+            <label>Formato regional
+              <select name="store.locale">
+                <option value="es-MX">México</option>
+                <option value="es-US">Estados Unidos (español)</option>
+                <option value="es-ES">España</option>
+                <option value="es-CO">Colombia</option>
+                <option value="es-AR">Argentina</option>
+                <option value="es-CL">Chile</option>
+                <option value="es-PE">Perú</option>
+              </select>
+            </label>
+          </div>
+          <label>Mensaje al finalizar compra<textarea name="store.checkoutNote" rows="3"></textarea></label>
+        </form>
+      </div>
+
+      <!-- Respaldo -->
+      <div class="tab" id="tab-backup" hidden>
+        <div class="card form narrow">
+          <h2>Respaldo</h2>
+          <p class="muted">Descarga todo el catálogo y la configuración en un archivo, o restaura uno anterior. Restaurar no publica nada hasta que presiones “Publicar”.</p>
+          <div class="row">
+            <button class="btn ghost" id="export-btn" type="button">Descargar respaldo</button>
+            <label class="btn ghost file-btn">Restaurar desde archivo<input type="file" id="import-file" accept="application/json" hidden></label>
+          </div>
+          <button class="btn ghost" id="reload-btn" type="button">Descartar cambios y recargar lo publicado</button>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- Editor de producto -->
+  <dialog id="p-dialog">
+    <form method="dialog" class="form" id="p-form">
+      <div class="dlg-head"><h2 id="p-title">Producto</h2><button class="icon" value="cancel" formnovalidate>✕</button></div>
+      <label>Nombre<input name="name" required></label>
+      <label>Descripción<textarea name="description" rows="4"></textarea></label>
+      <div class="row">
+        <label>Precio<input name="price" type="number" min="0" step="0.01" required></label>
+        <label>Precio antes (tachado)<input name="comparePrice" type="number" min="0" step="0.01"></label>
+        <label>Inventario (vacío = ilimitado)<input name="stock" type="number" min="0" step="1"></label>
+      </div>
+      <div>
+        <div class="label">Fotos</div>
+        <div class="images" id="p-images"></div>
+        <div class="row">
+          <label class="btn ghost file-btn">Subir fotos<input type="file" id="p-upload" accept="image/*" multiple hidden></label>
+          <button class="btn ghost" type="button" id="p-add-url">Agregar por URL</button>
+        </div>
+      </div>
+      <div>
+        <div class="label">Colecciones</div>
+        <div class="checks" id="p-collections"></div>
+      </div>
+      <div class="row">
+        <label>Nombre de la opción<input name="optionName" placeholder="Talla, Color…"></label>
+        <label class="grow">Valores (separados por coma)<input name="options" placeholder="CH, M, G"></label>
+      </div>
+      <label>Enlace de pago directo (opcional: Stripe, PayPal, Mercado Pago…)<input name="paymentLink" type="url" placeholder="https://"></label>
+      <div class="row">
+        <label>Estado
+          <select name="status">
+            <option value="active">Activo (visible)</option>
+            <option value="draft">Borrador (oculto)</option>
+            <option value="archived">Archivado (oculto)</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" name="featured"> Destacado</label>
+      </div>
+      <div class="dlg-foot">
+        <button class="btn danger ghost" type="button" id="p-delete">Borrar</button>
+        <span class="grow"></span>
+        <button class="btn ghost" value="cancel" formnovalidate>Cancelar</button>
+        <button class="btn" value="save">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Editor de colección -->
+  <dialog id="c-dialog">
+    <form method="dialog" class="form" id="c-form">
+      <div class="dlg-head"><h2 id="c-title">Colección</h2><button class="icon" value="cancel" formnovalidate>✕</button></div>
+      <label>Nombre<input name="name" required></label>
+      <label>Descripción<textarea name="description" rows="2"></textarea></label>
+      <label class="check"><input type="checkbox" name="visible"> Mostrar en la tienda</label>
+      <div class="dlg-foot">
+        <span class="grow"></span>
+        <button class="btn ghost" value="cancel" formnovalidate>Cancelar</button>
+        <button class="btn" value="save">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="admin.js"></script>
+</body>
+</html>

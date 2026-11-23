@@ -1,0 +1,104 @@
+{
+  "store": {
+    "name": "Sweetie & Psycho",
+    "tagline": "Lindo por fuera, intenso por dentro",
+    "logo": "",
+    "announcement": "Envío gratis en compras mayores a $1,000",
+    "currency": "MXN",
+    "locale": "es-MX",
+    "whatsapp": "",
+    "email": "",
+    "instagram": "",
+    "shippingCost": 120,
+    "freeShippingOver": 1000,
+    "checkoutNote": "Al enviar tu pedido te contactaremos para confirmar disponibilidad, forma de pago y envío."
+  },
+  "theme": {
+    "primary": "#e84a8a",
+    "secondary": "#1d1a22",
+    "accent": "#8b5cf6",
+    "background": "#fff7fb",
+    "surface": "#ffffff",
+    "text": "#1d1a22",
+    "font": "Poppins",
+    "headingFont": "Rubik Mono One",
+    "radius": 14
+  },
+  "hero": {
+    "title": "Sweetie & Psycho",
+    "subtitle": "Piezas únicas para quienes son dulces… y un poquito psycho.",
+    "image": "",
+    "cta": "Ver colección"
+  },
+  "collections": [
+    { "id": "sweetie", "name": "Sweetie", "description": "Lo más tierno de la tienda.", "image": "", "visible": true },
+    { "id": "psycho", "name": "Psycho", "description": "Para tu lado oscuro.", "image": "", "visible": true },
+    { "id": "accesorios", "name": "Accesorios", "description": "Detalles que lo cambian todo.", "image": "", "visible": true }
+  ],
+  "products": [
+    {
+      "id": "playera-sweetie",
+      "name": "Playera Sweetie (ejemplo)",
+      "description": "Producto de ejemplo. Edítalo o bórralo desde el panel de administración.",
+      "price": 449,
+      "comparePrice": 549,
+      "images": [],
+      "collections": ["sweetie"],
+      "status": "active",
+      "stock": 10,
+      "optionName": "Talla",
+      "options": ["CH", "M", "G", "XG"],
+      "paymentLink": "",
+      "featured": true,
+      "createdAt": "2026-11-23"
+    },
+    {
+      "id": "sudadera-psycho",
+      "name": "Sudadera Psycho (ejemplo)",
+      "description": "Producto de ejemplo. Edítalo o bórralo desde el panel de administración.",
+      "price": 899,
+      "comparePrice": 0,
+      "images": [],
+      "collections": ["psycho"],
+      "status": "active",
+      "stock": 5,
+      "optionName": "Talla",
+      "options": ["CH", "M", "G"],
+      "paymentLink": "",
+      "featured": true,
+      "createdAt": "2026-11-23"
+    },
+    {
+      "id": "tote-bag",
+      "name": "Tote bag (ejemplo)",
+      "description": "Producto de ejemplo. Edítalo o bórralo desde el panel de administración.",
+      "price": 299,
+      "comparePrice": 0,
+      "images": [],
+      "collections": ["accesorios", "sweetie"],
+      "status": "active",
+      "stock": 20,
+      "optionName": "",
+      "options": [],
+      "paymentLink": "",
+      "featured": false,
+      "createdAt": "2026-11-23"
+    },
+    {
+      "id": "gorra-psycho",
+      "name": "Gorra Psycho (ejemplo)",
+      "description": "Producto de ejemplo. Edítalo o bórralo desde el panel de administración.",
+      "price": 349,
+      "comparePrice": 0,
+      "images": [],
+      "collections": ["accesorios", "psycho"],
+      "status": "active",
+      "stock": 0,
+      "optionName": "Color",
+      "options": ["Negro", "Rosa"],
+      "paymentLink": "",
+      "featured": false,
+      "createdAt": "2026-11-23"
+    }
+  ]
+}
