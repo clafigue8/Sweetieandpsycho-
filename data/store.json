@@ -310,6 +310,59 @@
   ],
   "products": [
     {
+      "id": "aritos-de-snoopy",
+      "name": "Aritos de Snoopy",
+      "description": "",
+      "price": 160,
+      "comparePrice": 0,
+      "stock": 1,
+      "images": [
+        "assets/products/aritos-de-snoopy-mwuah3mf.png"
+      ],
+      "collections": [
+        "aritos"
+      ],
+      "optionName": "",
+      "options": [],
+      "paymentLink": "",
+      "status": "active",
+      "featured": true,
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false,
+      "tags": [
+        "Snoopy"
+      ],
+      "createdAt": "2026-11-24"
+    },
+    {
+      "id": "calentadores-blancos",
+      "name": "Calentadores blancos",
+      "description": "",
+      "price": 190,
+      "comparePrice": 0,
+      "stock": 1,
+      "images": [
+        "assets/products/producto-mwuag081.png"
+      ],
+      "collections": [
+        "psycho-girls",
+        "sweet-girls"
+      ],
+      "optionName": "",
+      "options": [],
+      "paymentLink": "",
+      "status": "active",
+      "featured": true,
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": true,
+      "tags": [],
+      "createdAt": "2026-11-24"
+    },
+    {
       "id": "snoopy-que-respira",
       "name": "Snoopy que respira",
       "description": "",
