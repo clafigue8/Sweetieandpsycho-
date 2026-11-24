@@ -1399,7 +1399,11 @@
         "anime",
         "pines metálicos"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": true
     },
     {
       "id": "hoodie-spiderman-talla-m",
@@ -1980,30 +1984,6 @@
       "vendor": "Sweetie.and.psycho"
     },
     {
-      "id": "chaqueta-jean-talla-m-l",
-      "name": "Chaqueta Jean Talla M/L",
-      "description": "",
-      "price": 250,
-      "comparePrice": 0,
-      "images": [
-        "assets/products/chaqueta-jean-talla-m-l-1.webp"
-      ],
-      "collections": [
-        "ropa"
-      ],
-      "status": "active",
-      "stock": "",
-      "optionName": "",
-      "options": [],
-      "paymentLink": "",
-      "featured": false,
-      "createdAt": "2026-07-07",
-      "tags": [
-        "Ropa"
-      ],
-      "vendor": "Sweetie.and.psycho"
-    },
-    {
       "id": "chaqueta-shein-talla-m",
       "name": "Chaqueta Shein Talla M",
       "description": "Usado:buen estado",
@@ -2220,8 +2200,7 @@
         "assets/products/calcetines-con-manitas-2.webp"
       ],
       "collections": [
-        "medias",
-        "psycho-girls"
+        "medias"
       ],
       "status": "active",
       "stock": "",
@@ -2233,7 +2212,11 @@
       "tags": [
         "calcetines"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "calcetines-de-patas-de-pollo",
@@ -2576,26 +2559,6 @@
         "Ropa",
         "Sanrio"
       ],
-      "vendor": "Sweetie.and.psycho"
-    },
-    {
-      "id": "peluche-grogu",
-      "name": "Peluche Grogu",
-      "description": "",
-      "price": 100,
-      "comparePrice": 250,
-      "images": [
-        "assets/products/peluche-grogu-1.webp",
-        "assets/products/peluche-grogu-2.webp"
-      ],
-      "collections": [],
-      "status": "active",
-      "stock": "",
-      "optionName": "",
-      "options": [],
-      "paymentLink": "",
-      "featured": false,
-      "createdAt": "2026-06-26",
       "vendor": "Sweetie.and.psycho"
     },
     {
@@ -3562,6 +3525,7 @@
         "assets/products/monedero-1-2.webp"
       ],
       "collections": [
+        "psycho-girls",
         "carteras"
       ],
       "status": "active",
@@ -3574,7 +3538,11 @@
       "tags": [
         "monedero"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "monedero-de-gatito",
@@ -3639,6 +3607,7 @@
         "assets/products/monedero-de-rosita-fresita-1.webp"
       ],
       "collections": [
+        "sweet-girls",
         "carteras"
       ],
       "status": "active",
@@ -3652,7 +3621,11 @@
         "fresa",
         "monedero"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": true
     },
     {
       "id": "aritos-de-kuromi",
@@ -3716,6 +3689,7 @@
         "assets/products/earcuff-clip-mariposa-2.webp"
       ],
       "collections": [
+        "sweet-girls",
         "aritos"
       ],
       "status": "active",
@@ -3729,7 +3703,11 @@
         "Aritos",
         "mariposa"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "aritos-de-patitas",
@@ -5095,7 +5073,7 @@
       "collections": [
         "lentes"
       ],
-      "status": "active",
+      "status": "archived",
       "stock": "",
       "optionName": "",
       "options": [],
@@ -5469,6 +5447,7 @@
         "assets/products/collar-luna-proyector-de-100-te-amo-2.webp"
       ],
       "collections": [
+        "sweet-girls",
         "collares"
       ],
       "status": "active",
@@ -5482,7 +5461,11 @@
         "collar",
         "luna"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "collar-cherry-2",
@@ -5660,30 +5643,6 @@
         "acero inoxidable",
         "collar",
         "Relicario"
-      ],
-      "vendor": "Sweetie.and.psycho"
-    },
-    {
-      "id": "lamparita-de-pollito",
-      "name": "Lamparita de pollito",
-      "description": "",
-      "price": 180,
-      "comparePrice": 0,
-      "images": [
-        "assets/products/lamparita-de-pollito-1.webp",
-        "assets/products/lamparita-de-pollito-2.webp",
-        "assets/products/lamparita-de-pollito-3.webp"
-      ],
-      "collections": [],
-      "status": "active",
-      "stock": "",
-      "optionName": "",
-      "options": [],
-      "paymentLink": "",
-      "featured": false,
-      "createdAt": "2025-09-18",
-      "tags": [
-        "lamparas"
       ],
       "vendor": "Sweetie.and.psycho"
     },
@@ -5987,36 +5946,6 @@
       "restockQty": "",
       "restockNote": "",
       "trending": false
-    },
-    {
-      "id": "llaveros-match-7",
-      "name": "Llaveros Match",
-      "description": "",
-      "price": 170,
-      "comparePrice": 0,
-      "images": [
-        "assets/products/llaveros-match-7-1.webp",
-        "assets/products/llaveros-match-7-2.webp",
-        "assets/products/llaveros-match-7-3.webp",
-        "assets/products/llaveros-match-7-4.webp"
-      ],
-      "collections": [
-        "accesorios",
-        "accesorios",
-        "accesorios-match"
-      ],
-      "status": "active",
-      "stock": "",
-      "optionName": "",
-      "options": [],
-      "paymentLink": "",
-      "featured": false,
-      "createdAt": "2025-07-11",
-      "tags": [
-        "llavero",
-        "Match"
-      ],
-      "vendor": "Sweetie.and.psycho"
     },
     {
       "id": "brazalete-vikingo",
@@ -6502,6 +6431,7 @@
         "assets/products/aritos-pompon-y-gatito-2.webp"
       ],
       "collections": [
+        "sweet-girls",
         "aritos"
       ],
       "status": "active",
@@ -6514,7 +6444,11 @@
       "tags": [
         "Aritos"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "aritos-de-fresa",
@@ -7164,36 +7098,6 @@
       "vendor": "Sweetie.and.psycho"
     },
     {
-      "id": "proyector-de-galaxia",
-      "name": "Mini proyector de galaxia",
-      "description": "",
-      "price": 410,
-      "comparePrice": 520,
-      "images": [
-        "assets/products/proyector-de-galaxia-1.webp",
-        "assets/products/proyector-de-galaxia-2.webp",
-        "assets/products/proyector-de-galaxia-3.webp",
-        "assets/products/proyector-de-galaxia-4.webp",
-        "assets/products/proyector-de-galaxia-5.webp"
-      ],
-      "collections": [
-        "accesorios"
-      ],
-      "status": "active",
-      "stock": "",
-      "optionName": "",
-      "options": [],
-      "paymentLink": "",
-      "featured": false,
-      "createdAt": "2025-01-14",
-      "tags": [
-        "astronauta",
-        "lamparas",
-        "universo"
-      ],
-      "vendor": "Sweetie.and.psycho"
-    },
-    {
       "id": "lentes-5",
       "name": "Lentes",
       "description": "",
@@ -7562,30 +7466,6 @@
       "vendor": "Sweetie.and.psycho"
     },
     {
-      "id": "set-de-nipple-rings",
-      "name": "Set de Nipple Rings",
-      "description": "",
-      "price": 490,
-      "comparePrice": 0,
-      "images": [
-        "assets/products/set-de-nipple-rings-1.webp",
-        "assets/products/set-de-nipple-rings-2.webp",
-        "assets/products/set-de-nipple-rings-3.webp"
-      ],
-      "collections": [],
-      "status": "active",
-      "stock": "",
-      "optionName": "",
-      "options": [],
-      "paymentLink": "",
-      "featured": false,
-      "createdAt": "2024-11-29",
-      "tags": [
-        "nipple ring"
-      ],
-      "vendor": "Sweetie.and.psycho"
-    },
-    {
       "id": "anillos-match-el-principito",
       "name": "Anillos Match el principito",
       "description": "Talla 8",
@@ -7927,6 +7807,7 @@
         "assets/products/peluca-2-3.webp"
       ],
       "collections": [
+        "psycho-girls",
         "accesorios"
       ],
       "status": "active",
@@ -7939,7 +7820,11 @@
       "tags": [
         "Peluca"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "par-anillos-match-2",
