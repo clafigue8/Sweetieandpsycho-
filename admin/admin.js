@@ -185,7 +185,7 @@
   window.addEventListener("beforeunload", (e) => { if (data && isDirty()) { e.preventDefault(); e.returnValue = ""; } });
 
   function renderAll() {
-    renderProducts(); renderCollections(); renderHomeTab(); fillForms(); changed();
+    renderProducts(); renderCollections(); renderRestock(); renderHomeTab(); fillForms(); changed();
   }
 
   // ---------- Pestañas ----------
@@ -197,13 +197,25 @@
 
   // ---------- Productos ----------
   const STATUS = { active: "Activo", draft: "Borrador", archived: "Archivado" };
+  const isOut = (p) => p.stock !== "" && p.stock != null && Number(p.stock) <= 0;
+  const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const splitList = (s) => String(s || "").split(",").map((x) => x.trim()).filter(Boolean);
+  /** Colecciones cuyas palabras clave aparecen en el producto. */
+  function autoCollections(p) {
+    const text = " " + norm([p.name, p.description, (p.tags || []).join(" ")].join(" ")).replace(/[^a-z0-9ñ]+/g, " ") + " ";
+    return data.collections.filter((c) => (c.keywords || []).some((k) => {
+      const kw = norm(k).replace(/[^a-z0-9ñ]+/g, " ").trim();
+      return kw && text.includes(" " + kw);
+    })).map((c) => c.id);
+  }
   $("#p-search").oninput = renderProducts;
   $("#p-filter").onchange = renderProducts;
 
   function renderProducts() {
     const q = $("#p-search").value.trim().toLowerCase();
     const st = $("#p-filter").value;
-    const list = data.products.filter((p) => (st === "all" || p.status === st) && (!q || p.name.toLowerCase().includes(q)));
+    const match = (p) => st === "all" || p.status === st || (st === "soldout" && isOut(p)) || (st === "restock" && p.restock);
+    const list = data.products.filter((p) => match(p) && (!q || (p.name + " " + (p.tags || []).join(" ")).toLowerCase().includes(q)));
     const colName = (id) => data.collections.find((c) => c.id === id)?.name || id;
     $("#p-list").innerHTML = list.length ? list.map((p) => {
       const i = data.products.indexOf(p);
@@ -215,12 +227,16 @@
           <div class="meta">
             <span class="status ${p.status}">${STATUS[p.status] || p.status}</span>
             <span>${money(p.price)}</span>
-            <span>Inventario: ${esc(stock)}</span>
+            ${isOut(p) ? `<span class="tag out">Agotado</span>` : `<span>Inventario: ${esc(stock)}</span>`}
+            ${p.restock ? `<span class="tag">🛒 Por comprar${p.trending ? " 🔥" : ""}</span>` : ""}
             <span>${esc(p.collections.map(colName).join(", ") || "Sin colección")}</span>
           </div>
         </div>
         <div class="actions">
           <button class="btn ghost sm" data-act="edit" data-i="${i}">Editar</button>
+          ${isOut(p) ? `<button class="btn ghost sm" data-act="instock" data-i="${i}">Hay inventario</button>`
+                     : `<button class="btn ghost sm" data-act="soldout" data-i="${i}">Agotado</button>`}
+          <button class="btn ghost sm" data-act="restock" data-i="${i}">${p.restock ? "Quitar de compras" : "🛒 A compras"}</button>
           <button class="btn ghost sm" data-act="dup" data-i="${i}">Duplicar</button>
           ${p.status === "archived"
             ? `<button class="btn ghost sm" data-act="restore" data-i="${i}">Restaurar</button>`
@@ -241,13 +257,24 @@
       copy.status = "draft"; copy.createdAt = new Date().toISOString().slice(0, 10);
       data.products.splice(i + 1, 0, copy); toast("Duplicado como borrador");
     }
+    if (b.dataset.act === "soldout") { p.stock = 0; toast("Marcado como agotado"); }
+    if (b.dataset.act === "instock") {
+      const n = prompt(`¿Cuántas piezas de “${p.name}” tienes ahora? (vacío = sin control de inventario)`, "");
+      if (n == null) return;
+      p.stock = n.trim() === "" ? "" : Math.max(0, Math.round(Number(n)) || 0);
+      toast("Inventario actualizado");
+    }
+    if (b.dataset.act === "restock") {
+      p.restock = !p.restock;
+      toast(p.restock ? "Agregado a la lista de compras" : "Quitado de la lista de compras");
+    }
     if (b.dataset.act === "archive") { p.status = "archived"; toast("Producto archivado (oculto en la tienda)"); }
     if (b.dataset.act === "restore") { p.status = "active"; toast("Producto activo otra vez"); }
     if (b.dataset.act === "delete") {
       if (!confirm(`¿Borrar “${p.name}” definitivamente? Si solo quieres ocultarlo, usa Archivar.`)) return;
       data.products.splice(i, 1); toast("Producto borrado");
     }
-    renderProducts(); changed();
+    renderProducts(); renderRestock(); changed();
   });
 
   let editing = null; // { index, images }
@@ -266,13 +293,37 @@
     f.stock.value = p.stock ?? ""; f.optionName.value = p.optionName || "";
     f.options.value = (p.options || []).join(", "); f.paymentLink.value = p.paymentLink || "";
     f.status.value = p.status; f.featured.checked = !!p.featured;
+    f.restock.checked = !!p.restock; f.restockQty.value = p.restockQty ?? ""; f.restockNote.value = p.restockNote || "";
+    f.trending.checked = !!p.trending; f.tags.value = (p.tags || []).join(", ");
     $("#p-collections").innerHTML = data.collections.length ? data.collections.map((c) =>
       `<label><input type="checkbox" value="${esc(c.id)}" ${p.collections.includes(c.id) ? "checked" : ""}> ${esc(c.name)}</label>`).join("")
       : `<span class="muted">Aún no hay colecciones.</span>`;
     $("#p-delete").hidden = index < 0;
+    editing.manual = new Set(); // colecciones que tocó a mano
+    autoHint();
     drawImages();
     $("#p-dialog").showModal();
   }
+
+  // Marca solas las colecciones según palabras clave (solo en productos nuevos;
+  // si tocas una casilla a mano, se respeta).
+  function autoHint() {
+    const f = $("#p-form");
+    const ids = autoCollections({ name: f.name.value, description: f.description.value, tags: splitList(f.tags.value) });
+    if (editing.index < 0) {
+      for (const box of $$("#p-collections input")) {
+        if (editing.manual.has(box.value)) continue;
+        box.checked = ids.includes(box.value);
+      }
+    }
+    const names = ids.map((id) => data.collections.find((c) => c.id === id)?.name).filter(Boolean);
+    $("#p-auto-hint").textContent = names.length
+      ? (editing.index < 0 ? "Marcadas por palabras clave: " : "Por sus palabras clave encajaría en: ") + names.join(", ")
+      : "";
+  }
+  for (const n of ["name", "description", "tags"]) $("#p-form")[n].addEventListener("input", autoHint);
+  $("#p-collections").addEventListener("change", (e) => editing?.manual.add(e.target.value));
+  $("#p-soldout").onclick = () => { $("#p-form").stock.value = 0; toast("Inventario en 0: se mostrará como Agotado al guardar"); };
 
   function drawImages() {
     $("#p-images").innerHTML = editing.images.map((src, i) =>
@@ -365,10 +416,15 @@
       paymentLink: f.paymentLink.value.trim(),
       status: f.status.value,
       featured: f.featured.checked,
+      restock: f.restock.checked,
+      restockQty: f.restockQty.value === "" ? "" : Number(f.restockQty.value),
+      restockNote: f.restockNote.value.trim(),
+      trending: f.trending.checked,
+      tags: splitList(f.tags.value),
       createdAt: old?.createdAt || new Date().toISOString().slice(0, 10),
     };
     if (old) data.products[editing.index] = p; else data.products.unshift(p);
-    renderProducts(); changed();
+    renderProducts(); renderRestock(); changed();
     toast("Guardado. Presiona “Publicar” para que se vea en la tienda.");
   });
 
@@ -377,6 +433,69 @@
     if (!confirm(`¿Borrar “${p.name}” definitivamente?`)) return;
     data.products.splice(editing.index, 1);
     $("#p-dialog").close(); renderProducts(); changed();
+  };
+
+  // ---------- Lista de compras ----------
+  function restockSorted() {
+    return data.products.filter((p) => p.restock)
+      .sort((a, b) => (b.trending ? 1 : 0) - (a.trending ? 1 : 0) || a.name.localeCompare(b.name));
+  }
+  function restockRow(p, suggest) {
+    const i = data.products.indexOf(p);
+    return `<div class="item">
+      ${p.images[0] ? `<img class="thumb" src="${esc(imgSrc(p.images[0]))}" alt="" loading="lazy">` : `<div class="thumb">${esc(p.name[0] || "?")}</div>`}
+      <div>
+        <h3>${p.trending ? "🔥 " : ""}${esc(p.name)}</h3>
+        <div class="meta">
+          ${isOut(p) ? `<span class="tag out">Agotado</span>` : `<span>Inventario: ${p.stock === "" || p.stock == null ? "∞" : esc(p.stock)}</span>`}
+          <span>${money(p.price)}</span>
+          ${!suggest && p.restockQty ? `<span>Comprar: <b>${esc(p.restockQty)}</b></span>` : ""}
+          ${!suggest && p.restockNote ? `<span>${esc(p.restockNote)}</span>` : ""}
+        </div>
+      </div>
+      <div class="actions">
+        ${suggest
+          ? `<button class="btn ghost sm" data-r="add" data-i="${i}">🛒 Agregar</button>`
+          : `<button class="btn ghost sm" data-r="trend" data-i="${i}">${p.trending ? "Quitar 🔥" : "🔥 Tendencia"}</button>
+             <button class="btn sm" data-r="arrived" data-i="${i}">Ya llegó</button>
+             <button class="btn ghost sm" data-r="edit" data-i="${i}">Editar</button>
+             <button class="btn ghost sm danger" data-r="remove" data-i="${i}">Quitar</button>`}
+      </div>
+    </div>`;
+  }
+  function renderRestock() {
+    const list = restockSorted();
+    $("#restock-count").textContent = list.length || "";
+    $("#r-list").innerHTML = list.length ? list.map((p) => restockRow(p, false)).join("")
+      : `<p class="empty">La lista está vacía. Usa “🛒 A compras” en un producto para agregarlo.</p>`;
+    const sug = data.products.filter((p) => !p.restock && isOut(p) && p.status !== "archived");
+    $("#r-suggest").innerHTML = sug.length ? sug.map((p) => restockRow(p, true)).join("") : `<p class="empty">No hay otros agotados.</p>`;
+  }
+  $("#tab-restock").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-r]"); if (!b) return;
+    const p = data.products[Number(b.dataset.i)];
+    const act = b.dataset.r;
+    if (act === "edit") return openProduct(Number(b.dataset.i));
+    if (act === "add") p.restock = true;
+    if (act === "trend") p.trending = !p.trending;
+    if (act === "remove") p.restock = false;
+    if (act === "arrived") {
+      const n = prompt(`¿Cuántas piezas de “${p.name}” llegaron?`, p.restockQty || "");
+      if (n == null) return;
+      const got = Math.max(0, Math.round(Number(n)) || 0);
+      if (p.stock !== "" && p.stock != null) p.stock = Math.max(0, Number(p.stock)) + got;
+      else if (got) p.stock = got;
+      p.restock = false; p.restockQty = ""; p.trending = false;
+      if (p.status === "archived") p.status = "active";
+      toast(`Listo: inventario de “${p.name}” en ${p.stock === "" ? "∞" : p.stock}`);
+    }
+    renderRestock(); renderProducts(); changed();
+  });
+  $("#r-copy").onclick = async () => {
+    const text = "🛒 Lista de compras — " + (data.store.name || "") + "\n\n" + restockSorted().map((p) =>
+      `${p.trending ? "🔥 " : "• "}${p.name}${p.restockQty ? ` × ${p.restockQty}` : ""}${p.restockNote ? ` — ${p.restockNote}` : ""}`).join("\n");
+    try { await navigator.clipboard.writeText(text); toast("Lista copiada: pégala en WhatsApp o Notas"); }
+    catch { prompt("Copia la lista:", text); }
   };
 
   // ---------- Colecciones ----------
@@ -391,6 +510,7 @@
             <span class="status ${c.visible !== false ? "active" : "draft"}">${c.visible !== false ? "Visible" : "Oculta"}</span>
             <span>${count(c.id)} producto(s)</span>
             ${c.description ? `<span>${esc(c.description)}</span>` : ""}
+            ${(c.keywords || []).length ? `<span>🔑 ${esc(c.keywords.join(", "))}</span>` : ""}
           </div>
         </div>
         <div class="actions">
@@ -402,6 +522,22 @@
         </div>
       </div>`).join("") : `<p class="empty">No hay colecciones.</p>`;
   }
+
+  $("#c-apply").onclick = () => {
+    if (!data.collections.some((c) => (c.keywords || []).length)) { toast("Primero agrega palabras clave a alguna colección (Editar)"); return; }
+    const changes = [];
+    for (const p of data.products) {
+      const add = autoCollections(p).filter((id) => !p.collections.includes(id));
+      if (add.length) changes.push([p, add]);
+    }
+    if (!changes.length) { toast("Todos los productos ya están en sus colecciones"); return; }
+    const total = changes.reduce((n, [, a]) => n + a.length, 0);
+    const sample = changes.slice(0, 8).map(([p, a]) => `• ${p.name} → ${a.map((id) => data.collections.find((c) => c.id === id).name).join(", ")}`).join("\n");
+    if (!confirm(`Se agregarán ${total} asignaciones en ${changes.length} productos (no se quita ninguna). Por ejemplo:\n\n${sample}${changes.length > 8 ? "\n…" : ""}\n\n¿Continuar?`)) return;
+    for (const [p, add] of changes) p.collections.push(...add);
+    renderCollections(); renderProducts(); changed();
+    toast(`Listo: ${changes.length} productos agregados a sus colecciones`);
+  };
 
   let editingCol = -1;
   let editingColImage = "";
@@ -433,13 +569,14 @@
     const f = $("#c-form");
     $("#c-title").textContent = i >= 0 ? "Editar colección" : "Nueva colección";
     f.name.value = c.name; f.description.value = c.description || ""; f.visible.checked = c.visible !== false;
+    f.keywords.value = (c.keywords || []).join(", ");
     editingColImage = c.image || ""; drawColImage();
     $("#c-dialog").showModal();
   }
   $("#c-form").addEventListener("submit", (e) => {
     if (e.submitter?.value !== "save") return;
     const f = e.target;
-    const vals = { name: f.name.value.trim(), description: f.description.value.trim(), visible: f.visible.checked, image: editingColImage };
+    const vals = { name: f.name.value.trim(), description: f.description.value.trim(), visible: f.visible.checked, image: editingColImage, keywords: splitList(f.keywords.value) };
     if (editingCol >= 0) Object.assign(data.collections[editingCol], vals);
     else data.collections.push({ id: uniqueId(vals.name, data.collections), ...vals });
     renderCollections(); renderProducts(); changed();

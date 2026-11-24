@@ -90,91 +90,149 @@
    "name": "Accesorios",
    "description": "",
    "image": "assets/collections/accesorios.webp",
-   "visible": true
+   "visible": true,
+   "keywords": []
   },
   {
    "id": "accesorios-de-hombre",
    "name": "Accesorios de Hombre",
    "description": "",
    "image": "assets/collections/accesorios-de-hombre.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "hombre"
+   ]
   },
   {
    "id": "anillos",
    "name": "Anillos",
    "description": "",
    "image": "assets/collections/anillos.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "anillo"
+   ]
   },
   {
    "id": "aritos",
    "name": "Aritos",
    "description": "",
    "image": "assets/collections/aritos.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "arito",
+    "aretes",
+    "arete",
+    "pendiente"
+   ]
   },
   {
    "id": "ofertas",
    "name": "Black Fridays",
    "description": "",
    "image": "assets/collections/ofertas.webp",
-   "visible": true
+   "visible": true,
+   "keywords": []
   },
   {
    "id": "carteras",
    "name": "Carteras",
    "description": "",
    "image": "assets/collections/carteras.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "cartera",
+    "bolso",
+    "bolsa"
+   ]
   },
   {
    "id": "collares",
    "name": "Collares",
    "description": "",
    "image": "assets/collections/collares.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "collar",
+    "choker",
+    "cadena",
+    "dije"
+   ]
   },
   {
    "id": "accesorios-de-plata-925",
    "name": "Joyería",
    "description": "",
    "image": "assets/collections/accesorios-de-plata-925.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "plata 925",
+    "925"
+   ]
   },
   {
    "id": "lentes",
    "name": "Lentes",
    "description": "",
    "image": "assets/collections/lentes.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "lentes",
+    "gafas"
+   ]
   },
   {
    "id": "accesorios-match",
    "name": "Match",
    "description": "",
    "image": "assets/collections/accesorios-match.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "match",
+    "pareja"
+   ]
   },
   {
    "id": "medias",
    "name": "Medias",
    "description": "",
    "image": "assets/collections/medias.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "medias",
+    "calcetas",
+    "calcetines"
+   ]
   },
   {
    "id": "pines-metalicos",
    "name": "Pines Metálicos",
    "description": "",
    "image": "assets/collections/pines-metalicos.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "pin",
+    "pines",
+    "broche"
+   ]
   },
   {
    "id": "ropa",
    "name": "Ropa",
    "description": "",
    "image": "assets/collections/ropa.webp",
-   "visible": true
+   "visible": true,
+   "keywords": [
+    "falda",
+    "blusa",
+    "top",
+    "camisa",
+    "vestido",
+    "pantalon",
+    "short",
+    "sueter",
+    "sudadera"
+   ]
   }
  ],
  "products": [

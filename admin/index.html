@@ -51,6 +51,7 @@
 
     <nav class="tabs" id="tabs">
       <button data-tab="products" class="active">Productos</button>
+      <button data-tab="restock">Por comprar <span class="count" id="restock-count"></span></button>
       <button data-tab="collections">Colecciones</button>
       <button data-tab="home">Inicio</button>
       <button data-tab="design">Diseño y colores</button>
@@ -68,15 +69,29 @@
             <option value="active">Activos</option>
             <option value="draft">Borradores</option>
             <option value="archived">Archivados</option>
+            <option value="soldout">Agotados</option>
+            <option value="restock">En lista de compras</option>
           </select>
           <button class="btn" id="p-new">+ Nuevo producto</button>
         </div>
         <div id="p-list" class="list"></div>
       </div>
 
+      <!-- Lista de compras -->
+      <div class="tab" id="tab-restock" hidden>
+        <div class="toolbar">
+          <p class="muted grow">Productos que tienes que volver a comprar. Los marcados 🔥 aparecen primero. No se muestra en la tienda (pero no anotes datos privados: el repositorio es público).</p>
+          <button class="btn ghost" type="button" id="r-copy">Copiar lista</button>
+        </div>
+        <div id="r-list" class="list"></div>
+        <h2 style="margin:1.6rem 0 .6rem">Agotados que no están en la lista</h2>
+        <div id="r-suggest" class="list"></div>
+      </div>
+
       <!-- Colecciones -->
       <div class="tab" id="tab-collections" hidden>
         <div class="toolbar">
+          <button class="btn ghost" id="c-apply" type="button" style="order:2">Aplicar palabras clave a todos los productos</button>
           <p class="muted grow">Las colecciones agrupan productos (un producto puede estar en varias). Ordénalas con las flechas.</p>
           <button class="btn" id="c-new">+ Nueva colección</button>
         </div>
@@ -222,6 +237,10 @@
         <label>Precio antes (tachado)<input name="comparePrice" type="number" min="0" step="0.01"></label>
         <label>Inventario (vacío = ilimitado)<input name="stock" type="number" min="0" step="1"></label>
       </div>
+      <div class="row">
+        <button class="btn ghost sm" type="button" id="p-soldout">Marcar agotado (inventario 0)</button>
+        <span class="muted" style="font-size:.82rem">Agotado = se ve en la tienda pero no se puede comprar.</span>
+      </div>
       <div>
         <div class="label">Fotos</div>
         <div class="images" id="p-images"></div>
@@ -233,11 +252,21 @@
       <div>
         <div class="label">Colecciones</div>
         <div class="checks" id="p-collections"></div>
+        <p class="muted" style="font-size:.8rem;margin-top:.3rem" id="p-auto-hint"></p>
       </div>
       <div class="row">
         <label>Nombre de la opción<input name="optionName" placeholder="Talla, Color…"></label>
         <label class="grow">Valores (separados por coma)<input name="options" placeholder="CH, M, G"></label>
       </div>
+      <fieldset class="restock-box">
+        <legend><label class="check"><input type="checkbox" name="restock"> 🛒 Agregar a la lista de compras por hacer</label></legend>
+        <div class="row">
+          <label style="max-width:140px">Cantidad a comprar<input name="restockQty" type="number" min="0" step="1" placeholder="Ej. 10"></label>
+          <label class="grow">Nota (proveedor, link, color…)<input name="restockNote" placeholder="Ej. Shein, pedir en negro y plateado"></label>
+          <label class="check" style="flex:0 0 auto"><input type="checkbox" name="trending"> 🔥 Es tendencia</label>
+        </div>
+      </fieldset>
+      <label>Etiquetas / palabras clave (separadas por coma, ayudan a la búsqueda)<input name="tags" placeholder="kuromi, y2k, plata"></label>
       <label>Enlace de pago directo (opcional: Stripe, PayPal, Mercado Pago…)<input name="paymentLink" type="url" placeholder="https://"></label>
       <div class="row">
         <label>Estado
@@ -264,6 +293,10 @@
       <div class="dlg-head"><h2 id="c-title">Colección</h2><button class="icon" value="cancel" formnovalidate>✕</button></div>
       <label>Nombre<input name="name" required></label>
       <label>Descripción<textarea name="description" rows="2"></textarea></label>
+      <label>Palabras clave (separadas por coma)
+        <input name="keywords" placeholder="anillo, sortija">
+        <span class="muted" style="font-weight:400;font-size:.8rem">Al crear un producto cuyo nombre, descripción o etiquetas tengan una de estas palabras, se marca solo en esta colección.</span>
+      </label>
       <div>
         <div class="label">Portada</div>
         <div class="img-row" id="c-image"></div>
