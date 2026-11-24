@@ -777,14 +777,16 @@
         <div class="fields">
           <div class="row">
             <label>Diseño<select data-f="layout">
-              <option value="" ${s.layout !== "promo" ? "selected" : ""}>Portada (imagen de fondo)</option>
-              <option value="promo" ${s.layout === "promo" ? "selected" : ""}>Promoción (texto grande + imagen pequeña)</option>
+              <option value="" ${!s.layout ? "selected" : ""}>Portada (imagen de fondo)</option>
+              <option value="promo" ${s.layout === "promo" ? "selected" : ""}>Promoción (ventanita sobre la imagen)</option>
+              <option value="clean" ${s.layout === "clean" ? "selected" : ""}>Imagen clara + texto abajo</option>
             </select></label>
             <label>${s.layout === "promo" ? "Texto grande (ej. 20%)" : "Título (opcional)"}<input data-f="title" value="${esc(s.title)}"></label>
             <label>Texto del botón<input data-f="cta" value="${esc(s.cta)}"></label>
           </div>
           <label>Subtítulo (opcional)<input data-f="subtitle" value="${esc(s.subtitle)}"></label>
           ${s.layout === "promo" ? `<div class="row"><label>Texto superior (ej. nombre de la tienda)<input data-f="kicker" value="${esc(s.kicker || "")}"></label>
+            <label>Título de la ventanita<input data-f="window" value="${esc(s.window || "")}" placeholder="♡ promo.exe"></label>
             <label>Letra pequeña (opcional)<input data-f="note" value="${esc(s.note || "")}"></label></div>` : ""}
           <label>Al tocar, ir a<select data-f="link">${linkOptions(s.link)}</select></label>
           <div class="actions" style="justify-content:flex-start">

@@ -235,19 +235,32 @@
   }
 
   function slideHtml(s, i) {
+    if (s.layout === "clean") {
+      // Imagen limpia (sin nada encima) y una franja con texto y botón debajo.
+      loadPromoFonts();
+      return `<a class="slide clean" href="${esc(s.link || "#/colecciones")}" aria-label="${esc(s.title || s.cta || "Ver")}" data-i="${i}">
+        <div class="clean-img" style="background-image:url('${esc(s.image || "")}')"></div>
+        <div class="clean-band">
+          ${s.title ? `<div class="clean-title">${esc(s.title)}</div>` : ""}
+          ${s.subtitle ? `<div class="clean-sub">${esc(s.subtitle)}</div>` : ""}
+          ${s.cta ? `<span class="btn promo-btn">${esc(s.cta)}</span>` : ""}
+        </div>
+      </a>`;
+    }
     if (s.layout === "promo") {
       // Anuncio escrito sobre la imagen: nombre de la tienda y número grande
       // arriba; mensaje y botón abajo.
       loadPromoFonts();
-      return `<a class="slide promo" href="${esc(s.link || "#/colecciones")}" style="--promo-img:url('${esc(s.image ? new URL(s.image, document.baseURI).href : "")}')" aria-label="${esc((s.title || "") + " " + (s.subtitle || ""))}" data-i="${i}">
-        <div class="promo-top">
-          ${s.kicker ? `<div class="promo-kicker">${esc(s.kicker)}</div>` : ""}
-          ${s.title ? `<div class="promo-big">${esc(s.title)}</div>` : ""}
-        </div>
-        <div class="promo-bottom">
-          ${s.subtitle ? `<div class="promo-sub">${esc(s.subtitle).replace(/\n/g, "<br>")}</div>` : ""}
-          ${s.cta ? `<span class="btn promo-btn">${esc(s.cta)}</span>` : ""}
-          ${s.note ? `<small class="promo-note">${esc(s.note)}</small>` : ""}
+      return `<a class="slide promo" href="${esc(s.link || "#/colecciones")}" style="--promo-img:url('${esc(s.image ? new URL(s.image, document.baseURI).href : "")}')" aria-label="${esc((s.kicker || "") + " " + (s.title || "") + " " + (s.subtitle || ""))}" data-i="${i}">
+        <div class="promo-win">
+          <div class="win-bar"><span>${esc(s.window || "♡ promo.exe")}</span><i aria-hidden="true"><b>_</b><b>□</b><b>✕</b></i></div>
+          <div class="win-body">
+            ${s.kicker ? `<div class="promo-kicker">${esc(s.kicker)}</div>` : ""}
+            ${s.title ? `<div class="promo-big">${esc(s.title)}</div>` : ""}
+            ${s.subtitle ? `<div class="promo-sub">${esc(s.subtitle).replace(/\n/g, "<br>")}</div>` : ""}
+            ${s.cta ? `<span class="btn promo-btn">${esc(s.cta)}</span>` : ""}
+            ${s.note ? `<small class="promo-note">${esc(s.note)}</small>` : ""}
+          </div>
         </div>
       </a>`;
     }

@@ -77,14 +77,16 @@
     "cta": "Ver catálogo",
     "link": "#/colecciones",
     "note": "",
-    "kicker": "Sweetie & Psycho"
+    "kicker": "Sweetie & Psycho",
+    "window": "♡ promo.exe"
    },
    {
     "image": "assets/slides/catalogo.webp",
     "title": "Sweetie & Psycho",
     "subtitle": "Envíos a todo Honduras 🇭🇳",
     "cta": "Ver catálogo",
-    "link": "#/colecciones"
+    "link": "#/colecciones",
+    "layout": "clean"
    }
   ]
  },
