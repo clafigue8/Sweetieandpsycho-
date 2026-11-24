@@ -149,9 +149,15 @@
     // ¿Hay un borrador guardado de una sesión anterior?
     try {
       const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
-      if (d && JSON.stringify(d.data) !== published &&
-          confirm("Encontramos cambios que no publicaste la última vez. ¿Quieres recuperarlos?")) {
-        data = d.data; normalize();
+      if (d && JSON.stringify(d.data) !== published) {
+        const sameBase = !cfg || (d.baseSha && d.baseSha === baseSha);
+        const ask = sameBase
+          ? "Encontramos cambios que no publicaste la última vez. ¿Quieres recuperarlos?"
+          : "Hay cambios sin publicar guardados en este dispositivo, pero la tienda se actualizó después de que los hiciste.\n\n" +
+            "Si los recuperas, al publicar se perderían las actualizaciones más nuevas.\n\n" +
+            "Recomendado: Cancelar (carga la versión publicada). ¿Recuperarlos de todos modos?";
+        if (confirm(ask)) { data = d.data; normalize(); }
+        else { try { localStorage.removeItem(DRAFT_KEY); } catch { /* */ } }
       }
     } catch { /* */ }
     $("#login").hidden = true;
@@ -180,7 +186,7 @@
   function changed() {
     $("#dirty").hidden = !isDirty();
     $("#store-name").textContent = data.store.name || "Tienda";
-    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ data })); } catch { /* */ }
+    if (isDirty()) { try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ data, baseSha })); } catch { /* */ } }
   }
   window.addEventListener("beforeunload", (e) => { if (data && isDirty()) { e.preventDefault(); e.returnValue = ""; } });
 
