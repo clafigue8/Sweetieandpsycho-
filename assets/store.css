@@ -345,6 +345,9 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
   .clean-sub { font-size: .95rem; text-shadow: 0 0 6px #fff; }
   .clean-band .promo-btn { padding: .5rem 1.2rem; font-size: .9rem; }
 }
+.slide.clean.dark { background: linear-gradient(135deg, #2b2350, #4a2a6e); }
+.slide.clean.dark .clean-sub { color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+.slide.clean.dark .clean-title { text-shadow: 0 2px 0 #2b2350, 0 0 12px rgba(0,0,0,.4); }
 .slide.framed::before {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(30,15,40,.55) 0%, rgba(30,15,40,.05) 32%, rgba(30,15,40,.05) 62%, rgba(30,15,40,.6) 100%);

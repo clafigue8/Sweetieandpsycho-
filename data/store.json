@@ -88,29 +88,20 @@
     "link": "#/colecciones",
     "layout": "clean",
     "ratio": "4 / 5"
+   },
+   {
+    "layout": "clean",
+    "image": "assets/slides/psycho-girls.webp",
+    "ratio": "4 / 5",
+    "dark": true,
+    "title": "Psycho Girls 🖤",
+    "subtitle": "Medias, chokers, cruces y septums",
+    "cta": "Ver más",
+    "link": "#/coleccion/psycho-girls"
    }
   ]
  },
  "collections": [
-  {
-   "id": "psycho-girls",
-   "name": "Psycho Girls 🖤",
-   "description": "Medias, chokers, cruces, septums y accesorios góticos.",
-   "image": "assets/collections/psycho-girls.webp",
-   "visible": true,
-   "keywords": [
-    "medias",
-    "calcetas",
-    "calcetines",
-    "choker",
-    "gotico",
-    "gotica",
-    "goth",
-    "cruz",
-    "septum",
-    "piercing"
-   ]
-  },
   {
    "id": "accesorios",
    "name": "Accesorios",
@@ -258,6 +249,25 @@
     "short",
     "sueter",
     "sudadera"
+   ]
+  },
+  {
+   "id": "psycho-girls",
+   "name": "Psycho Girls 🖤",
+   "description": "Medias, chokers, cruces, septums y accesorios góticos.",
+   "image": "assets/collections/psycho-girls.webp",
+   "visible": false,
+   "keywords": [
+    "medias",
+    "calcetas",
+    "calcetines",
+    "choker",
+    "gotico",
+    "gotica",
+    "goth",
+    "cruz",
+    "septum",
+    "piercing"
    ]
   }
  ],
