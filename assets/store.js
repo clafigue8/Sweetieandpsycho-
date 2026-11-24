@@ -527,12 +527,17 @@
     return { sub, ship, disc, promo: pr, total: sub - disc + ship, free, opt };
   }
 
-  const payOptions = () => (DATA.store.paymentOptions || []).filter((x) => x.name);
+  // Formas de pago según la entrega elegida (campo "ships": nombres de entregas; vacío = todas)
+  const payOptions = () => {
+    const ship = currentShip().name;
+    return (DATA.store.paymentOptions || []).filter((x) => x.name && (!(x.ships || []).length || x.ships.includes(ship)));
+  };
   function payPicker() {
     const o = payOptions();
     if (!o.length) return "";
-    return `<fieldset class="ship pay"><legend>¿Cómo quieres pagar?</legend>${o.map((x, i) => `
-      <label><input type="radio" name="pay" value="${i}" required>
+    const only = o.length === 1;
+    return `<fieldset class="ship pay"><legend>${only ? "Forma de pago" : "¿Cómo quieres pagar?"}</legend>${o.map((x, i) => `
+      <label class="${only ? "active" : ""}"><input type="radio" name="pay" value="${i}" required ${only ? "checked" : ""}>
         <span><b>${esc(x.name)}</b>${x.note ? `<small>${esc(x.note)}</small>` : ""}</span><em></em></label>`).join("")}</fieldset>`;
   }
 

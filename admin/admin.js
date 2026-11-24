@@ -687,12 +687,25 @@
       <div class="sec-item" data-i="${i}">
         <label>Nombre<input data-k="name" value="${esc(o.name)}" placeholder="Tarjeta de crédito o débito"></label>
         <label>Detalle (opcional)<input data-k="note" value="${esc(o.note || "")}" placeholder="Ej.: te enviamos un link de pago"></label>
+        <div class="checks" style="flex-basis:100%">
+          <span class="muted" style="font-size:.8rem;align-self:center">Disponible para:</span>
+          ${data.store.shippingOptions.filter((sh) => sh.name).map((sh) => `<label><input type="checkbox" data-ship="${esc(sh.name)}"
+            ${!(o.ships || []).length || o.ships.includes(sh.name) ? "checked" : ""}> ${esc(sh.name)}</label>`).join("")}
+        </div>
         <div class="actions">
           <button type="button" class="btn ghost sm" data-mv="-1" data-i2="${i}" ${i === 0 ? "disabled" : ""}>↑</button>
           <button type="button" class="btn ghost sm danger" data-del="${i}">Borrar</button>
         </div>
       </div>`).join("") || `<p class="empty">Sin formas de pago: no se le preguntará a la clienta.</p>`;
   }
+  $("#pay-list").addEventListener("change", (e) => {
+    if (e.target.dataset.ship == null) return;
+    const row = e.target.closest("[data-i]");
+    const all = data.store.shippingOptions.filter((sh) => sh.name).map((sh) => sh.name);
+    const sel = [...row.querySelectorAll("[data-ship]:checked")].map((x) => x.dataset.ship);
+    data.store.paymentOptions[Number(row.dataset.i)].ships = sel.length === all.length ? [] : sel;
+    changed();
+  });
   $("#pay-list").addEventListener("input", (e) => {
     const k = e.target.dataset.k; if (!k) return;
     data.store.paymentOptions[Number(e.target.closest("[data-i]").dataset.i)][k] = e.target.value;
