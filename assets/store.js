@@ -561,10 +561,23 @@
     drawCart();
   });
 
-  const orderNumber = () => {
-    const d = new Date(), p = (n) => String(n).padStart(2, "0");
-    return `SP-${String(d.getFullYear()).slice(2)}${p(d.getMonth() + 1)}${p(d.getDate())}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
-  };
+  // Número de pedido consecutivo (S&P💗20001, 20002…) con un contador gratuito
+  // (abacus.jasoncameron.dev). Si el contador no responde, se usa un código
+  // de respaldo para no perder el pedido.
+  async function orderNumber() {
+    const s = DATA.store;
+    const prefix = s.orderPrefix ?? "S&P💗";
+    const start = Number(s.orderStart) || 20000;
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 6000);
+      const res = await fetch(`https://abacus.jasoncameron.dev/hit/${encodeURIComponent(s.orderCounter || "sweetieandpsycho-tienda")}/pedidos`, { signal: ctrl.signal, cache: "no-store" });
+      clearTimeout(timer);
+      const j = await res.json();
+      if (res.ok && Number.isFinite(Number(j.value))) return prefix + (start + Number(j.value));
+    } catch { /* contador sin respuesta */ }
+    return prefix + "W" + Date.now().toString(36).slice(-5).toUpperCase();
+  }
 
   function prettyPhone(n) {
     const d = onlyDigits(n);
@@ -611,8 +624,8 @@
     ].filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");
     if (via === "form") {
       if (f.botcheck) return;
-      const num = orderNumber();
       const btn = e.submitter; if (btn) { btn.disabled = true; btn.textContent = "Agendando…"; }
+      const num = await orderNumber();
       const order = msg.replace(/^¡Hola[^\n]*\n/, `Pedido ${num}\n`);
       let ok = false;
       try {

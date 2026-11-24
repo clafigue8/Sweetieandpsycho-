@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administrar tienda</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-  <link rel="stylesheet" href="admin.css?v=20261124c">
+  <link rel="stylesheet" href="admin.css?v=20261124d">
 </head>
 <body>
 
@@ -176,6 +176,11 @@
               <button class="btn ghost" type="button" id="order-test">Enviar pedido de prueba</button>
             </div>
             <label>Texto del botón<input name="store.orderButton" placeholder="Agendar pedido"></label>
+            <div class="row">
+              <label>Inicio del número de pedido<input name="store.orderPrefix" placeholder="S&amp;P💗"></label>
+              <label>Los pedidos cuentan desde<input name="store.orderStart" type="number" min="0" step="1" placeholder="20000"></label>
+            </div>
+            <p class="muted" style="font-size:.8rem">Con 20000, el primer pedido será S&amp;P💗20001, luego 20002… Si el contador no responde, el pedido igual se envía con un código que empieza con “W”.</p>
             <p class="muted" style="font-size:.8rem">Sin clave, el botón vuelve a ser “Enviar pedido por WhatsApp”.</p>
           </fieldset>
           <label>WhatsApp (con código de país, ej. 50499999999)<input name="store.whatsapp" inputmode="tel"></label>
@@ -326,6 +331,6 @@
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
-  <script src="admin.js?v=20261124c"></script>
+  <script src="admin.js?v=20261124d"></script>
 </body>
 </html>
