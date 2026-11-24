@@ -225,6 +225,18 @@
   }
 
   function slideHtml(s, i) {
+    if (s.layout === "promo") {
+      // Estilo anuncio: número grande a la izquierda, imagen más pequeña a la derecha.
+      return `<a class="slide promo" href="${esc(s.link || "#/todo")}" aria-label="${esc((s.title || "") + " " + (s.subtitle || ""))}" data-i="${i}">
+        <div class="promo-text">
+          ${s.title ? `<div class="promo-big">${esc(s.title)}</div>` : ""}
+          ${s.subtitle ? `<div class="promo-sub">${esc(s.subtitle).replace(/\n/g, "<br>")}</div>` : ""}
+          ${s.cta ? `<span class="btn promo-btn">${esc(s.cta)}</span>` : ""}
+          ${s.note ? `<small class="promo-note">${esc(s.note)}</small>` : ""}
+        </div>
+        ${s.image ? `<img class="promo-img" src="${esc(s.image)}" alt="" loading="eager">` : ""}
+      </a>`;
+    }
     const textual = !!s.title;
     if (textual && s.image) {
       // Imagen con texto: nombre arriba, la imagen al centro, mensaje y botón abajo.
@@ -356,6 +368,7 @@
   function openProduct(id) {
     const p = findProduct(id);
     if (!p || p.status !== "active") { location.hash = "#/"; return; }
+    closeOverlay("cart"); closeOverlay("menu");
     modalState = { p, img: 0, opt: (p.options || [])[0] || "", qty: 1 };
     drawProduct();
     openOverlay("product");
@@ -451,13 +464,25 @@
     return { ...o[i], index: i };
   }
 
+  // Promoción (ej. 20% en la primera compra en línea). "Primera compra" se
+  // reconoce por dispositivo: después de agendar un pedido ya no se aplica.
+  const ORDERED_KEY = "sp-ordered";
+  function promo() {
+    const p = DATA.store.promo || {};
+    if (!p.enabled || !(Number(p.percent) > 0)) return null;
+    if (p.firstOrderOnly !== false && load(ORDERED_KEY)) return null;
+    return { percent: Number(p.percent), label: p.label || "Descuento" };
+  }
+
   function totals() {
     const s = DATA.store;
     const sub = cart.reduce((n, l) => { const p = findProduct(l.id); return n + (p ? priceOf(p, l.opt) : 0) * l.qty; }, 0);
     const opt = currentShip();
     const free = Number(opt.price) === 0 || (Number(s.freeShippingOver) > 0 && sub >= Number(s.freeShippingOver));
     const ship = cart.length && !free ? Number(opt.price) || 0 : 0;
-    return { sub, ship, total: sub + ship, free, opt };
+    const pr = promo();
+    const disc = pr ? Math.round(sub * pr.percent) / 100 : 0;
+    return { sub, ship, disc, promo: pr, total: sub - disc + ship, free, opt };
   }
 
   const payOptions = () => (DATA.store.paymentOptions || []).filter((x) => x.name);
@@ -535,6 +560,7 @@
   function totalsHtml(t) {
     return `<div class="totals">
       <div><span>Subtotal</span><span>${money(t.sub)}</span></div>
+      ${t.disc ? `<div class="disc"><span>${esc(t.promo.label)} (−${t.promo.percent}%)</span><span>−${money(t.disc)}</span></div>` : ""}
       <div><span>${shipOptions().length > 1 ? esc(t.opt.name) : "Envío"}</span><span>${t.free ? "Gratis" : money(t.ship)}</span></div>
       <div class="grand"><span>Total</span><span>${money(t.total)}</span></div>
     </div>`;
@@ -624,7 +650,7 @@
     });
     const msg = [
       `¡Hola ${s.name}! Quiero hacer este pedido:`, "", ...lines, "",
-      `Subtotal: ${money(t.sub)}`, `Entrega: ${t.opt.name}${t.opt.note ? ` (${t.opt.note})` : ""} — ${t.free ? "Gratis" : money(t.ship)}`, `Total: ${money(t.total)}`, "",
+      `Subtotal: ${money(t.sub)}`, ...(t.disc ? [`${t.promo.label} (−${t.promo.percent}%): −${money(t.disc)}`] : []), `Entrega: ${t.opt.name}${t.opt.note ? ` (${t.opt.note})` : ""} — ${t.free ? "Gratis" : money(t.ship)}`, `Total: ${money(t.total)}`, "",
       f.pay != null && payOptions()[f.pay] ? `Pago: ${payOptions()[f.pay].name}` : "",
       `Nombre: ${f.name}`, `Teléfono: ${f.phone}`, f.address ? `Dirección: ${f.address}` : "",
       f.notes ? `Notas: ${f.notes}` : "",
@@ -651,7 +677,7 @@
         });
         ok = res.ok && (await res.json().catch(() => ({}))).success !== false;
       } catch { ok = false; }
-      if (ok) { cart = []; save(CART_KEY, cart); updateCartCount(); checkoutStep = false; }
+      if (ok) { cart = []; save(CART_KEY, cart); save(ORDERED_KEY, true); updateCartCount(); checkoutStep = false; }
       doneScreen(num, ok, `¡Hola ${s.name}! ${ok ? `Acabo de agendar el pedido ${num}.` : "Quiero hacer este pedido:"}\n\n${order}`);
       return;
     }
@@ -659,7 +685,7 @@
       ? `https://wa.me/${onlyDigits(s.whatsapp)}?text=${encodeURIComponent(msg)}`
       : `mailto:${s.email}?subject=${encodeURIComponent("Pedido — " + f.name)}&body=${encodeURIComponent(msg)}`;
     window.open(url, "_blank");
-    cart = []; save(CART_KEY, cart); updateCartCount();
+    cart = []; save(CART_KEY, cart); save(ORDERED_KEY, true); updateCartCount();
     checkoutStep = false;
     closeOverlay("cart");
     toast("¡Gracias! Tu pedido se abrió para enviarlo.");

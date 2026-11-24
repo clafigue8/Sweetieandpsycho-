@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administrar tienda</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-  <link rel="stylesheet" href="admin.css?v=20261124f">
+  <link rel="stylesheet" href="admin.css?v=20261124g">
 </head>
 <body>
 
@@ -192,6 +192,14 @@
             <button class="btn ghost sm" type="button" id="ship-new">+ Agregar</button>
           </div>
           <div id="ship-list" class="list"></div>
+          <fieldset class="restock-box" id="promo-box">
+            <legend><label class="check"><input type="checkbox" id="promo-on"> 🎁 Descuento automático en el carrito</label></legend>
+            <div class="row">
+              <label style="max-width:130px">Porcentaje<input name="store.promo.percent" type="number" min="1" max="90" step="1" placeholder="20"></label>
+              <label class="grow">Nombre del descuento<input name="store.promo.label" placeholder="Primera compra en línea"></label>
+            </div>
+            <label class="check"><input type="checkbox" id="promo-first"> Solo en la primera compra (se reconoce por el celular o computadora de la clienta)</label>
+          </fieldset>
           <div class="row" style="align-items:center">
             <span class="grow label">Formas de pago (la clienta elige una al finalizar)</span>
             <button class="btn ghost sm" type="button" id="pay-new">+ Agregar</button>
@@ -331,6 +339,6 @@
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
-  <script src="admin.js?v=20261124f"></script>
+  <script src="admin.js?v=20261124g"></script>
 </body>
 </html>

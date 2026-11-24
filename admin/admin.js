@@ -622,6 +622,8 @@
     $("#radius-out").textContent = data.theme.radius ?? 14;
     renderShipping();
     renderPayments();
+    $("#promo-on").checked = !!data.store.promo?.enabled;
+    $("#promo-first").checked = data.store.promo?.firstOrderOnly !== false;
     drawImgFields();
     drawSwatch();
   }
@@ -693,6 +695,9 @@
     } catch { toast("No se pudo conectar con Web3Forms", true); }
     finally { btn.disabled = false; }
   };
+
+  $("#promo-on").onchange = (e) => { (data.store.promo ??= { percent: 20, label: "Primera compra en línea", firstOrderOnly: true }).enabled = e.target.checked; fillForms(); changed(); };
+  $("#promo-first").onchange = (e) => { (data.store.promo ??= {}).firstOrderOnly = e.target.checked; changed(); };
 
   function onField(e) {
     const el = e.target; if (!el.name) return;
@@ -769,10 +774,15 @@
         </div>
         <div class="fields">
           <div class="row">
-            <label>Título (opcional)<input data-f="title" value="${esc(s.title)}"></label>
+            <label>Diseño<select data-f="layout">
+              <option value="" ${s.layout !== "promo" ? "selected" : ""}>Portada (imagen de fondo)</option>
+              <option value="promo" ${s.layout === "promo" ? "selected" : ""}>Promoción (texto grande + imagen pequeña)</option>
+            </select></label>
+            <label>${s.layout === "promo" ? "Texto grande (ej. 20%)" : "Título (opcional)"}<input data-f="title" value="${esc(s.title)}"></label>
             <label>Texto del botón<input data-f="cta" value="${esc(s.cta)}"></label>
           </div>
           <label>Subtítulo (opcional)<input data-f="subtitle" value="${esc(s.subtitle)}"></label>
+          ${s.layout === "promo" ? `<label>Letra pequeña (opcional)<input data-f="note" value="${esc(s.note || "")}"></label>` : ""}
           <label>Al tocar, ir a<select data-f="link">${linkOptions(s.link)}</select></label>
           <div class="actions" style="justify-content:flex-start">
             <button type="button" class="btn ghost sm" data-s="up" ${i === 0 ? "disabled" : ""}>↑</button>
@@ -804,6 +814,7 @@
       const f = e.target.dataset.f; if (!f) return;
       const i = Number(e.target.closest("[data-i]").dataset.i);
       getArr()[i][f] = e.target.value;
+      if (f === "layout") renderHomeTab();
       if (f === "type") {
         const s = getArr()[i];
         if (s.type === "collection" && !s.collection) s.collection = data.collections[0]?.id || "";

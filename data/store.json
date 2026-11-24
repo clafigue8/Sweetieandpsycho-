@@ -47,7 +47,13 @@
    }
   ],
   "orderKey": "6a899ae4-f8f1-43cf-9025-269f6c51939c",
-  "orderButton": "Agendar pedido"
+  "orderButton": "Agendar pedido",
+  "promo": {
+   "enabled": true,
+   "percent": 20,
+   "label": "Primera compra en línea",
+   "firstOrderOnly": true
+  }
  },
  "theme": {
   "primary": "#a855c9",
@@ -63,6 +69,15 @@
  "hero": {
   "autoplay": 5,
   "slides": [
+   {
+    "layout": "promo",
+    "image": "assets/slides/navidad.webp",
+    "title": "20%",
+    "subtitle": "de descuento\nen tu primera compra en línea",
+    "cta": "Comprar ahora",
+    "link": "#/todo",
+    "note": "Se aplica automáticamente en tu carrito."
+   },
    {
     "image": "assets/slides/catalogo.webp",
     "title": "Sweetie & Psycho",
