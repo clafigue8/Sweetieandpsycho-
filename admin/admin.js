@@ -762,6 +762,8 @@
     const h = data.hero, home = data.home;
     $("#autoplay").value = String(h.autoplay || 5);
     $("#show-cols").checked = home.showCollections !== false;
+    $("#cols-until").innerHTML = `<option value="">Todas</option>` + data.collections.map((c) =>
+      `<option value="${esc(c.id)}" ${c.id === home.collectionsUntil ? "selected" : ""}>${esc(c.name)}</option>`).join("");
     $("#slides-list").innerHTML = h.slides.length ? h.slides.map((s, i) => `
       <div class="slide-item" data-i="${i}">
         <div>
@@ -782,7 +784,8 @@
             <label>Texto del botón<input data-f="cta" value="${esc(s.cta)}"></label>
           </div>
           <label>Subtítulo (opcional)<input data-f="subtitle" value="${esc(s.subtitle)}"></label>
-          ${s.layout === "promo" ? `<label>Letra pequeña (opcional)<input data-f="note" value="${esc(s.note || "")}"></label>` : ""}
+          ${s.layout === "promo" ? `<div class="row"><label>Texto superior (ej. nombre de la tienda)<input data-f="kicker" value="${esc(s.kicker || "")}"></label>
+            <label>Letra pequeña (opcional)<input data-f="note" value="${esc(s.note || "")}"></label></div>` : ""}
           <label>Al tocar, ir a<select data-f="link">${linkOptions(s.link)}</select></label>
           <div class="actions" style="justify-content:flex-start">
             <button type="button" class="btn ghost sm" data-s="up" ${i === 0 ? "disabled" : ""}>↑</button>
@@ -861,6 +864,7 @@
   };
   $("#autoplay").onchange = (e) => { data.hero.autoplay = Number(e.target.value); changed(); };
   $("#show-cols").onchange = (e) => { data.home.showCollections = e.target.checked; changed(); };
+  $("#cols-until").onchange = (e) => { data.home.collectionsUntil = e.target.value; changed(); };
 
   // ---------- Publicar / vista previa / respaldo ----------
   $("#preview-btn").onclick = () => {

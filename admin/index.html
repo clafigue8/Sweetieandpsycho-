@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administrar tienda</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-  <link rel="stylesheet" href="admin.css?v=20261124g">
+  <link rel="stylesheet" href="admin.css?v=20261124h">
 </head>
 <body>
 
@@ -116,7 +116,10 @@
             <h2 class="grow">Secciones del inicio</h2>
             <button class="btn" type="button" id="section-new">+ Sección</button>
           </div>
-          <label class="check"><input type="checkbox" id="show-cols"> Mostrar la fila de colecciones</label>
+          <div class="row" style="align-items:center">
+            <label class="check" style="flex:0 0 auto"><input type="checkbox" id="show-cols"> Mostrar la fila de colecciones</label>
+            <label style="max-width:320px">…hasta la colección (después sale “Catálogo”)<select id="cols-until"></select></label>
+          </div>
           <p class="muted">Cada sección es una fila de productos que se desliza con el dedo. Debajo siempre aparece “Todos los productos”.</p>
           <div id="sections-list" class="list"></div>
         </div>
@@ -339,6 +342,6 @@
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
-  <script src="admin.js?v=20261124g"></script>
+  <script src="admin.js?v=20261124h"></script>
 </body>
 </html>

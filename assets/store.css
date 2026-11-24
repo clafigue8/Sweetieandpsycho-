@@ -300,25 +300,38 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
   padding: clamp(1.2rem, 4vw, 2.6rem) 1.2rem clamp(1.4rem, 4vw, 2.4rem);
 }
 .slide.promo {
-  align-items: center; justify-content: space-between; gap: 1rem;
-  padding: clamp(1.2rem, 4vw, 3rem) clamp(1.2rem, 6vw, 4.5rem);
-  background: radial-gradient(circle at 80% 30%, #ffe0ea, transparent 55%), linear-gradient(135deg, #fff3f6, #fcd6e1);
-  color: #3b1d2a;
+  flex-direction: column; justify-content: space-between; align-items: flex-start;
+  padding: clamp(1.4rem, 4vw, 3rem) clamp(1.4rem, 6vw, 4.5rem);
+  background-color: #ecd3fd;
+  background-image:
+    linear-gradient(90deg, rgba(236,211,253,1) 0%, rgba(236,211,253,1) 66%, rgba(236,211,253,.6) 71%, rgba(236,211,253,0) 80%),
+    var(--promo-img);
+  background-size: auto, auto 125%;
+  background-position: 0 0, right 0 center;
+  background-repeat: no-repeat;
+  color: #4a1a72;
 }
-.promo-text { display: grid; justify-items: start; gap: .35rem; max-width: 55%; }
-.promo-big { font-family: var(--heading); font-size: clamp(3.2rem, 13vw, 8.5rem); line-height: .9; color: #d62f5a; letter-spacing: -.02em; }
-.promo-sub { font-weight: 700; font-size: clamp(1rem, 3vw, 1.8rem); line-height: 1.2; text-transform: uppercase; color: #3b1d2a; }
-.promo-btn { margin-top: .7rem; background: #d62f5a; color: #fff; }
-.promo-note { margin-top: .3rem; font-size: .75rem; color: #7a5563; }
-.promo-img {
-  height: 86%; max-height: 470px; width: auto; max-width: 40%; object-fit: contain;
-  border-radius: calc(var(--radius) * 1.2); box-shadow: 0 14px 30px -12px rgba(120, 30, 60, .45); transform: rotate(2deg);
+.promo-top, .promo-bottom { display: grid; justify-items: start; gap: .2rem; position: relative; }
+.promo-kicker { font-family: "Pacifico", cursive; font-size: clamp(1.3rem, 3.4vw, 2.3rem); color: #7b3fb8; text-shadow: 0 2px 0 #fff; }
+.promo-big {
+  font-family: "Bagel Fat One", var(--heading); font-size: clamp(4.2rem, 15vw, 9.5rem); line-height: .95;
+  color: #8e3fd6; -webkit-text-stroke: 3px #fff; paint-order: stroke fill;
+  text-shadow: 0 6px 0 #c99af0, 0 10px 24px rgba(90, 30, 140, .35);
 }
+.promo-sub { font-family: "Baloo 2", var(--font); font-weight: 800; font-size: clamp(1.05rem, 2.8vw, 1.8rem); line-height: 1.15; color: #4a1a72; text-shadow: 0 1px 0 #fff, 0 0 12px rgba(255,255,255,.9); }
+.promo-btn { margin-top: .6rem; background: #8e3fd6; color: #fff; box-shadow: 0 8px 18px -6px rgba(90, 30, 140, .6); }
+.promo-note { margin-top: .2rem; font-size: .75rem; color: #5d2d86; text-shadow: 0 0 8px #fff; }
 @media (max-width: 720px) {
-  .slide.promo { aspect-ratio: 1 / 1; padding: 1.2rem 1rem; }
-  .promo-text { max-width: 60%; }
-  .promo-img { height: 72%; max-width: 38%; }
-  .promo-btn { padding: .55rem 1rem; font-size: .85rem; }
+  .slide.promo {
+    aspect-ratio: 3 / 4; align-items: center; text-align: center; padding: 1.1rem 1rem 1.3rem;
+    background-image:
+      linear-gradient(180deg, rgba(236,211,253,.92) 0%, rgba(236,211,253,.4) 24%, rgba(236,211,253,0) 34%, rgba(236,211,253,0) 66%, rgba(236,211,253,.6) 78%, rgba(236,211,253,.95) 100%),
+      var(--promo-img);
+    background-size: auto, cover; background-position: 0 0, center 58%;
+  }
+  .promo-top, .promo-bottom { justify-items: center; }
+  .promo-big { -webkit-text-stroke: 2px #fff; }
+  .promo-btn { padding: .6rem 1.3rem; }
 }
 .slide.framed::before {
   content: ""; position: absolute; inset: 0;
@@ -358,6 +371,10 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
 }
 .scroller > * { scroll-snap-align: start; }
 .scroller.cols { grid-auto-columns: clamp(220px, 70%, 340px); }
+.catalog-card .card-media { background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 45%, #2b1a33)); }
+.catalog-inner { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; color: #fff; gap: .2rem; }
+.catalog-inner span { font-family: var(--heading); font-size: clamp(1.6rem, 4vw, 2.2rem); }
+.catalog-inner small { opacity: .9; }
 .see-all {
   display: grid; place-content: center; gap: .3rem; text-align: center;
   border: 2px dashed color-mix(in srgb, var(--primary) 45%, transparent); border-radius: var(--radius);

@@ -218,6 +218,16 @@
   }
 
   // ---------- Inicio ----------
+  let promoFontsLoaded = false;
+  function loadPromoFonts() {
+    if (promoFontsLoaded) return;
+    promoFontsLoaded = true;
+    const l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Pacifico&family=Baloo+2:wght@600;800&display=swap";
+    document.head.append(l);
+  }
+
   function slides() {
     const h = DATA.hero || {};
     const s = (h.slides || []).filter((x) => x.image || x.title);
@@ -226,15 +236,19 @@
 
   function slideHtml(s, i) {
     if (s.layout === "promo") {
-      // Estilo anuncio: número grande a la izquierda, imagen más pequeña a la derecha.
-      return `<a class="slide promo" href="${esc(s.link || "#/todo")}" aria-label="${esc((s.title || "") + " " + (s.subtitle || ""))}" data-i="${i}">
-        <div class="promo-text">
+      // Anuncio escrito sobre la imagen: nombre de la tienda y número grande
+      // arriba; mensaje y botón abajo.
+      loadPromoFonts();
+      return `<a class="slide promo" href="${esc(s.link || "#/colecciones")}" style="--promo-img:url('${esc(s.image ? new URL(s.image, document.baseURI).href : "")}')" aria-label="${esc((s.title || "") + " " + (s.subtitle || ""))}" data-i="${i}">
+        <div class="promo-top">
+          ${s.kicker ? `<div class="promo-kicker">${esc(s.kicker)}</div>` : ""}
           ${s.title ? `<div class="promo-big">${esc(s.title)}</div>` : ""}
+        </div>
+        <div class="promo-bottom">
           ${s.subtitle ? `<div class="promo-sub">${esc(s.subtitle).replace(/\n/g, "<br>")}</div>` : ""}
           ${s.cta ? `<span class="btn promo-btn">${esc(s.cta)}</span>` : ""}
           ${s.note ? `<small class="promo-note">${esc(s.note)}</small>` : ""}
         </div>
-        ${s.image ? `<img class="promo-img" src="${esc(s.image)}" alt="" loading="eager">` : ""}
       </a>`;
     }
     const textual = !!s.title;
@@ -281,7 +295,10 @@
     listing = {}; shown = PAGE;
     const ss = slides();
     const home = DATA.home || {};
-    const cols = visibleCollections();
+    let cols = visibleCollections();
+    const until = cols.findIndex((c) => c.id === home.collectionsUntil);
+    const cut = until >= 0 && until < cols.length - 1;
+    if (cut) cols = cols.slice(0, until + 1);
     $("#app").innerHTML = `
       <section class="slider" id="slider">
         <div class="slides" id="slides">${ss.map(slideHtml).join("")}</div>
@@ -290,7 +307,11 @@
       ${home.showCollections === false || !cols.length ? "" : `
       <section class="home-section reveal">
         <div class="row-head"><h2>Colecciones</h2><a href="#/colecciones">Ver todas →</a></div>
-        <div class="scroller cols">${cols.map(colCard).join("")}</div>
+        <div class="scroller cols">${cols.map(colCard).join("")}${cut ? `
+          <a class="col-card catalog-card reveal" href="#/colecciones">
+            <div class="card-media"><div class="catalog-inner"><span>Catálogo</span><small>Ver todas las colecciones →</small></div></div>
+            <div class="col-name">Todas las colecciones <small>${visibleCollections().length}</small></div>
+          </a>` : ""}</div>
       </section>`}
       ${homeSections().map(sectionHtml).join("")}
       ${gridBlock("Todos los productos")}`;

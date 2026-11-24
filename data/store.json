@@ -71,12 +71,13 @@
   "slides": [
    {
     "layout": "promo",
-    "image": "assets/slides/navidad.webp",
+    "image": "assets/slides/navidad-lila.webp",
     "title": "20%",
     "subtitle": "de descuento\nen tu primera compra en línea",
-    "cta": "Comprar ahora",
-    "link": "#/todo",
-    "note": "Se aplica automáticamente en tu carrito."
+    "cta": "Ver catálogo",
+    "link": "#/colecciones",
+    "note": "",
+    "kicker": "Sweetie & Psycho"
    },
    {
     "image": "assets/slides/catalogo.webp",
@@ -10017,6 +10018,7 @@
     "collection": "collares",
     "visible": true
    }
-  ]
+  ],
+  "collectionsUntil": "accesorios-match"
  }
 }
