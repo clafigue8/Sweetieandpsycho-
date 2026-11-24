@@ -164,6 +164,20 @@
         <form class="card form narrow" id="checkout-form">
           <h2>Cómo te llegan los pedidos</h2>
           <p class="muted">Cuando un cliente finaliza su carrito, se le abre WhatsApp o su correo con el pedido completo listo para enviarte.</p>
+          <fieldset class="restock-box">
+            <legend><b>Pedidos a tu correo (botón “Agendar pedido”)</b></legend>
+            <p class="muted" style="font-size:.85rem">La clienta toca el botón y el pedido te llega al correo (con notificación en tu celular si tienes la app de Gmail). Necesita una clave gratuita de <b>Web3Forms</b>:</p>
+            <ol class="muted" style="font-size:.85rem;margin:.2rem 0;padding-left:1.2rem">
+              <li>Entra a <a href="https://web3forms.com" target="_blank" rel="noopener">web3forms.com</a> y escribe el correo donde quieres recibir los pedidos.</li>
+              <li>Te llega un correo con tu <b>Access Key</b>. Cópiala y pégala aquí.</li>
+            </ol>
+            <div class="row">
+              <label class="grow">Access Key de Web3Forms<input name="store.orderKey" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off"></label>
+              <button class="btn ghost" type="button" id="order-test">Enviar pedido de prueba</button>
+            </div>
+            <label>Texto del botón<input name="store.orderButton" placeholder="Agendar pedido"></label>
+            <p class="muted" style="font-size:.8rem">Sin clave, el botón vuelve a ser “Enviar pedido por WhatsApp”.</p>
+          </fieldset>
           <label>WhatsApp (con código de país, ej. 50499999999)<input name="store.whatsapp" inputmode="tel"></label>
           <label>Correo para pedidos<input name="store.email" type="email"></label>
           <label>Instagram (usuario)<input name="store.instagram" placeholder="@sweetieandpsycho"></label>

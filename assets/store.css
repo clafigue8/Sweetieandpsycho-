@@ -365,6 +365,14 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
 .wa-float:hover { transform: scale(1.08); }
 .toast { bottom: 5.2rem; }
 
+/* Pedido agendado */
+.done { text-align: center; padding: 2rem .5rem; }
+.done-icon { font-size: 2.6rem; }
+.done h3 { font-family: var(--heading); font-size: 1.3rem; margin: .5rem 0; }
+.done p { color: var(--muted); margin: .4rem 0; }
+.done b { color: var(--text); }
+a.btn.block { text-align: center; }
+
 /* Formas de entrega */
 .ship { border: 0; padding: 0; margin: 0; display: grid; gap: .4rem; }
 .ship legend { font-weight: 600; font-size: .85rem; margin-bottom: .35rem; padding: 0; }

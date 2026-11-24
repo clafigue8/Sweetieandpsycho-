@@ -671,9 +671,26 @@
   });
   $("#pay-new").onclick = () => { data.store.paymentOptions.push({ name: "", note: "" }); renderPayments(); changed(); };
 
+  $("#order-test").onclick = async () => {
+    const key = (data.store.orderKey || "").trim();
+    if (!key) { toast("Primero pega tu Access Key", true); return; }
+    const btn = $("#order-test"); btn.disabled = true;
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ access_key: key, subject: "🧪 Pedido de prueba — " + (data.store.name || "Tienda"), from_name: data.store.name || "Tienda",
+          message: "Si te llegó este correo, los pedidos de la tienda ya llegan a tu correo. 💜" }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (res.ok && j.success !== false) toast("¡Enviado! Revisa tu correo (y la carpeta de spam). Luego presiona Publicar.");
+      else toast("Web3Forms rechazó la clave: " + (j.message || res.status), true);
+    } catch { toast("No se pudo conectar con Web3Forms", true); }
+    finally { btn.disabled = false; }
+  };
+
   function onField(e) {
     const el = e.target; if (!el.name) return;
-    let v = el.value;
+    let v = el.name === "store.orderKey" ? el.value.trim() : el.value;
     if (el.type === "number" || el.type === "range") v = v === "" ? 0 : Number(v);
     set(data, el.name, v);
     if (el.name === "theme.radius") $("#radius-out").textContent = v;

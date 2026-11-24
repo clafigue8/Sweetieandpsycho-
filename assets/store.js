@@ -398,6 +398,7 @@
       addToCart(modalState.p, modalState.opt, modalState.qty);
       closeProduct();
       openOverlay("cart");
+      $("#toast").hidden = true;
       return;
     } else return;
     drawProduct();
@@ -493,10 +494,12 @@
           ${t.opt.address === false ? "" : `<label>Dirección de envío<textarea name="address" rows="3" required autocomplete="street-address"></textarea></label>`}
           ${payPicker()}
           <label>Notas (opcional)<textarea name="notes" rows="2"></textarea></label>
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
           ${s.checkoutNote ? `<p class="hint">${esc(s.checkoutNote)}</p>` : ""}
         </form>`;
       const channels = [];
-      if (s.whatsapp) channels.push(`<button class="btn block" form="checkout-form" type="submit" data-via="wa">Enviar pedido por WhatsApp</button>`);
+      if (s.orderKey) channels.push(`<button class="btn block" form="checkout-form" type="submit" data-via="form">${esc(s.orderButton || "Agendar pedido")}</button>`);
+      else if (s.whatsapp) channels.push(`<button class="btn block" form="checkout-form" type="submit" data-via="wa">Enviar pedido por WhatsApp</button>`);
       if (s.email) channels.push(`<button class="btn ${s.whatsapp ? "ghost" : ""} block" form="checkout-form" type="submit" data-via="mail">Enviar pedido por correo</button>`);
       if (!channels.length) channels.push(`<p class="hint">La tienda aún no tiene configurado un WhatsApp o correo para recibir pedidos.</p>`);
       foot.innerHTML = totalsHtml(t) + channels.join("") + `<button class="link-btn" id="back-cart">← Volver al carrito</button>`;
@@ -558,9 +561,28 @@
     drawCart();
   });
 
-  $("#cart-overlay").addEventListener("submit", (e) => {
+  const orderNumber = () => {
+    const d = new Date(), p = (n) => String(n).padStart(2, "0");
+    return `SP-${String(d.getFullYear()).slice(2)}${p(d.getMonth() + 1)}${p(d.getDate())}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+  };
+
+  function doneScreen(num, ok, msg) {
+    const s = DATA.store;
+    const wa = s.whatsapp ? `https://wa.me/${onlyDigits(s.whatsapp)}?text=${encodeURIComponent(msg)}` : "";
+    $("#cart-body").innerHTML = ok
+      ? `<div class="done"><div class="done-icon">💜</div><h3>¡Pedido agendado!</h3>
+           <p>Tu número de pedido es <b>${esc(num)}</b>.</p>
+           <p>Te escribiremos por WhatsApp para confirmar disponibilidad y enviarte el link de pago o los datos para pagar.</p></div>`
+      : `<div class="done"><div class="done-icon">⚠️</div><h3>No pudimos agendar tu pedido</h3>
+           <p>Revisa tu conexión e inténtalo otra vez, o envíanos el pedido por WhatsApp.</p></div>`;
+    $("#cart-foot").innerHTML = (ok ? `<button class="btn block" data-close="cart">Seguir comprando</button>` :
+      `<button class="btn block" id="back-cart">Intentar de nuevo</button>`) +
+      (wa ? `<a class="btn ghost block" href="${esc(wa)}" target="_blank" rel="noopener">${ok ? "Escribirnos por WhatsApp" : "Enviar por WhatsApp"}</a>` : "");
+  }
+
+  $("#cart-overlay").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const via = e.submitter?.dataset.via || (DATA.store.whatsapp ? "wa" : "mail");
+    const via = e.submitter?.dataset.via || (DATA.store.orderKey ? "form" : DATA.store.whatsapp ? "wa" : "mail");
     const f = Object.fromEntries(new FormData(e.target));
     const s = DATA.store, t = totals();
     const lines = cart.map((l) => {
@@ -574,6 +596,32 @@
       `Nombre: ${f.name}`, `Teléfono: ${f.phone}`, f.address ? `Dirección: ${f.address}` : "",
       f.notes ? `Notas: ${f.notes}` : "",
     ].filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");
+    if (via === "form") {
+      if (f.botcheck) return;
+      const num = orderNumber();
+      const btn = e.submitter; if (btn) { btn.disabled = true; btn.textContent = "Agendando…"; }
+      const order = msg.replace(/^¡Hola[^\n]*\n/, `Pedido ${num}\n`);
+      let ok = false;
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            access_key: s.orderKey,
+            subject: `🛍️ Nuevo pedido ${num} — ${f.name} — ${money(t.total)}`,
+            from_name: s.name,
+            Pedido: num, Nombre: f.name, Teléfono: f.phone,
+            "WhatsApp de la clienta": `https://wa.me/${onlyDigits(f.phone).length === 8 ? "504" + onlyDigits(f.phone) : onlyDigits(f.phone)}`,
+            Total: money(t.total),
+            message: order,
+          }),
+        });
+        ok = res.ok && (await res.json().catch(() => ({}))).success !== false;
+      } catch { ok = false; }
+      if (ok) { cart = []; save(CART_KEY, cart); updateCartCount(); checkoutStep = false; }
+      doneScreen(num, ok, `¡Hola ${s.name}! ${ok ? `Acabo de agendar el pedido ${num}.` : "Quiero hacer este pedido:"}\n\n${order}`);
+      return;
+    }
     const url = via === "wa"
       ? `https://wa.me/${onlyDigits(s.whatsapp)}?text=${encodeURIComponent(msg)}`
       : `mailto:${s.email}?subject=${encodeURIComponent("Pedido — " + f.name)}&body=${encodeURIComponent(msg)}`;

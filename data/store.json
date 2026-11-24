@@ -45,7 +45,9 @@
     "name": "Efectivo al recibir",
     "note": ""
    }
-  ]
+  ],
+  "orderKey": "",
+  "orderButton": "Agendar pedido"
  },
  "theme": {
   "primary": "#a855c9",
