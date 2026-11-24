@@ -226,6 +226,13 @@
 
   function slideHtml(s, i) {
     const textual = !!s.title;
+    if (textual && s.image) {
+      // Imagen con texto: nombre arriba, la imagen al centro, mensaje y botón abajo.
+      return `<a class="slide framed has-image" href="${esc(s.link || "#/colecciones")}" style="background-image:url('${esc(s.image)}')" aria-label="${esc(s.title)}" data-i="${i}">
+        <h1>${esc(s.title)}</h1>
+        <div class="slide-bottom">${s.subtitle ? `<p>${esc(s.subtitle)}</p>` : ""}${s.cta ? `<span class="btn light">${esc(s.cta)}</span>` : ""}</div>
+      </a>`;
+    }
     const inner = textual
       ? `<div class="slide-text"><h1>${esc(s.title)}</h1>${s.subtitle ? `<p>${esc(s.subtitle)}</p>` : ""}
          ${s.cta ? `<span class="btn light">${esc(s.cta)}</span>` : ""}</div>`
