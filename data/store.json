@@ -310,6 +310,34 @@
   ],
   "products": [
     {
+      "id": "snoopy-que-respira",
+      "name": "Snoopy que respira",
+      "description": "",
+      "price": 540,
+      "comparePrice": 0,
+      "stock": 1,
+      "images": [
+        "assets/products/snoopy-que-respira-mwuaehju.png"
+      ],
+      "collections": [
+        "sweet-girls"
+      ],
+      "optionName": "",
+      "options": [],
+      "paymentLink": "",
+      "status": "active",
+      "featured": true,
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": true,
+      "tags": [
+        "Snoopy",
+        "peluche"
+      ],
+      "createdAt": "2026-11-24"
+    },
+    {
       "id": "anillos-match-de-van-gogh",
       "name": "Anillos Match de Van Gogh",
       "description": "Material: Plata 925\nTalla Ajustable",
