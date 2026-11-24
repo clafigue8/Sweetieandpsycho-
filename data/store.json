@@ -600,6 +600,7 @@
         "assets/products/collar-hello-kitty-2-2.webp"
       ],
       "collections": [
+        "sweet-girls",
         "collares"
       ],
       "status": "active",
@@ -613,7 +614,11 @@
         "collar",
         "hello kitty"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "collar-mariposa-i-love-you-1",
@@ -904,6 +909,7 @@
         "assets/products/collares-2-3.webp"
       ],
       "collections": [
+        "sweet-girls",
         "collares"
       ],
       "status": "active",
@@ -916,7 +922,11 @@
       "tags": [
         "collar"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "pulseras-match-15",
@@ -4364,6 +4374,7 @@
         "assets/products/anillo-anti-estres-1-1.webp"
       ],
       "collections": [
+        "sweet-girls",
         "accesorios",
         "anillos",
         "accesorios-de-plata-925"
@@ -4380,7 +4391,11 @@
         "anillo",
         "Antiestrés"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "anillo-promesa-1",
@@ -4861,31 +4876,6 @@
       "tags": [
         "lamparas",
         "stitch"
-      ],
-      "vendor": "Sweetie.and.psycho"
-    },
-    {
-      "id": "collar-proyeccion",
-      "name": "Collar proyección",
-      "description": "",
-      "price": 220,
-      "comparePrice": 0,
-      "images": [
-        "assets/products/collar-proyeccion-1.webp",
-        "assets/products/collar-proyeccion-2.webp"
-      ],
-      "collections": [
-        "collares"
-      ],
-      "status": "active",
-      "stock": "",
-      "optionName": "",
-      "options": [],
-      "paymentLink": "",
-      "featured": false,
-      "createdAt": "2025-12-19",
-      "tags": [
-        "collar"
       ],
       "vendor": "Sweetie.and.psycho"
     },
