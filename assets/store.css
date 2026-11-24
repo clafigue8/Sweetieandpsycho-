@@ -372,6 +372,12 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
 .done p { color: var(--muted); margin: .4rem 0; }
 .done b { color: var(--text); }
 a.btn.block { text-align: center; }
+.wa-number {
+  display: inline-flex; align-items: center; gap: .5rem; margin: .6rem 0 .2rem;
+  font-size: 1.35rem; font-weight: 700; color: #128c4a; text-decoration: none;
+  background: color-mix(in srgb, #25d366 14%, transparent); padding: .55rem 1.1rem; border-radius: 999px;
+}
+.btn.wa-btn { background: #25d366; color: #fff; }
 
 /* Formas de entrega */
 .ship { border: 0; padding: 0; margin: 0; display: grid; gap: .4rem; }

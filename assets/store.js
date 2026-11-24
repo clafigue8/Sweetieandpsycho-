@@ -566,18 +566,31 @@
     return `SP-${String(d.getFullYear()).slice(2)}${p(d.getMonth() + 1)}${p(d.getDate())}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   };
 
+  function prettyPhone(n) {
+    const d = onlyDigits(n);
+    if (d.length === 11 && d.startsWith("504")) return `+504 ${d.slice(3, 7)}-${d.slice(7)}`;
+    return d ? "+" + d : "";
+  }
+
   function doneScreen(num, ok, msg) {
     const s = DATA.store;
     const wa = s.whatsapp ? `https://wa.me/${onlyDigits(s.whatsapp)}?text=${encodeURIComponent(msg)}` : "";
+    const phone = prettyPhone(s.whatsapp);
     $("#cart-body").innerHTML = ok
       ? `<div class="done"><div class="done-icon">💜</div><h3>¡Pedido agendado!</h3>
            <p>Tu número de pedido es <b>${esc(num)}</b>.</p>
-           <p>Te escribiremos por WhatsApp para confirmar disponibilidad y enviarte el link de pago o los datos para pagar.</p></div>`
+           ${wa ? `<p>Para confirmar tu pedido y recibir el link de pago o los datos para pagar, <b>escríbenos por WhatsApp</b>:</p>
+           <a class="wa-number" href="${esc(wa)}" target="_blank" rel="noopener">
+             <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.7c-2 0-4-.5-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.7 10.7 0 1 1 16 26.7zm5.9-8c-.3-.2-1.9-1-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.3 1.4 3.5c.2.2 2.4 3.7 5.8 5.2 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5l-.6-.4z"/></svg>
+             ${esc(phone)}</a>
+           <p class="hint">Al tocar el botón se abre WhatsApp con tu pedido ya escrito, solo dale enviar.</p>` : ""}</div>`
       : `<div class="done"><div class="done-icon">⚠️</div><h3>No pudimos agendar tu pedido</h3>
-           <p>Revisa tu conexión e inténtalo otra vez, o envíanos el pedido por WhatsApp.</p></div>`;
-    $("#cart-foot").innerHTML = (ok ? `<button class="btn block" data-close="cart">Seguir comprando</button>` :
-      `<button class="btn block" id="back-cart">Intentar de nuevo</button>`) +
-      (wa ? `<a class="btn ghost block" href="${esc(wa)}" target="_blank" rel="noopener">${ok ? "Escribirnos por WhatsApp" : "Enviar por WhatsApp"}</a>` : "");
+           <p>Revisa tu conexión e inténtalo otra vez${wa ? `, o envíanos el pedido por WhatsApp al <b>${esc(phone)}</b>` : ""}.</p></div>`;
+    $("#cart-foot").innerHTML = ok
+      ? (wa ? `<a class="btn block wa-btn" href="${esc(wa)}" target="_blank" rel="noopener">Confirmar por WhatsApp</a>` : "") +
+        `<button class="btn ghost block" data-close="cart">Seguir comprando</button>`
+      : `<button class="btn block" id="back-cart">Intentar de nuevo</button>` +
+        (wa ? `<a class="btn ghost block" href="${esc(wa)}" target="_blank" rel="noopener">Enviar por WhatsApp</a>` : "");
   }
 
   $("#cart-overlay").addEventListener("submit", async (e) => {
