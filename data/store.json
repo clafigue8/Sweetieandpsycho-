@@ -55,10 +55,10 @@
     "accent": "#f2a7c8",
     "background": "#fef5ff",
     "surface": "#ffffff",
-    "text": "#1d1420",
+    "text": "#f357a2",
     "font": "Quicksand",
     "headingFont": "Fredoka",
-    "radius": 14
+    "radius": 17
   },
   "hero": {
     "autoplay": 5,
