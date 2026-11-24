@@ -254,7 +254,7 @@
    "collections": [
     "ropa"
    ],
-   "status": "active",
+   "status": "archived",
    "stock": "",
    "optionName": "",
    "options": [],
@@ -560,8 +560,8 @@
     "ofertas",
     "collares"
    ],
-   "status": "active",
-   "stock": "",
+   "status": "archived",
+   "stock": 0,
    "optionName": "",
    "options": [],
    "paymentLink": "",
@@ -571,7 +571,8 @@
     "collar",
     "Oferta"
    ],
-   "vendor": "Sweetie.and.psycho"
+   "vendor": "Sweetie.and.psycho",
+   "restock": true
   },
   {
    "id": "pin-metalico-48",
@@ -1063,7 +1064,7 @@
     "pines-metalicos"
    ],
    "status": "active",
-   "stock": 0,
+   "stock": 1,
    "optionName": "",
    "options": [],
    "paymentLink": "",
@@ -2310,36 +2311,6 @@
    "vendor": "Sweetie.and.psycho"
   },
   {
-   "id": "camisa-dandadan-hombre-talla-l",
-   "name": "Camisa DandaDan Hombre Talla L",
-   "description": "Usado:buen estado",
-   "price": 80,
-   "comparePrice": 190,
-   "images": [
-    "assets/products/camisa-dandadan-hombre-talla-l-1.webp",
-    "assets/products/camisa-dandadan-hombre-talla-l-2.webp",
-    "assets/products/camisa-dandadan-hombre-talla-l-3.webp",
-    "assets/products/camisa-dandadan-hombre-talla-l-4.webp"
-   ],
-   "collections": [
-    "accesorios",
-    "accesorios-de-hombre",
-    "ropa"
-   ],
-   "status": "active",
-   "stock": "",
-   "optionName": "",
-   "options": [],
-   "paymentLink": "",
-   "featured": false,
-   "createdAt": "2026-06-27",
-   "tags": [
-    "Accesorios de hombre",
-    "Ropa"
-   ],
-   "vendor": "Sweetie.and.psycho"
-  },
-  {
    "id": "sueter-talla-s-m",
    "name": "Suéter Talla S/M",
    "description": "Usado:buen estado\n\nNo trae etiqueta",
@@ -3316,7 +3287,7 @@
     "ofertas"
    ],
    "status": "active",
-   "stock": 0,
+   "stock": 1,
    "optionName": "",
    "options": [],
    "paymentLink": "",
@@ -4291,7 +4262,7 @@
     "accesorios-de-plata-925"
    ],
    "status": "active",
-   "stock": 0,
+   "stock": 1,
    "optionName": "",
    "options": [],
    "paymentLink": "",
@@ -5545,7 +5516,7 @@
    "collections": [
     "anillos"
    ],
-   "status": "active",
+   "status": "archived",
    "stock": 0,
    "optionName": "",
    "options": [],
@@ -6085,7 +6056,7 @@
     "assets/products/coleccion-esferas-del-dragon-4.webp"
    ],
    "collections": [],
-   "status": "active",
+   "status": "archived",
    "stock": 0,
    "optionName": "",
    "options": [],
@@ -6095,7 +6066,8 @@
    "tags": [
     "Decoración"
    ],
-   "vendor": "Sweetie.and.psycho"
+   "vendor": "Sweetie.and.psycho",
+   "restock": true
   },
   {
    "id": "calcetines-de-fisica",
