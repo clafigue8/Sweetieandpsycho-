@@ -81,12 +81,13 @@
     "window": "♡ promo.exe"
    },
    {
-    "image": "assets/slides/catalogo.webp",
+    "image": "assets/slides/catalogo-nubes.webp",
     "title": "Sweetie & Psycho",
     "subtitle": "Envíos a todo Honduras 🇭🇳",
     "cta": "Ver catálogo",
     "link": "#/colecciones",
-    "layout": "clean"
+    "layout": "clean",
+    "ratio": "4 / 5"
    }
   ]
  },

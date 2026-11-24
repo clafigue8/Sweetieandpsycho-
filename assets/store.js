@@ -238,7 +238,7 @@
     if (s.layout === "clean") {
       // Imagen limpia (sin nada encima) y una franja con texto y botón debajo.
       loadPromoFonts();
-      return `<a class="slide clean" href="${esc(s.link || "#/colecciones")}" aria-label="${esc(s.title || s.cta || "Ver")}" data-i="${i}">
+      return `<a class="slide clean" href="${esc(s.link || "#/colecciones")}" aria-label="${esc(s.title || s.cta || "Ver")}" data-i="${i}" style="--ar:${esc(s.ratio || "16 / 9")}">
         <div class="clean-img" style="background-image:url('${esc(s.image || "")}')"></div>
         <div class="clean-band">
           ${s.title ? `<div class="clean-title">${esc(s.title)}</div>` : ""}
