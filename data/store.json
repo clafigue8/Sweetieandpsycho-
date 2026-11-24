@@ -93,6 +93,25 @@
  },
  "collections": [
   {
+   "id": "psycho-girls",
+   "name": "Psycho Girls 🖤",
+   "description": "Medias, chokers, cruces, septums y accesorios góticos.",
+   "image": "assets/collections/psycho-girls.webp",
+   "visible": true,
+   "keywords": [
+    "medias",
+    "calcetas",
+    "calcetines",
+    "choker",
+    "gotico",
+    "gotica",
+    "goth",
+    "cruz",
+    "septum",
+    "piercing"
+   ]
+  },
+  {
    "id": "accesorios",
    "name": "Accesorios",
    "description": "",
@@ -670,7 +689,8 @@
    "collections": [
     "accesorios",
     "accesorios-de-hombre",
-    "aritos"
+    "aritos",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -1119,7 +1139,8 @@
     "assets/products/medias-a-la-rodilla-4.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -1198,7 +1219,8 @@
     "assets/products/calcetas-a-la-rodilla-1-3.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -1255,7 +1277,8 @@
    ],
    "collections": [
     "accesorios",
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -1463,7 +1486,8 @@
     "assets/products/medias-a-la-rodilla-disponibles-3.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -1752,7 +1776,8 @@
    ],
    "collections": [
     "accesorios",
-    "pines-metalicos"
+    "pines-metalicos",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -2087,7 +2112,8 @@
     "assets/products/calcetines-star-wars-1.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -2112,7 +2138,8 @@
    ],
    "collections": [
     "ofertas",
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -2138,7 +2165,8 @@
     "assets/products/calcetines-con-manitas-2.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -2164,7 +2192,8 @@
     "assets/products/calcetines-de-patas-de-pollo-3.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -3528,7 +3557,8 @@
    ],
    "collections": [
     "accesorios",
-    "collares"
+    "collares",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -3683,7 +3713,8 @@
    ],
    "collections": [
     "accesorios",
-    "aritos"
+    "aritos",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -3914,7 +3945,8 @@
    ],
    "collections": [
     "accesorios",
-    "collares"
+    "collares",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -5047,7 +5079,8 @@
     "assets/products/medias-delgadas-talla-unica-5.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -5073,7 +5106,8 @@
     "assets/products/set-de-colmillos-3.webp"
    ],
    "collections": [
-    "accesorios"
+    "accesorios",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -5418,7 +5452,8 @@
    ],
    "collections": [
     "accesorios",
-    "collares"
+    "collares",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -5646,7 +5681,8 @@
     "assets/products/set-12-piercing-plateado-2.webp"
    ],
    "collections": [
-    "accesorios"
+    "accesorios",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -5862,7 +5898,8 @@
     "assets/products/set-de-piercings-fake-2.webp"
    ],
    "collections": [
-    "accesorios"
+    "accesorios",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -6084,7 +6121,8 @@
     "assets/products/calcetines-de-fisica-3.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -6201,7 +6239,8 @@
     "accesorios",
     "accesorios",
     "accesorios-de-hombre",
-    "collares"
+    "collares",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -6228,7 +6267,8 @@
     "assets/products/set-de-5-lip-rings-2.webp"
    ],
    "collections": [
-    "accesorios"
+    "accesorios",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -7229,7 +7269,8 @@
     "assets/products/calcetines-del-grito-2.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -7256,7 +7297,8 @@
     "assets/products/calcetines-de-la-monalisa-3.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -7285,7 +7327,8 @@
     "assets/products/medias-termicas-talla-unica-5.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -7309,7 +7352,8 @@
     "assets/products/medias-de-red-blancas-1.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -7867,7 +7911,8 @@
     "assets/products/calcetines-de-la-noche-estrellada-4.webp"
    ],
    "collections": [
-    "medias"
+    "medias",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -8002,7 +8047,8 @@
     "assets/products/set-de-3-septum-fake-3.webp"
    ],
    "collections": [
-    "accesorios"
+    "accesorios",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -8163,7 +8209,8 @@
    ],
    "collections": [
     "accesorios",
-    "collares"
+    "collares",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
@@ -9408,7 +9455,8 @@
     "assets/products/septum-2.webp"
    ],
    "collections": [
-    "accesorios"
+    "accesorios",
+    "psycho-girls"
    ],
    "status": "active",
    "stock": "",
