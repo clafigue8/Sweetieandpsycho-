@@ -304,6 +304,14 @@
     </section>`;
   }
 
+  function allBanner() {
+    const b = (DATA.home && DATA.home.allBanner) || {};
+    if (b.visible === false) return "";
+    if (!b.image) return `<a class="btn block reveal" style="margin:2rem 0" href="#/todo">${esc(b.text || "Ver todos los productos")}</a>`;
+    return `<a class="all-banner reveal" href="${esc(b.link || "#/todo")}" style="background-image:url('${esc(b.image)}')">
+      <span class="all-btn">${esc(b.text || "Click para ver más productos")} →</span></a>`;
+  }
+
   function renderHome() {
     listing = {}; shown = PAGE;
     const ss = slides();
@@ -327,8 +335,8 @@
           </a>` : ""}</div>
       </section>`}
       ${homeSections().map(sectionHtml).join("")}
-      ${gridBlock("Todos los productos")}`;
-    bindGrid();
+      ${allBanner()}`;
+    $("#app").dataset.rendered = "1";
     startSlider(ss.length);
   }
 

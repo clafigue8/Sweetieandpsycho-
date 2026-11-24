@@ -459,3 +459,17 @@ a.btn.block { text-align: center; }
 .pay label { grid-template-columns: auto 1fr; }
 .pay em { display: none; }
 .ship em { font-style: normal; font-weight: 700; white-space: nowrap; }
+
+/* Banner "ver más productos" del inicio */
+.all-banner {
+  display: flex; align-items: flex-end; justify-content: center; margin: 2rem 0 1rem;
+  aspect-ratio: 16 / 9; max-height: 440px; border-radius: calc(var(--radius) * 1.4);
+  background-size: cover; background-position: center 45%; text-decoration: none; overflow: hidden;
+  box-shadow: 0 14px 30px -18px rgba(110, 50, 170, .6); transition: transform .2s;
+}
+.all-banner:hover { transform: translateY(-3px); }
+.all-btn {
+  margin-bottom: clamp(1rem, 4vw, 2rem); padding: .75rem 1.5rem; border-radius: 999px;
+  background: #f04f9e; color: #fff; font-weight: 700; box-shadow: 0 8px 18px -8px rgba(220, 60, 140, .7);
+}
+@media (max-width: 720px) { .all-banner { aspect-ratio: 4 / 5; max-height: none; } }

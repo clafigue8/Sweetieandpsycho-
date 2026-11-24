@@ -10095,6 +10095,12 @@
     "visible": true
    }
   ],
-  "collectionsUntil": "accesorios-match"
+  "collectionsUntil": "accesorios-match",
+  "allBanner": {
+   "visible": true,
+   "image": "assets/slides/mas-productos.webp",
+   "text": "Click para ver más productos",
+   "link": "#/todo"
+  }
  }
 }
