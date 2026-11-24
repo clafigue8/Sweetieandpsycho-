@@ -310,6 +310,35 @@
   ],
   "products": [
     {
+      "id": "anillos-match-de-van-gogh",
+      "name": "Anillos Match de Van Gogh",
+      "description": "Material: Plata 925\nTalla Ajustable",
+      "price": 450,
+      "comparePrice": 0,
+      "stock": 3,
+      "images": [
+        "assets/products/anillos-match-de-van-gogh-mwua8lft.png",
+        "assets/products/producto-mwua6vhe.jpg",
+        "assets/products/producto-mwua6twq.jpg",
+        "assets/products/producto-mwua6wnp.jpg"
+      ],
+      "collections": [
+        "accesorios-match",
+        "accesorios-de-plata-925"
+      ],
+      "optionName": "",
+      "options": [],
+      "paymentLink": "",
+      "status": "active",
+      "featured": false,
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false,
+      "tags": [],
+      "createdAt": "2026-11-24"
+    },
+    {
       "id": "micro-falda-y2k-s-m",
       "name": "Micro falda Y2k S/M",
       "description": "Estado: Usado",
@@ -5409,6 +5438,7 @@
         "assets/products/collar-de-alas-2.webp"
       ],
       "collections": [
+        "sweet-girls",
         "accesorios",
         "collares",
         "accesorios-de-plata-925"
@@ -5424,7 +5454,11 @@
         "acero inoxidable",
         "collar"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "collar-luna-proyector-de-100-te-amo",
@@ -5468,6 +5502,7 @@
         "assets/products/collar-cherry-2-2.webp"
       ],
       "collections": [
+        "sweet-girls",
         "collares"
       ],
       "status": "active",
@@ -5481,7 +5516,11 @@
         "Cherry",
         "collar"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "collar-de-cruz",
