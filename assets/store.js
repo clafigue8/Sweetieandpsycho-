@@ -500,7 +500,7 @@
       const channels = [];
       if (s.orderKey) channels.push(`<button class="btn block" form="checkout-form" type="submit" data-via="form">${esc(s.orderButton || "Agendar pedido")}</button>`);
       else if (s.whatsapp) channels.push(`<button class="btn block" form="checkout-form" type="submit" data-via="wa">Enviar pedido por WhatsApp</button>`);
-      if (s.email) channels.push(`<button class="btn ${s.whatsapp ? "ghost" : ""} block" form="checkout-form" type="submit" data-via="mail">Enviar pedido por correo</button>`);
+      if (s.email && !s.orderKey) channels.push(`<button class="btn ${s.whatsapp ? "ghost" : ""} block" form="checkout-form" type="submit" data-via="mail">Enviar pedido por correo</button>`);
       if (!channels.length) channels.push(`<p class="hint">La tienda aún no tiene configurado un WhatsApp o correo para recibir pedidos.</p>`);
       foot.innerHTML = totalsHtml(t) + channels.join("") + `<button class="link-btn" id="back-cart">← Volver al carrito</button>`;
       return;
