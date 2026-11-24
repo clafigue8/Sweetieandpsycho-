@@ -883,6 +883,36 @@
     return d;
   }
 
+  /** Junta tus cambios con la versión más nueva publicada: de cada parte
+   * (cada ajuste de la tienda, cada producto, cada colección…) se toma tu
+   * versión solo si tú la cambiaste; si no, se respeta la publicada. */
+  function mergeChanges(base, mine, remote) {
+    const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const pick = (b, m, r) => (same(m, b) ? r : m);
+    const byId = (bArr = [], mArr = [], rArr = []) => {
+      const B = new Map(bArr.map((x) => [x.id, x])), M = new Map(mArr.map((x) => [x.id, x])), R = new Map(rArr.map((x) => [x.id, x]));
+      const out = [];
+      for (const x of mArr) {                 // tu orden manda
+        if (!B.has(x.id)) out.push(x);        // nuevo tuyo
+        else if (!same(x, B.get(x.id))) out.push(x); // lo cambiaste
+        else if (R.has(x.id)) out.push(R.get(x.id)); // sin cambios tuyos: versión publicada
+      }
+      for (const x of rArr) if (!B.has(x.id) && !M.has(x.id)) out.push(x); // nuevo publicado
+      return out;
+    };
+    const merged = { ...remote };
+    for (const k of new Set([...Object.keys(base), ...Object.keys(mine), ...Object.keys(remote)])) {
+      if (k === "products" || k === "collections") merged[k] = byId(base[k], mine[k], remote[k]);
+      else if (k === "store" || k === "theme" || k === "home") {
+        const o = { ...(remote[k] || {}) };
+        for (const f of new Set([...Object.keys(base[k] || {}), ...Object.keys(mine[k] || {})]))
+          if (!same((mine[k] || {})[f], (base[k] || {})[f])) o[f] = (mine[k] || {})[f];
+        merged[k] = o;
+      } else merged[k] = pick(base[k], mine[k], remote[k]);
+    }
+    return merged;
+  }
+
   $("#publish-btn").onclick = async () => {
     const json = JSON.stringify(data, null, 2) + "\n";
     if (!cfg) { download(json, "store.json"); toast("Sube este archivo a data/store.json en tu repositorio"); return; }
@@ -890,14 +920,22 @@
     const btn = $("#publish-btn"); btn.disabled = true; btn.textContent = "Publicando…";
     try {
       const latest = await getFile(DATA_PATH);
-      if (baseSha && latest.sha !== baseSha &&
-          !confirm("La tienda cambió desde que abriste el panel (quizá desde otro dispositivo). ¿Sobrescribir con tu versión?")) return;
-      const res = await putFile(DATA_PATH, b64encodeText(json), "Actualizar tienda desde el panel", latest.sha);
+      let out = json, mergedNote = "";
+      if (baseSha && latest.sha !== baseSha) {
+        // Alguien publicó después de que abriste el panel: no pisamos sus cambios.
+        const remote = JSON.parse(b64decodeText(latest.content));
+        data = mergeChanges(JSON.parse(published), data, remote);
+        normalize();
+        out = JSON.stringify(data, null, 2) + "\n";
+        mergedNote = " Se combinaron tus cambios con los más recientes.";
+      }
+      const res = await putFile(DATA_PATH, b64encodeText(out), "Actualizar tienda desde el panel", latest.sha);
       baseSha = res.content.sha;
       published = JSON.stringify(data);
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* */ }
       changed();
-      toast("¡Publicado! La tienda se actualiza en 1–2 minutos.");
+      if (mergedNote) renderAll();
+      toast("¡Publicado! La tienda se actualiza en 1–2 minutos." + mergedNote);
     } catch (err) {
       toast(explain(err), true);
     } finally { btn.disabled = false; btn.textContent = "Publicar"; }
