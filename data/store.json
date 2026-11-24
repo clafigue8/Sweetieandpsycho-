@@ -358,7 +358,7 @@
       "options": [],
       "paymentLink": "",
       "status": "active",
-      "featured": false,
+      "featured": true,
       "restock": false,
       "restockQty": "",
       "restockNote": "",
