@@ -209,7 +209,7 @@
   /** Colecciones cuyas palabras clave aparecen en el producto. */
   function autoCollections(p) {
     const text = " " + norm([p.name, p.description, (p.tags || []).join(" ")].join(" ")).replace(/[^a-z0-9ñ]+/g, " ") + " ";
-    return data.collections.filter((c) => (c.keywords || []).some((k) => {
+    return data.collections.filter((c) => !(c.exclude || []).includes(p.id) && (c.keywords || []).some((k) => {
       const kw = norm(k).replace(/[^a-z0-9ñ]+/g, " ").trim();
       return kw && text.includes(" " + kw);
     })).map((c) => c.id);
@@ -569,6 +569,25 @@
     if (clr) clr.onclick = () => { editingColImage = ""; drawColImage(); };
   }
   $("#c-new").onclick = () => openCollection(-1);
+  let colPick = new Set();
+  function drawColProducts() {
+    const q = norm($("#c-psearch").value.trim()), mode = $("#c-pfilter").value;
+    const list = data.products.filter((p) => (!q || norm(p.name).includes(q)) &&
+      (mode === "all" || (mode === "in") === colPick.has(p.id)));
+    $("#c-count").textContent = `(${colPick.size})`;
+    $("#c-products").innerHTML = list.slice(0, 200).map((p) => `<label>
+      <input type="checkbox" value="${esc(p.id)}" ${colPick.has(p.id) ? "checked" : ""}>
+      ${p.images[0] ? `<img src="${esc(imgSrc(p.images[0]))}" alt="" loading="lazy">` : `<span class="ph"></span>`}
+      <span>${esc(p.name)}</span><small>${p.status === "active" ? "" : STATUS[p.status] || ""}</small></label>`).join("")
+      || `<p class="empty" style="padding:1rem">Sin resultados.</p>`;
+  }
+  $("#c-psearch").oninput = drawColProducts;
+  $("#c-pfilter").onchange = drawColProducts;
+  $("#c-products").addEventListener("change", (e) => {
+    const id = e.target.value; e.target.checked ? colPick.add(id) : colPick.delete(id);
+    $("#c-count").textContent = `(${colPick.size})`;
+  });
+
   function openCollection(i) {
     editingCol = i;
     const c = i >= 0 ? data.collections[i] : { name: "", description: "", visible: true };
@@ -577,14 +596,25 @@
     f.name.value = c.name; f.description.value = c.description || ""; f.visible.checked = c.visible !== false;
     f.keywords.value = (c.keywords || []).join(", ");
     editingColImage = c.image || ""; drawColImage();
+    colPick = new Set(i >= 0 ? data.products.filter((p) => p.collections.includes(c.id)).map((p) => p.id) : []);
+    $("#c-psearch").value = ""; $("#c-pfilter").value = i >= 0 ? "in" : "all";
+    drawColProducts();
     $("#c-dialog").showModal();
   }
   $("#c-form").addEventListener("submit", (e) => {
     if (e.submitter?.value !== "save") return;
     const f = e.target;
     const vals = { name: f.name.value.trim(), description: f.description.value.trim(), visible: f.visible.checked, image: editingColImage, keywords: splitList(f.keywords.value) };
-    if (editingCol >= 0) Object.assign(data.collections[editingCol], vals);
-    else data.collections.push({ id: uniqueId(vals.name, data.collections), ...vals });
+    let col;
+    if (editingCol >= 0) col = Object.assign(data.collections[editingCol], vals);
+    else { col = { id: uniqueId(vals.name, data.collections), ...vals }; data.collections.push(col); }
+    const exclude = new Set(col.exclude || []);
+    for (const p of data.products) {
+      const had = p.collections.includes(col.id), want = colPick.has(p.id);
+      if (want && !had) { p.collections.push(col.id); exclude.delete(p.id); }
+      if (!want && had) { p.collections = p.collections.filter((x) => x !== col.id); exclude.add(p.id); }
+    }
+    col.exclude = [...exclude];
     renderCollections(); renderProducts(); changed();
   });
   $("#c-list").addEventListener("click", (e) => {

@@ -144,6 +144,10 @@ dialog form { padding: 1.2rem 1.4rem; }
 .restock-box legend { padding: 0 .3rem; }
 .tag { font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: 99px; background: color-mix(in srgb, var(--brand) 15%, transparent); color: var(--brand); }
 .tag.out { background: color-mix(in srgb, var(--danger) 15%, transparent); color: var(--danger); }
+.pick-list { max-height: 300px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
+.pick-list label { display: grid; grid-template-columns: auto 40px 1fr auto; gap: .6rem; align-items: center; padding: .35rem .6rem; border-bottom: 1px solid var(--line); font-size: .88rem; cursor: pointer; }
+.pick-list img, .pick-list .ph { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background: var(--line); }
+.pick-list small { color: var(--muted); }
 .checks { display: flex; gap: .4rem; flex-wrap: wrap; }
 .checks label { display: flex; align-items: center; gap: .35rem; font-weight: 500; border: 1px solid var(--line); border-radius: 99px; padding: .3rem .75rem; }
 

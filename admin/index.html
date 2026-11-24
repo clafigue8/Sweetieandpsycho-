@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administrar tienda</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-  <link rel="stylesheet" href="admin.css?v=20261124l">
+  <link rel="stylesheet" href="admin.css?v=20261124m">
 </head>
 <body>
 
@@ -333,6 +333,15 @@
         <p class="muted" style="font-size:.82rem">Si no tiene portada se usa la foto del primer producto.</p>
       </div>
       <label class="check"><input type="checkbox" name="visible"> Mostrar en la tienda</label>
+      <div>
+        <div class="label">Productos de esta colección <span class="muted" id="c-count" style="font-weight:400"></span></div>
+        <p class="muted" style="font-size:.8rem;margin:.2rem 0 .4rem">Marca o desmarca a mano. Si desmarcas uno que entró por palabra clave, ya no se vuelve a agregar solo.</p>
+        <div class="row" style="margin-bottom:.4rem">
+          <input id="c-psearch" type="search" placeholder="Buscar producto…" style="flex:1">
+          <select id="c-pfilter" style="width:auto"><option value="in">En la colección</option><option value="all">Todos</option><option value="out">No están</option></select>
+        </div>
+        <div id="c-products" class="pick-list"></div>
+      </div>
       <div class="dlg-foot">
         <span class="grow"></span>
         <button class="btn ghost" value="cancel" formnovalidate>Cancelar</button>
@@ -342,6 +351,6 @@
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
-  <script src="admin.js?v=20261124l"></script>
+  <script src="admin.js?v=20261124m"></script>
 </body>
 </html>
