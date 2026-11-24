@@ -89,7 +89,7 @@
 
   function explain(err) {
     if (err.status === 401) return "El token no es válido o expiró.";
-    if (err.status === 403) return "El token no tiene permiso de escritura (Contents: Read and write).";
+    if (err.status === 403) return "GitHub no deja escribir con este token. Revisa: “Only select repositories” → Sweetieandpsycho- y Contents: Read and write. (GitHub dice: " + err.message + ")";
     if (err.status === 404) return "No se encontró el repositorio, la rama o data/store.json. Revisa los datos.";
     if (err.status === 409) return "Alguien más publicó cambios al mismo tiempo. Recarga e inténtalo de nuevo.";
     return "Error de GitHub: " + err.message;
