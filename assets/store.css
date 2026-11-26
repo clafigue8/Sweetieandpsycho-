@@ -139,7 +139,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
   transition: transform .2s, box-shadow .2s; text-decoration: none;
 }
 .card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px -12px color-mix(in srgb, var(--secondary) 35%, transparent); }
-.card-media { aspect-ratio: 4/5; position: relative; overflow: hidden; background: var(--line); }
+.card-media { aspect-ratio: 1 / 1; position: relative; overflow: hidden; background: var(--surface); }
 .card-media img { width: 100%; height: 100%; object-fit: cover; }
 .placeholder {
   width: 100%; height: 100%; display: grid; place-items: center;
@@ -175,8 +175,8 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 4r
 }
 .modal .close { position: absolute; top: .6rem; right: .6rem; z-index: 2; background: var(--surface); }
 .gallery { background: var(--line); }
-.gallery-main { aspect-ratio: 4/5; }
-.gallery-main img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-main { aspect-ratio: 1 / 1; background: var(--surface); }
+.gallery-main img { width: 100%; height: 100%; object-fit: contain; }
 .thumbs { display: flex; gap: .4rem; padding: .5rem; overflow-x: auto; }
 .thumbs button { border: 2px solid transparent; padding: 0; border-radius: 8px; overflow: hidden; width: 58px; height: 58px; flex: none; background: none; }
 .thumbs button.active { border-color: var(--primary); }
@@ -500,3 +500,35 @@ a.btn.block { text-align: center; }
 .star-pick button { background: none; border: 0; font-size: 2rem; line-height: 1; padding: 0 .1rem; color: color-mix(in srgb, var(--text) 18%, transparent); }
 .star-pick button.on { color: #f5b301; }
 .review-form select { font: inherit; padding: .6rem .8rem; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); }
+
+/* ---------- Factura del pedido ---------- */
+.receipt { display: grid; gap: .9rem; }
+.rc-items { display: grid; gap: .6rem; }
+.rc-item { display: grid; grid-template-columns: 56px 1fr auto; gap: .75rem; align-items: center; }
+.rc-img { position: relative; width: 56px; height: 56px; border-radius: 10px; background: var(--line); }
+.rc-img img, .rc-img .placeholder { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; font-size: 1.1rem; }
+.rc-qty { position: absolute; top: -7px; right: -7px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--secondary); color: var(--bg); font-size: .72rem; font-weight: 700; display: grid; place-items: center; padding: 0 5px; }
+.rc-name { font-size: .9rem; font-weight: 600; line-height: 1.25; }
+.rc-name small { display: block; font-weight: 400; color: var(--muted); }
+.rc-price { font-weight: 600; font-size: .9rem; }
+.rc-info { border-top: 1px solid var(--line); padding-top: .8rem; }
+.rc-info h4 { margin: 0 0 .5rem; font-family: var(--heading); font-size: 1.05rem; }
+.rc-info dl { margin: 0; display: grid; gap: .15rem; font-size: .88rem; }
+.rc-info dt { font-weight: 700; margin-top: .45rem; }
+.rc-info dd { margin: 0; color: var(--muted); white-space: pre-line; }
+.receipt.compact { background: var(--bg); border-radius: var(--radius); padding: .9rem; margin-top: .4rem; }
+.rc-done { padding: 1rem .2rem .4rem; }
+.rc-num { font-family: var(--heading); font-size: 1.6rem; color: var(--primary); margin: .1rem 0 .4rem; }
+.receipt-page { max-width: 560px; margin: 1.5rem auto; background: var(--surface); border: 1px solid var(--line); border-radius: calc(var(--radius) * 1.3); padding: clamp(1.1rem, 4vw, 2rem); display: grid; gap: 1rem; }
+.rc-head { display: flex; gap: .9rem; align-items: center; }
+.rc-check { width: 56px; height: 56px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 14%, transparent); display: grid; place-items: center; font-size: 1.7rem; flex: none; }
+.rc-head small { color: var(--muted); }
+.rc-head h1 { margin: 0; font-family: var(--heading); font-size: clamp(1.4rem, 5vw, 1.9rem); color: var(--primary); }
+.rc-head p { margin: 0; color: var(--muted); font-size: .85rem; }
+.rc-thanks { margin: 0; line-height: 1.5; }
+.rc-actions { display: grid; gap: .5rem; }
+@media print {
+  .site-header, .announcement, .site-footer, .wa-float, .rc-actions, .search-bar { display: none !important; }
+  .receipt-page { border: 0; margin: 0; }
+  body { background: #fff; }
+}

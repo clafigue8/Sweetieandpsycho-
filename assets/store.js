@@ -98,6 +98,11 @@
   let backHash = "#/";
   function route() {
     const [, kind, id] = location.hash.replace(/^#\/?/, "/").split("/");
+    if (kind === "pedido" && id) {
+      closeOverlay("product"); closeOverlay("menu"); stopSlider();
+      renderReceiptPage(id, location.hash.split("/")[3] === "t");
+      return;
+    }
     if (kind === "producto" && id) {
       if (!$("#app").dataset.rendered) { backHash = "#/"; renderHome(); }
       openProduct(decodeURIComponent(id));
@@ -763,14 +768,90 @@
     return prefix + "W" + Date.now().toString(36).slice(-5).toUpperCase();
   }
 
+  // ---------- Factura del pedido ----------
+  // Los datos del pedido viajan en el enlace (después de #), así no se guardan
+  // en ningún servidor: solo los ven la clienta y la tienda.
+  const encodeOrder = (o) => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  function decodeOrder(code) {
+    try { return JSON.parse(decodeURIComponent(escape(atob(code.replace(/-/g, "+").replace(/_/g, "/"))))); } catch { return null; }
+  }
+  const receiptUrl = (o, shop) => location.origin + location.pathname + "#/pedido/" + encodeOrder(o) + (shop ? "/t" : "");
+  const waLink = (n) => { const d = onlyDigits(n); return "https://wa.me/" + (d.length === 8 ? "504" + d : d); };
+
+  function receiptHtml(o, compact = false) {
+    const items = o.it.map(([id, name, opt, qty, price]) => {
+      const p = findProduct(id), img = p && (p.images || [])[0];
+      return `<div class="rc-item">
+        <div class="rc-img">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : `<div class="placeholder">${esc((name || "?")[0])}</div>`}<span class="rc-qty">${qty}</span></div>
+        <div class="rc-name">${esc(name)}${opt ? `<small>${esc(opt)}</small>` : ""}</div>
+        <div class="rc-price">${money(price * qty)}</div>
+      </div>`;
+    }).join("");
+    return `<div class="receipt ${compact ? "compact" : ""}">
+      <div class="rc-items">${items}</div>
+      <div class="totals">
+        <div><span>Subtotal</span><span>${money(o.sub)}</span></div>
+        ${o.disc ? `<div class="disc"><span>${esc(o.dl || "Descuento")}</span><span>−${money(o.disc)}</span></div>` : ""}
+        <div><span>${esc(o.s)}</span><span>${o.sp ? money(o.sp) : "Gratis"}</span></div>
+        <div class="grand"><span>Total</span><span>${money(o.tot)}</span></div>
+      </div>
+      <div class="rc-info">
+        <h4>Detalles del pedido</h4>
+        <dl>
+          <dt>Cliente</dt><dd>${esc(o.c)}<br>${esc(o.p)}</dd>
+          ${o.a ? `<dt>Dirección de envío</dt><dd>${esc(o.a)}</dd>` : ""}
+          <dt>Método de envío</dt><dd>${esc(o.s)}</dd>
+          ${o.pay ? `<dt>Método de pago</dt><dd>${esc(o.pay)} · ${money(o.tot)}</dd>` : ""}
+          ${o.no ? `<dt>Notas</dt><dd>${esc(o.no)}</dd>` : ""}
+        </dl>
+      </div>
+    </div>`;
+  }
+
+  function renderReceiptPage(code, shop) {
+    const o = decodeOrder(code);
+    $("#app").dataset.rendered = "";
+    if (!o || !Array.isArray(o.it)) { $("#app").innerHTML = `<p class="empty">No se pudo abrir este pedido.</p>`; return; }
+    const s = DATA.store;
+    const date = o.d ? new Date(o.d).toLocaleString(s.locale || "es-HN", { dateStyle: "long", timeStyle: "short" }) : "";
+    const msg = `¡Hola ${s.name}! Te escribo por mi pedido ${o.n} (${money(o.tot)}).`;
+    $("#app").innerHTML = `<section class="receipt-page">
+      <div class="rc-head">
+        <div class="rc-check">${shop ? "🛍️" : "💜"}</div>
+        <div><small>${shop ? "Pedido recibido" : "Pedido agendado"}</small><h1>${esc(o.n)}</h1>${date ? `<p>${esc(date)}</p>` : ""}</div>
+      </div>
+      ${shop ? "" : `<p class="rc-thanks">¡Gracias por tu pedido, ${esc(o.c.split(" ")[0])}! Escríbenos por WhatsApp al <b>${esc(prettyPhone(s.whatsapp))}</b> para confirmar disponibilidad y recibir tu link de pago o los datos para pagar.</p>`}
+      ${receiptHtml(o)}
+      <div class="rc-actions">
+        ${shop ? `<a class="btn block wa-btn" href="${esc(waLink(o.p))}?text=${encodeURIComponent(`¡Hola ${o.c.split(" ")[0]}! Te escribimos de ${s.name} por tu pedido ${o.n} 💜`)}" target="_blank" rel="noopener">Escribir a la clienta por WhatsApp</a>`
+               : (s.whatsapp ? `<a class="btn block wa-btn" href="${esc(waLink(s.whatsapp))}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Confirmar por WhatsApp</a>` : "")}
+        <button class="btn ghost block" onclick="window.print()">Imprimir o guardar PDF</button>
+        <a class="btn ghost block" href="#/">Seguir comprando</a>
+      </div>
+    </section>`;
+    window.scrollTo({ top: 0 });
+  }
+
   function prettyPhone(n) {
     const d = onlyDigits(n);
     if (d.length === 11 && d.startsWith("504")) return `+504 ${d.slice(3, 7)}-${d.slice(7)}`;
     return d ? "+" + d : "";
   }
 
-  function doneScreen(num, ok, msg) {
+  function doneScreen(num, ok, msg, order) {
     const s = DATA.store;
+    if (ok && order) {
+      const wa = s.whatsapp ? `${waLink(s.whatsapp)}?text=${encodeURIComponent(msg)}` : "";
+      $("#cart-body").innerHTML = `<div class="done rc-done"><div class="done-icon">💜</div><h3>¡Pedido agendado!</h3>
+          <p>Tu número de pedido es</p><div class="rc-num">${esc(num)}</div>
+          ${wa ? `<p>Escríbenos por WhatsApp al <a href="${esc(wa)}" target="_blank" rel="noopener"><b>${esc(prettyPhone(s.whatsapp))}</b></a> para confirmar y recibir tu link de pago o los datos para pagar.</p>` : ""}
+        </div>${receiptHtml(order, true)}`;
+      $("#cart-foot").innerHTML = (wa ? `<a class="btn block wa-btn" href="${esc(wa)}" target="_blank" rel="noopener">Confirmar por WhatsApp</a>` : "") +
+        `<a class="btn ghost block" href="${esc(receiptUrl(order))}" data-close="cart">Ver mi factura</a>
+         <button class="btn ghost block" data-close="cart">Seguir comprando</button>`;
+      $("#cart-body").scrollTop = 0;
+      return;
+    }
     const wa = s.whatsapp ? `https://wa.me/${onlyDigits(s.whatsapp)}?text=${encodeURIComponent(msg)}` : "";
     const phone = prettyPhone(s.whatsapp);
     $("#cart-body").innerHTML = ok
@@ -811,6 +892,10 @@
       const btn = e.submitter; if (btn) { btn.disabled = true; btn.textContent = "Agendando…"; }
       const num = await orderNumber();
       const order = msg.replace(/^¡Hola[^\n]*\n/, `Pedido ${num}\n`);
+      const o = { n: num, d: new Date().toISOString(), c: f.name.trim(), p: f.phone.trim(), a: (f.address || "").trim(), no: (f.notes || "").trim(),
+        s: t.opt.name + (t.opt.note ? ` (${t.opt.note})` : ""), sp: t.free ? 0 : t.ship, pay: f.pay != null && payOptions()[f.pay] ? payOptions()[f.pay].name : "",
+        it: cart.map((l) => { const p = findProduct(l.id); return [p.id, p.name, l.opt ? `${p.optionName || "Opción"}: ${l.opt}` : "", l.qty, priceOf(p, l.opt)]; }),
+        sub: t.sub, disc: t.disc, dl: t.disc ? `${t.promo.label} (−${t.promo.percent}%)` : "", tot: t.total };
       let ok = false;
       try {
         const res = await fetch("https://api.web3forms.com/submit", {
@@ -820,16 +905,19 @@
             access_key: s.orderKey,
             subject: `🛍️ Nuevo pedido ${num} — ${f.name} — ${money(t.total)}`,
             from_name: s.name,
-            Pedido: num, Nombre: f.name, Teléfono: f.phone,
-            "WhatsApp de la clienta": `https://wa.me/${onlyDigits(f.phone).length === 8 ? "504" + onlyDigits(f.phone) : onlyDigits(f.phone)}`,
+            "Número de pedido": `💜 ${num}`,
+            "Ver pedido con fotos": receiptUrl(o, true),
             Total: money(t.total),
+            Cliente: f.name, Teléfono: f.phone,
+            "WhatsApp del cliente": waLink(f.phone),
+            Entrega: o.s, Pago: o.pay || "—",
             message: order,
           }),
         });
         ok = res.ok && (await res.json().catch(() => ({}))).success !== false;
       } catch { ok = false; }
       if (ok) { cart = []; save(CART_KEY, cart); save(ORDERED_KEY, true); updateCartCount(); checkoutStep = false; }
-      doneScreen(num, ok, `¡Hola ${s.name}! ${ok ? `Acabo de agendar el pedido ${num}.` : "Quiero hacer este pedido:"}\n\n${order}`);
+      doneScreen(num, ok, `¡Hola ${s.name}! ${ok ? `Acabo de agendar el pedido ${num}.` : "Quiero hacer este pedido:"}\n\n${order}`, ok ? o : null);
       return;
     }
     const url = via === "wa"
