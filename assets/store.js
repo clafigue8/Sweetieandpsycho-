@@ -7,6 +7,7 @@
   const CART_KEY = "sp-cart";
   const PREVIEW_KEY = "sp-preview";
   const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 
   let DATA = null;
   let cart = load(CART_KEY) || [];
@@ -335,6 +336,7 @@
           </a>` : ""}</div>
       </section>`}
       ${homeSections().map(sectionHtml).join("")}
+      ${reviewsSection()}
       ${allBanner()}`;
     $("#app").dataset.rendered = "1";
     startSlider(ss.length);
@@ -387,6 +389,97 @@
       : `<div class="placeholder">${esc((p.name || "?").trim()[0] || "?")}</div>`;
   }
 
+  // ---------- Opiniones ----------
+  // Solo se muestran las que la dueña publica desde el panel (visible !== false).
+  const reviewsAll = () => (DATA.reviews || []).filter((r) => r.visible !== false && r.text)
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const reviewsFor = (pid) => reviewsAll().filter((r) => r.product === pid);
+  const starsHtml = (n) => `<span class="stars" aria-label="${n} de 5 estrellas">${"★".repeat(Math.round(n))}<i>${"★".repeat(5 - Math.round(n))}</i></span>`;
+  function ratingSummary(list) {
+    if (!list.length) return null;
+    const avg = list.reduce((s, r) => s + (Number(r.rating) || 5), 0) / list.length;
+    return { avg, count: list.length };
+  }
+  function reviewCard(r, withProduct = true) {
+    const p = r.product ? findProduct(r.product) : null;
+    return `<figure class="review reveal">
+      ${starsHtml(Number(r.rating) || 5)}
+      ${r.photo ? `<img class="review-photo" src="${esc(r.photo)}" alt="" loading="lazy">` : ""}
+      <blockquote>${esc(r.text)}</blockquote>
+      <figcaption><b>${esc(r.name || "Clienta")}</b>${withProduct && p && p.status === "active"
+        ? ` · <a href="#/producto/${encodeURIComponent(p.id)}">${esc(p.name)}</a>` : ""}</figcaption>
+    </figure>`;
+  }
+  function reviewsSection() {
+    if ((DATA.home || {}).showReviews === false) return "";
+    const list = reviewsAll().slice(0, 12);
+    return `<section class="home-section reveal" id="opiniones">
+      <div class="row-head"><h2>${esc((DATA.home || {}).reviewsTitle || "Lo que dicen de nosotras 💬")}</h2>
+        <button class="link-more" data-review="">Dejar mi opinión →</button></div>
+      ${list.length ? `<div class="scroller reviews">${list.map((r) => reviewCard(r)).join("")}</div>`
+        : `<div class="review-empty"><p>¿Ya compraste con nosotras? ¡Cuéntanos qué te pareció! 💜</p>
+           <button class="btn" data-review="">Escribir una opinión</button></div>`}
+    </section>`;
+  }
+
+  // Formulario: la opinión llega al correo de la tienda y la dueña decide si la publica.
+  function openReviewForm(pid = "") {
+    const opts = DATA.products.filter((p) => p.status === "active").sort((a, b) => a.name.localeCompare(b.name))
+      .map((p) => `<option value="${esc(p.id)}" ${p.id === pid ? "selected" : ""}>${esc(p.name)}</option>`).join("");
+    $("#review-modal").innerHTML = `
+      <button class="icon-btn close" data-close="review" aria-label="Cerrar">✕</button>
+      <form class="checkout-form review-form" id="review-form">
+        <h2>Tu opinión 💜</h2>
+        <div class="star-pick" role="radiogroup" aria-label="Calificación">
+          ${[1, 2, 3, 4, 5].map((n) => `<button type="button" data-star="${n}" class="on" aria-label="${n} estrellas">★</button>`).join("")}
+        </div>
+        <input type="hidden" name="rating" value="5">
+        <label>Tu nombre<input name="name" required maxlength="40" autocomplete="given-name"></label>
+        <label>¿Qué compraste? (opcional)<select name="product"><option value="">Compra en general</option>${opts}</select></label>
+        <label>Tu opinión<textarea name="text" rows="4" required maxlength="600" placeholder="¿Qué te pareció tu pedido?"></textarea></label>
+        <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
+        <p class="hint">Revisamos cada opinión antes de publicarla.</p>
+        <button class="btn block" type="submit">Enviar opinión</button>
+      </form>`;
+    openOverlay("review");
+  }
+  $("#review-overlay").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-star]"); if (!b) return;
+    const n = Number(b.dataset.star);
+    $("#review-form").rating.value = n;
+    $$("#review-form [data-star]").forEach((x) => x.classList.toggle("on", Number(x.dataset.star) <= n));
+  });
+  $("#review-overlay").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = Object.fromEntries(new FormData(e.target)); if (f.botcheck) return;
+    const s = DATA.store, p = f.product ? findProduct(f.product) : null;
+    const r = { name: f.name.trim(), rating: Number(f.rating) || 5, text: f.text.trim(), product: f.product || "", date: new Date().toISOString().slice(0, 10) };
+    const code = "SPR:" + btoa(unescape(encodeURIComponent(JSON.stringify(r))));
+    const msg = `${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}\n${r.name}${p ? ` — ${p.name}` : ""}\n\n“${r.text}”\n\n` +
+      `Para publicarla: Panel → Opiniones → “Pegar del correo” y pega este código:\n${code}`;
+    const btn = e.submitter; btn.disabled = true; btn.textContent = "Enviando…";
+    let ok = false;
+    if (s.orderKey) {
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", { method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ access_key: s.orderKey, subject: `⭐ Nueva opinión (${r.rating}★) — ${r.name}`, from_name: s.name, message: msg }) });
+        ok = res.ok && (await res.json().catch(() => ({}))).success !== false;
+      } catch { ok = false; }
+    } else if (s.whatsapp) {
+      window.open(`https://wa.me/${onlyDigits(s.whatsapp)}?text=${encodeURIComponent("Mi opinión para " + s.name + ":\n\n" + msg)}`, "_blank"); ok = true;
+    }
+    $("#review-modal").innerHTML = `<button class="icon-btn close" data-close="review" aria-label="Cerrar">✕</button>
+      <div class="done"><div class="done-icon">${ok ? "💜" : "⚠️"}</div>
+      <h3>${ok ? "¡Gracias por tu opinión!" : "No se pudo enviar"}</h3>
+      <p>${ok ? "La publicaremos muy pronto." : "Revisa tu conexión e inténtalo otra vez."}</p>
+      <button class="btn" data-close="review">Cerrar</button></div>`;
+  });
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-review]"); if (!b) return;
+    e.preventDefault(); openReviewForm(b.dataset.review || "");
+  });
+
   let NEWEST = null;
   function card(p) {
     NEWEST ??= newestIds();
@@ -401,6 +494,7 @@
       <div class="card-media">${media(p)}${alt ? `<img class="alt" src="${esc(alt)}" alt="" loading="lazy">` : ""}<div class="badges">${badges}</div></div>
       <div class="card-body">
         <h3>${esc(p.name)}</h3>
+        ${(() => { const rs = ratingSummary(reviewsFor(p.id)); return rs ? `<div class="rating">${starsHtml(rs.avg)} <small>(${rs.count})</small></div>` : ""; })()}
         <div class="price">${p.optionPrices ? "Desde " : ""}${money(p.price)}${sale ? `<s>${money(p.comparePrice)}</s>` : ""}</div>
       </div>
     </a>`;
@@ -421,6 +515,7 @@
     const imgs = p.images || [];
     const sale = p.comparePrice > p.price;
     const avail = inStock(p);
+    const prs = reviewsFor(p.id), rs = ratingSummary(prs);
     const stockTxt = p.stock === "" || p.stock == null ? "" :
       Number(p.stock) <= 0 ? "Agotado" : Number(p.stock) <= 3 ? `¡Solo quedan ${p.stock}!` : "Disponible";
     $("#product-modal").innerHTML = `
@@ -432,6 +527,7 @@
       </div>
       <div class="detail">
         <h2>${esc(p.name)}</h2>
+        ${rs ? `<a class="rating" href="#prod-reviews" data-jump>${starsHtml(rs.avg)} <small>${rs.avg.toFixed(1)} · ${rs.count} opinión${rs.count > 1 ? "es" : ""}</small></a>` : ""}
         <div class="price">${money(priceOf(p, opt))}${sale ? `<s>${money(p.comparePrice)}</s>` : ""}</div>
         ${p.description ? `<p class="desc">${esc(p.description)}</p>` : ""}
         ${(p.options || []).length ? `<div>
@@ -445,12 +541,20 @@
         </div>
         <button class="btn block" id="add-to-cart" ${avail ? "" : "disabled"}>${avail ? "Agregar al carrito" : "Agotado"}</button>
         ${p.paymentLink && avail ? `<a class="btn ghost block" href="${esc(p.paymentLink)}" target="_blank" rel="noopener">Comprar ahora</a>` : ""}
+        <div class="prod-reviews" id="prod-reviews">
+          <h3>Opiniones</h3>
+          ${prs.length ? prs.slice(0, 6).map((r) => reviewCard(r, false)).join("") : `<p class="hint">Aún no hay opiniones de este producto.</p>`}
+          <button class="btn ghost block" data-review="${esc(p.id)}">Escribir una opinión</button>
+        </div>
       </div>`;
+    $$("#product-modal .reveal").forEach((x) => x.classList.add("in"));
   }
 
   $("#product-modal").addEventListener("click", (e) => {
+    const j = e.target.closest("[data-jump]");
+    if (j) { e.preventDefault(); $("#prod-reviews").scrollIntoView({ behavior: "smooth" }); return; }
     const t = e.target.closest("button");
-    if (!t || !modalState) return;
+    if (!t || !modalState || t.dataset.review != null) return;
     if (t.dataset.img) modalState.img = Number(t.dataset.img);
     else if (t.dataset.opt != null) modalState.opt = t.dataset.opt;
     else if (t.dataset.qty) {
@@ -746,7 +850,7 @@
   }
   function closeOverlay(name) {
     $(`#${name}-overlay`).hidden = true;
-    if ($("#product-overlay").hidden && $("#cart-overlay").hidden && $("#menu-overlay").hidden) document.body.style.overflow = "";
+    if ($("#product-overlay").hidden && $("#cart-overlay").hidden && $("#menu-overlay").hidden && $("#review-overlay").hidden) document.body.style.overflow = "";
   }
   document.addEventListener("click", (e) => {
     const c = e.target.closest("[data-close]");
@@ -754,11 +858,13 @@
     if (e.target.id === "product-overlay") closeProduct();
     if (e.target.id === "cart-overlay") closeOverlay("cart");
     if (e.target.id === "menu-overlay") closeOverlay("menu");
+    if (e.target.id === "review-overlay") closeOverlay("review");
     if (e.target.closest("#side-nav a")) closeOverlay("menu");
   });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    if (!$("#menu-overlay").hidden) closeOverlay("menu");
+    if (!$("#review-overlay").hidden) closeOverlay("review");
+    else if (!$("#menu-overlay").hidden) closeOverlay("menu");
     else if (!$("#cart-overlay").hidden) closeOverlay("cart");
     else if (!$("#product-overlay").hidden) closeProduct();
   });

@@ -10121,6 +10121,8 @@
    "image": "assets/slides/mas-productos.webp",
    "text": "Click para ver más productos",
    "link": "#/todo"
-  }
- }
+  },
+  "showReviews": true
+ },
+ "reviews": []
 }

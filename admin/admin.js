@@ -177,6 +177,7 @@
     }
     data.home ??= { showCollections: true, sections: [{ type: "new", title: "Lo nuevo", collection: "", visible: true }, { type: "sale", title: "Ofertas", collection: "", visible: true }] };
     data.home.sections ??= [];
+    data.reviews ??= [];
     data.store.paymentOptions ??= [];
     data.store.shippingOptions ??= Number(data.store.shippingCost) ? [{ name: "Envío", note: "", price: Number(data.store.shippingCost), address: true }] : [];
   }
@@ -191,7 +192,7 @@
   window.addEventListener("beforeunload", (e) => { if (data && isDirty()) { e.preventDefault(); e.returnValue = ""; } });
 
   function renderAll() {
-    renderProducts(); renderCollections(); renderRestock(); renderHomeTab(); fillForms(); changed();
+    renderProducts(); renderCollections(); renderRestock(); renderReviews(); renderHomeTab(); fillForms(); changed();
   }
 
   // ---------- Pestañas ----------
@@ -503,6 +504,90 @@
     try { await navigator.clipboard.writeText(text); toast("Lista copiada: pégala en WhatsApp o Notas"); }
     catch { prompt("Copia la lista:", text); }
   };
+
+  // ---------- Opiniones ----------
+  const stars = (n) => "★".repeat(n) + "☆".repeat(5 - n);
+  function renderReviews() {
+    $("#rv-show").checked = data.home.showReviews !== false;
+    $("#rv-title").value = data.home.reviewsTitle || "";
+    const list = [...data.reviews].sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    $("#rv-list").innerHTML = list.length ? list.map((r) => {
+      const p = data.products.find((x) => x.id === r.product);
+      return `<div class="item ${r.photo ? "" : "no-thumb"}">
+        ${r.photo ? `<img class="thumb" src="${esc(imgSrc(r.photo))}" alt="" loading="lazy">` : ""}
+        <div>
+          <h3><span style="color:#f5b301">${stars(Number(r.rating) || 5)}</span> ${esc(r.name)}</h3>
+          <div class="meta">
+            <span class="status ${r.visible !== false ? "active" : "draft"}">${r.visible !== false ? "Publicada" : "Oculta"}</span>
+            <span>${esc(r.date || "")}</span><span>${p ? esc(p.name) : "Compra en general"}</span>
+          </div>
+          <p class="muted" style="margin-top:.3rem;font-size:.88rem">“${esc(r.text)}”</p>
+        </div>
+        <div class="actions">
+          <button class="btn ghost sm" data-rv="edit" data-id="${esc(r.id)}">Editar</button>
+          <button class="btn ghost sm" data-rv="toggle" data-id="${esc(r.id)}">${r.visible !== false ? "Ocultar" : "Publicar"}</button>
+          <button class="btn ghost sm danger" data-rv="del" data-id="${esc(r.id)}">Borrar</button>
+        </div>
+      </div>`;
+    }).join("") : `<p class="empty">Aún no hay opiniones. Cuando una clienta deje una, te llegará al correo.</p>`;
+  }
+  $("#rv-show").onchange = (e) => { data.home.showReviews = e.target.checked; changed(); };
+  $("#rv-title").oninput = (e) => { data.home.reviewsTitle = e.target.value; changed(); };
+  const newReviewId = () => "op-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+
+  let editingRv = null, rvPhoto = "";
+  function drawRvPhoto() {
+    const row = $("#rv-photo");
+    row.innerHTML = `${rvPhoto ? `<img src="${esc(imgSrc(rvPhoto))}" alt="">` : ""}
+      <label class="btn ghost sm file-btn">${rvPhoto ? "Cambiar" : "Subir"}<input type="file" accept="image/*" hidden></label>
+      ${rvPhoto ? `<button type="button" class="btn ghost sm danger" data-clear>Quitar</button>` : ""}`;
+    row.querySelector("input").onchange = async (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      try { toast("Subiendo foto…"); rvPhoto = await uploadImage(file, "assets/reviews/opinion"); drawRvPhoto(); toast("Foto lista"); }
+      catch (err) { toast(err.status ? explain(err) : err.message, true); }
+    };
+    const clr = row.querySelector("[data-clear]"); if (clr) clr.onclick = () => { rvPhoto = ""; drawRvPhoto(); };
+  }
+  function openReview(r) {
+    editingRv = r;
+    const f = $("#rv-form");
+    $("#rv-title-h").textContent = r && data.reviews.includes(r) ? "Editar opinión" : "Nueva opinión";
+    $("#rv-product").innerHTML = `<option value="">Compra en general</option>` + [...data.products].sort((a, b) => a.name.localeCompare(b.name))
+      .map((p) => `<option value="${esc(p.id)}">${esc(p.name)}${p.status === "active" ? "" : " (" + (STATUS[p.status] || p.status) + ")"}</option>`).join("");
+    f.name.value = r?.name || ""; f.rating.value = String(r?.rating || 5); f.date.value = r?.date || new Date().toISOString().slice(0, 10);
+    f.product.value = r?.product || ""; f.text.value = r?.text || ""; f.visible.checked = r ? r.visible !== false : true;
+    rvPhoto = r?.photo || ""; drawRvPhoto();
+    $("#rv-dialog").showModal();
+  }
+  $("#rv-new").onclick = () => openReview(null);
+  $("#r-paste").onclick = () => {
+    const txt = prompt("Pega aquí el código que viene en el correo (empieza con SPR:)");
+    if (!txt) return;
+    const m = txt.match(/SPR:([A-Za-z0-9+/=]+)/);
+    try {
+      const r = JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+      if (!r.text) throw 0;
+      openReview({ name: String(r.name || "").slice(0, 40), rating: Math.min(5, Math.max(1, Number(r.rating) || 5)), text: String(r.text).slice(0, 600),
+        product: data.products.some((p) => p.id === r.product) ? r.product : "", date: r.date || "", visible: true });
+    } catch { toast("Ese código no es válido. Copia toda la línea que empieza con SPR:", true); }
+  };
+  $("#rv-form").addEventListener("submit", (e) => {
+    if (e.submitter?.value !== "save") return;
+    const f = e.target;
+    const vals = { name: f.name.value.trim(), rating: Number(f.rating.value), date: f.date.value, product: f.product.value,
+      text: f.text.value.trim(), photo: rvPhoto, visible: f.visible.checked };
+    if (editingRv && data.reviews.includes(editingRv)) Object.assign(editingRv, vals);
+    else data.reviews.push({ id: newReviewId(), ...vals });
+    renderReviews(); changed(); toast("Guardada. Presiona Publicar para que se vea en la tienda.");
+  });
+  $("#rv-list").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-rv]"); if (!b) return;
+    const r = data.reviews.find((x) => x.id === b.dataset.id); if (!r) return;
+    if (b.dataset.rv === "edit") return openReview(r);
+    if (b.dataset.rv === "toggle") r.visible = r.visible === false;
+    if (b.dataset.rv === "del") { if (!confirm(`¿Borrar la opinión de ${r.name}?`)) return; data.reviews.splice(data.reviews.indexOf(r), 1); }
+    renderReviews(); changed();
+  });
 
   // ---------- Colecciones ----------
   function renderCollections() {
@@ -925,6 +1010,7 @@
     d.store.logo = fix(d.store.logo);
     d.hero.slides.forEach((x) => (x.image = fix(x.image)));
     d.collections.forEach((c) => (c.image = fix(c.image)));
+    (d.reviews || []).forEach((r) => (r.photo = fix(r.photo)));
     return d;
   }
 
@@ -947,7 +1033,7 @@
     };
     const merged = { ...remote };
     for (const k of new Set([...Object.keys(base), ...Object.keys(mine), ...Object.keys(remote)])) {
-      if (k === "products" || k === "collections") merged[k] = byId(base[k], mine[k], remote[k]);
+      if (k === "products" || k === "collections" || k === "reviews") merged[k] = byId(base[k], mine[k], remote[k]);
       else if (k === "store" || k === "theme" || k === "home") {
         const o = { ...(remote[k] || {}) };
         for (const f of new Set([...Object.keys(base[k] || {}), ...Object.keys(mine[k] || {})]))

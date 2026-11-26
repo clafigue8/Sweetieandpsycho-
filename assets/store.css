@@ -473,3 +473,30 @@ a.btn.block { text-align: center; }
   background: #f04f9e; color: #fff; font-weight: 700; box-shadow: 0 8px 18px -8px rgba(220, 60, 140, .7);
 }
 @media (max-width: 720px) { .all-banner { aspect-ratio: 4 / 5; max-height: none; } }
+
+/* ---------- Opiniones ---------- */
+.stars { color: #f5b301; letter-spacing: 1px; white-space: nowrap; }
+.stars i { font-style: normal; color: color-mix(in srgb, var(--text) 18%, transparent); }
+.rating { display: inline-flex; align-items: center; gap: .3rem; font-size: .85rem; text-decoration: none; color: var(--muted); }
+.card .rating { margin-bottom: .15rem; }
+.scroller.reviews { grid-auto-columns: clamp(240px, 78%, 320px); }
+.review {
+  margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1rem 1.1rem; display: grid; gap: .5rem; align-content: start;
+}
+.review blockquote { margin: 0; font-size: .95rem; line-height: 1.45; white-space: pre-line; }
+.review figcaption { font-size: .85rem; color: var(--muted); }
+.review figcaption a { color: var(--primary); }
+.review-photo { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: calc(var(--radius) * .7); }
+.review-empty { text-align: center; padding: 1.5rem 1rem; border: 2px dashed var(--line); border-radius: var(--radius); display: grid; gap: .8rem; justify-items: center; }
+.review-empty p { margin: 0; color: var(--muted); }
+.link-more { background: none; border: 0; color: var(--primary); font-weight: 600; font-size: .9rem; padding: 0; white-space: nowrap; }
+.prod-reviews { display: grid; gap: .7rem; border-top: 1px solid var(--line); padding-top: 1rem; margin-top: .5rem; }
+.prod-reviews h3 { margin: 0; font-size: 1.05rem; }
+.prod-reviews .review-photo { max-width: 160px; }
+.review-modal { grid-template-columns: 1fr; width: min(460px, 100%); padding: 1.4rem 1.3rem 1.6rem; }
+.review-form h2 { margin: 0; font-family: var(--heading); }
+.star-pick { display: flex; gap: .3rem; }
+.star-pick button { background: none; border: 0; font-size: 2rem; line-height: 1; padding: 0 .1rem; color: color-mix(in srgb, var(--text) 18%, transparent); }
+.star-pick button.on { color: #f5b301; }
+.review-form select { font: inherit; padding: .6rem .8rem; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); }

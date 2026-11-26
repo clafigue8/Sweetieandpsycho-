@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administrar tienda</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-  <link rel="stylesheet" href="admin.css?v=20261124o">
+  <link rel="stylesheet" href="admin.css?v=20261126a">
 </head>
 <body>
 
@@ -53,6 +53,7 @@
       <button data-tab="products" class="active">Productos</button>
       <button data-tab="restock">Por comprar <span class="count" id="restock-count"></span></button>
       <button data-tab="collections">Colecciones</button>
+      <button data-tab="reviews">Opiniones</button>
       <button data-tab="home">Inicio</button>
       <button data-tab="design">Diseño y colores</button>
       <button data-tab="checkout">Carrito y pedidos</button>
@@ -75,6 +76,20 @@
           <button class="btn" id="p-new">+ Nuevo producto</button>
         </div>
         <div id="p-list" class="list"></div>
+      </div>
+
+      <!-- Opiniones -->
+      <div class="tab" id="tab-reviews" hidden>
+        <div class="toolbar">
+          <p class="muted grow">Cuando una clienta deja su opinión en la tienda, te llega al correo con un código. Pégalo aquí para publicarla. También puedes agregar opiniones que te mandan por WhatsApp o Instagram.</p>
+          <button class="btn ghost" type="button" id="r-paste">Pegar del correo</button>
+          <button class="btn" type="button" id="rv-new">+ Agregar opinión</button>
+        </div>
+        <div class="row" style="margin-bottom:.8rem">
+          <label class="check" style="flex:0 0 auto"><input type="checkbox" id="rv-show"> Mostrar la sección de opiniones en el inicio</label>
+          <label class="grow" style="max-width:360px">Título de la sección<input id="rv-title" placeholder="Lo que dicen de nosotras 💬"></label>
+        </div>
+        <div id="rv-list" class="list"></div>
       </div>
 
       <!-- Lista de compras -->
@@ -317,6 +332,30 @@
     </form>
   </dialog>
 
+  <!-- Editor de opinión -->
+  <dialog id="rv-dialog">
+    <form method="dialog" class="form" id="rv-form">
+      <div class="dlg-head"><h2 id="rv-title-h">Opinión</h2><button class="icon" value="cancel" formnovalidate>✕</button></div>
+      <div class="row">
+        <label>Nombre de la clienta<input name="name" required maxlength="40"></label>
+        <label style="max-width:150px">Estrellas<select name="rating"><option value="5">★★★★★</option><option value="4">★★★★</option><option value="3">★★★</option><option value="2">★★</option><option value="1">★</option></select></label>
+        <label style="max-width:170px">Fecha<input name="date" type="date"></label>
+      </div>
+      <label>Producto (opcional)<select name="product" id="rv-product"></select></label>
+      <label>Opinión<textarea name="text" rows="4" required maxlength="600"></textarea></label>
+      <div>
+        <div class="label">Foto (opcional, ej. captura o foto de la clienta con su pedido)</div>
+        <div class="img-row" id="rv-photo"></div>
+      </div>
+      <label class="check"><input type="checkbox" name="visible"> Publicada (se ve en la tienda)</label>
+      <div class="dlg-foot">
+        <span class="grow"></span>
+        <button class="btn ghost" value="cancel" formnovalidate>Cancelar</button>
+        <button class="btn" value="save">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- Editor de colección -->
   <dialog id="c-dialog">
     <form method="dialog" class="form" id="c-form">
@@ -351,6 +390,6 @@
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
-  <script src="admin.js?v=20261124o"></script>
+  <script src="admin.js?v=20261126a"></script>
 </body>
 </html>
