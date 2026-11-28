@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administrar tienda</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-  <link rel="stylesheet" href="admin.css?v=20261128a">
+  <link rel="stylesheet" href="admin.css?v=20261128b">
 </head>
 <body>
 
@@ -289,8 +289,10 @@
       <div>
         <div class="label">Fotos</div>
         <div class="images" id="p-images"></div>
+        <label class="check" id="p-frame-row" style="margin:.2rem 0 .5rem"><input type="checkbox" id="p-frame"> Ponerle el marco a la primera foto</label>
         <div class="row">
           <label class="btn ghost file-btn">Subir fotos<input type="file" id="p-upload" accept="image/*" multiple hidden></label>
+          <button class="btn ghost" type="button" id="p-frame-now">Ponerle marco a la foto principal</button>
           <button class="btn ghost" type="button" id="p-add-url">Agregar por URL</button>
         </div>
       </div>
@@ -390,6 +392,6 @@
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
-  <script src="admin.js?v=20261128a"></script>
+  <script src="admin.js?v=20261128b"></script>
 </body>
 </html>

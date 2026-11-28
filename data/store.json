@@ -65,6 +65,17 @@
    "percent": 20,
    "label": "Primera compra en línea",
    "firstOrderOnly": true
+  },
+  "photoFrame": {
+   "image": "assets/frame.webp",
+   "box": [
+    124,
+    123,
+    921,
+    899
+   ],
+   "size": 1000,
+   "auto": true
   }
  },
  "theme": {

@@ -306,6 +306,8 @@
       `<label><input type="checkbox" value="${esc(c.id)}" ${p.collections.includes(c.id) ? "checked" : ""}> ${esc(c.name)}</label>`).join("")
       : `<span class="muted">Aún no hay colecciones.</span>`;
     $("#p-delete").hidden = index < 0;
+    $("#p-frame-row").hidden = $("#p-frame-now").hidden = !frameCfg();
+    $("#p-frame").checked = !!frameCfg() && frameCfg().auto !== false;
     editing.manual = new Set(); // colecciones que tocó a mano
     autoHint();
     drawImages();
@@ -358,13 +360,54 @@
     if (url && /^https?:\/\//.test(url.trim())) { editing.images.push(url.trim()); drawImages(); }
   };
 
+  // ---------- Marco automático para la foto principal ----------
+  const frameCfg = () => data.store.photoFrame && data.store.photoFrame.image ? data.store.photoFrame : null;
+  let frameImg = null;
+  async function loadFrame() {
+    if (frameImg) return frameImg;
+    const f = frameCfg();
+    frameImg = await new Promise((res, rej) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = rej; i.src = imgSrc(f.image); });
+    return frameImg;
+  }
+  /** Coloca la foto dentro del marco (recorte tipo "cover") y devuelve un archivo WebP. */
+  async function framePhoto(src) {
+    const f = frameCfg(), S = f.size || 1000, [x0, y0, x1, y1] = f.box;
+    const frame = await loadFrame();
+    const photo = src instanceof Blob ? await createImageBitmap(src)
+      : await new Promise((res, rej) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = rej; i.src = src; });
+    const c = document.createElement("canvas"); c.width = S; c.height = S;
+    const g = c.getContext("2d");
+    const w = x1 - x0, h = y1 - y0, k = Math.max(w / photo.width, h / photo.height);
+    const dw = photo.width * k, dh = photo.height * k;
+    g.save(); g.beginPath(); g.rect(x0, y0, w, h); g.clip();
+    g.drawImage(photo, x0 + (w - dw) / 2, y0 + (h - dh) / 2, dw, dh); g.restore();
+    g.drawImage(frame, 0, 0, S, S);
+    const blob = await new Promise((r) => c.toBlob(r, "image/webp", 0.88));
+    return new File([blob], "foto-marco.webp", { type: "image/webp" });
+  }
+  $("#p-frame-now").onclick = async () => {
+    const first = editing.images.find((x) => !x.startsWith("uploading:"));
+    if (!first) { toast("Primero sube una foto"); return; }
+    if (!cfg) { toast("Para subir fotos conecta el panel a GitHub.", true); return; }
+    const btn = $("#p-frame-now"); btn.disabled = true; btn.textContent = "Poniendo marco…";
+    try {
+      const file = await framePhoto(imgSrc(first));
+      const path = await uploadImage(file, "assets/products/" + slug($("#p-form").name.value || "producto"));
+      editing.images[editing.images.indexOf(first)] = path; drawImages(); toast("Listo, la foto principal ya tiene marco");
+    } catch (err) { toast(err.status ? explain(err) : "No se pudo poner el marco: " + (err.message || "error"), true); }
+    finally { btn.disabled = false; btn.textContent = "Ponerle marco a la foto principal"; }
+  };
+
   $("#p-upload").onchange = async (e) => {
     const files = [...e.target.files]; e.target.value = "";
     const base = $("#p-form").name.value || "producto";
-    for (const file of files) {
+    for (const file0 of files) {
+      const isFirst = !editing.images.some((x) => !x.startsWith("uploading:"));
       const tmp = "uploading:" + Math.random();
       editing.images.push(tmp); drawImages();
       try {
+        let file = file0;
+        if (isFirst && frameCfg() && $("#p-frame").checked) file = await framePhoto(file0);
         const path = await uploadImage(file, "assets/products/" + slug(base));
         const i = editing.images.indexOf(tmp);
         if (i >= 0) editing.images[i] = path;
