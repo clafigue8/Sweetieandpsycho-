@@ -10235,6 +10235,532 @@
     "Aritos"
    ],
    "vendor": "Sweetie.and.psycho"
+  },
+  {
+   "id": "llavero-de-lotso",
+   "name": "Llavero de lotso",
+   "description": "",
+   "price": 50.0,
+   "comparePrice": 90.0,
+   "images": [
+    "assets/products/llavero-de-lotso-1.webp"
+   ],
+   "collections": [
+    "accesorios",
+    "ofertas"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "llavero",
+    "Oferta"
+   ]
+  },
+  {
+   "id": "cartera-1",
+   "name": "Cartera",
+   "description": "",
+   "price": 280.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/cartera-1-1.webp",
+    "assets/products/cartera-1-2.webp"
+   ],
+   "collections": [
+    "carteras"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "cartera"
+   ]
+  },
+  {
+   "id": "anillos-match-el-castillo-ambulante",
+   "name": "Anillos Match El castillo Ambulante",
+   "description": "",
+   "price": 320.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/anillos-match-el-castillo-ambulante-1.webp",
+    "assets/products/anillos-match-el-castillo-ambulante-2.webp"
+   ],
+   "collections": [
+    "accesorios-match",
+    "anillos"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Anillos Match",
+    "animacion",
+    "Match"
+   ]
+  },
+  {
+   "id": "collar-luna-y-sol",
+   "name": "Collar luna y sol",
+   "description": "Acero Inoxidable",
+   "price": 290.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/collar-luna-y-sol-1.webp",
+    "assets/products/collar-luna-y-sol-2.webp"
+   ],
+   "collections": [
+    "collares"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "collar"
+   ]
+  },
+  {
+   "id": "sin-nombre-4mar_22-33",
+   "name": "Pulsera match Spiderman",
+   "description": "",
+   "price": 360.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/sin-nombre-4mar_22-33-1.webp",
+    "assets/products/sin-nombre-4mar_22-33-2.webp",
+    "assets/products/sin-nombre-4mar_22-33-3.webp",
+    "assets/products/sin-nombre-4mar_22-33-4.webp"
+   ],
+   "collections": [
+    "accesorios",
+    "accesorios-match"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "animacion",
+    "Araña",
+    "Match",
+    "pulseras",
+    "Spiderman"
+   ]
+  },
+  {
+   "id": "sin-nombre-1mar_18-40",
+   "name": "Anillos 3 en 1 de Loki",
+   "description": "Material: Acero Inoxidable",
+   "price": 410.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/sin-nombre-1mar_18-40-1.webp",
+    "assets/products/sin-nombre-1mar_18-40-2.webp",
+    "assets/products/sin-nombre-1mar_18-40-3.webp"
+   ],
+   "collections": [
+    "anillos",
+    "accesorios-de-plata-925"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "acero inoxidable",
+    "anillo",
+    "anime"
+   ]
+  },
+  {
+   "id": "collar-doble-luna-y-sol",
+   "name": "Collar doble luna y sol",
+   "description": "",
+   "price": 80.0,
+   "comparePrice": 140.0,
+   "images": [
+    "assets/products/collar-doble-luna-y-sol-1.webp",
+    "assets/products/collar-doble-luna-y-sol-2.webp",
+    "assets/products/collar-doble-luna-y-sol-3.webp"
+   ],
+   "collections": [
+    "ofertas",
+    "collares"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "collar",
+    "Oferta"
+   ]
+  },
+  {
+   "id": "girasol-eterno-que-gira",
+   "name": "Girasol eterno que gira",
+   "description": "Material: Acero Inoxidable",
+   "price": 250.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/girasol-eterno-que-gira-1.webp",
+    "assets/products/girasol-eterno-que-gira-2.webp"
+   ],
+   "collections": [
+    "collares",
+    "accesorios-de-plata-925",
+    "sweet-girls"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "acero inoxidable",
+    "Antiestrés",
+    "collar",
+    "Girasol"
+   ]
+  },
+  {
+   "id": "anillos-match-sol-y-luna",
+   "name": "Anillos Match Sol y Luna",
+   "description": "Material: Cobre",
+   "price": 240.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/anillos-match-sol-y-luna-1.webp",
+    "assets/products/anillos-match-sol-y-luna-2.webp",
+    "assets/products/anillos-match-sol-y-luna-3.webp",
+    "assets/products/anillos-match-sol-y-luna-4.webp"
+   ],
+   "collections": [
+    "accesorios-match",
+    "anillos"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Anillos Match",
+    "Match",
+    "universo"
+   ]
+  },
+  {
+   "id": "anillos-par",
+   "name": "Anillos Match Alas",
+   "description": "material: Aleación de zinc\n\nTalla Ajustable",
+   "price": 190.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/anillos-par-1.webp",
+    "assets/products/anillos-par-2.webp",
+    "assets/products/anillos-par-3.webp",
+    "assets/products/anillos-par-4.webp"
+   ],
+   "collections": [
+    "accesorios-match",
+    "anillos"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Match"
+   ]
+  },
+  {
+   "id": "collar-de-one-piece-1",
+   "name": "collar de one piece",
+   "description": "Material: Aleación de zinc",
+   "price": 170.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/collar-de-one-piece-1-1.webp",
+    "assets/products/collar-de-one-piece-1-2.webp",
+    "assets/products/collar-de-one-piece-1-3.webp"
+   ],
+   "collections": [
+    "accesorios-de-hombre",
+    "collares"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Accesorios de hombre",
+    "anime",
+    "collar",
+    "onepiece"
+   ]
+  },
+  {
+   "id": "collar-luna-saturno-1",
+   "name": "Collar luna saturno",
+   "description": "Acero inoxidable",
+   "price": 280.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/collar-luna-saturno-1-1.webp",
+    "assets/products/collar-luna-saturno-1-2.webp"
+   ],
+   "collections": [
+    "collares",
+    "accesorios-de-plata-925"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "acero inoxidable",
+    "collar",
+    "Saturno"
+   ]
+  },
+  {
+   "id": "anillos-match-ajustables",
+   "name": "Anillos Match Luna",
+   "description": "Material: Plata 925\n\nTalla Ajustable",
+   "price": 450.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/anillos-match-ajustables-1.webp",
+    "assets/products/anillos-match-ajustables-2.webp",
+    "assets/products/anillos-match-ajustables-3.webp"
+   ],
+   "collections": [
+    "accesorios-match",
+    "anillos",
+    "accesorios-de-plata-925"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Anillos Match",
+    "baño de plata",
+    "Match"
+   ]
+  },
+  {
+   "id": "par-de-collares-match",
+   "name": "collares match corazon",
+   "description": "",
+   "price": 240.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/par-de-collares-match-1.webp",
+    "assets/products/par-de-collares-match-2.webp",
+    "assets/products/par-de-collares-match-3.webp",
+    "assets/products/par-de-collares-match-4.webp"
+   ],
+   "collections": [
+    "accesorios-match",
+    "collares"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "collares",
+    "Match"
+   ]
+  },
+  {
+   "id": "aritos-10",
+   "name": "Aritos",
+   "description": "",
+   "price": 180.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/aritos-10-1.webp",
+    "assets/products/aritos-10-2.webp",
+    "assets/products/aritos-10-3.webp"
+   ],
+   "collections": [
+    "aritos"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Aritos",
+    "luna"
+   ]
+  },
+  {
+   "id": "brazalete-y-anillo-unisex",
+   "name": "Brazalete y anillo unisex",
+   "description": "Material : Aleación de zinc",
+   "price": 80.0,
+   "comparePrice": 250.0,
+   "images": [
+    "assets/products/brazalete-y-anillo-unisex-1.webp",
+    "assets/products/brazalete-y-anillo-unisex-2.webp",
+    "assets/products/brazalete-y-anillo-unisex-3.webp",
+    "assets/products/brazalete-y-anillo-unisex-4.webp"
+   ],
+   "collections": [
+    "accesorios",
+    "accesorios-de-hombre",
+    "ofertas",
+    "anillos"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Accesorios de hombre",
+    "Oferta",
+    "pulseras",
+    "Set de anillos de hombre"
+   ]
+  },
+  {
+   "id": "soporte-para-celular",
+   "name": "Soporte para celular",
+   "description": "",
+   "price": 25.0,
+   "comparePrice": 75.0,
+   "images": [
+    "assets/products/soporte-para-celular-1.webp",
+    "assets/products/soporte-para-celular-2.webp",
+    "assets/products/soporte-para-celular-3.webp",
+    "assets/products/soporte-para-celular-4.webp",
+    "assets/products/soporte-para-celular-5.webp"
+   ],
+   "collections": [
+    "accesorios",
+    "ofertas"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Accesorios",
+    "Aguacate",
+    "Oferta"
+   ]
+  },
+  {
+   "id": "gama-chan-de-naruto",
+   "name": "Gama Chan de naruto",
+   "description": "",
+   "price": 230.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/gama-chan-de-naruto-1.webp",
+    "assets/products/gama-chan-de-naruto-2.webp",
+    "assets/products/gama-chan-de-naruto-3.webp"
+   ],
+   "collections": [
+    "accesorios-de-hombre",
+    "carteras"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Accesorios de hombre",
+    "anime",
+    "cartera",
+    "monedero",
+    "rana"
+   ]
+  },
+  {
+   "id": "earcuff-1",
+   "name": "earcuff",
+   "description": "",
+   "price": 160.0,
+   "comparePrice": 0,
+   "images": [
+    "assets/products/earcuff-1-1.webp",
+    "assets/products/earcuff-1-2.webp"
+   ],
+   "collections": [
+    "aritos"
+   ],
+   "status": "archived",
+   "stock": 0,
+   "optionName": "",
+   "options": [],
+   "paymentLink": "",
+   "featured": false,
+   "createdAt": "2026-11-27",
+   "tags": [
+    "Aritos"
+   ]
   }
  ],
  "home": {
