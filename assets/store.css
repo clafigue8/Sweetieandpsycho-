@@ -560,3 +560,8 @@ a.btn.block { text-align: center; }
 .seo-static img { max-width: 260px; height: auto; border-radius: var(--radius); }
 .seo-static h1 { font-family: var(--heading); color: var(--text); }
 .seo-static ul { columns: 2 220px; padding-left: 1.2rem; }
+
+/* Portadas oscuras: franja suave detrás del texto en celular */
+@media (max-width: 720px) {
+  .slide.clean.dark .clean-band { background: linear-gradient(180deg, rgba(20, 12, 32, .82) 0%, rgba(20, 12, 32, .55) 70%, transparent 100%); padding-bottom: 2.2rem; }
+}

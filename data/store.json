@@ -144,6 +144,16 @@
     "subtitle": "Para compartir con tu persona favorita",
     "cta": "Ver más",
     "link": "#/coleccion/accesorios-match"
+   },
+   {
+    "layout": "clean",
+    "image": "assets/slides/hombre.webp",
+    "ratio": "560 / 846",
+    "dark": true,
+    "title": "Para ellos 🖤",
+    "subtitle": "Accesorios de hombre",
+    "cta": "Ver más",
+    "link": "#/coleccion/accesorios-de-hombre"
    }
   ]
  },
@@ -208,7 +218,7 @@
    "id": "accesorios-de-hombre",
    "name": "Accesorios de Hombre",
    "description": "",
-   "image": "assets/collections/accesorios-de-hombre.webp",
+   "image": "assets/collections/accesorios-de-hombre-v2.webp",
    "visible": true,
    "keywords": [
     "hombre"
