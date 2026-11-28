@@ -333,6 +333,32 @@
   ],
   "products": [
     {
+      "id": "sueter-talla-s-2",
+      "name": "Suéter talla S",
+      "description": "",
+      "price": 260,
+      "comparePrice": 0,
+      "stock": "",
+      "images": [
+        "assets/products/producto-mwzosdvv.png",
+        "assets/products/producto-mwzosg4d.png"
+      ],
+      "collections": [
+        "ropa"
+      ],
+      "optionName": "",
+      "options": [],
+      "paymentLink": "",
+      "status": "active",
+      "featured": false,
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false,
+      "tags": [],
+      "createdAt": "2026-11-28"
+    },
+    {
       "id": "aritos-de-snoopy",
       "name": "Aritos de Snoopy",
       "description": "",
@@ -456,7 +482,7 @@
       "collections": [
         "ropa"
       ],
-      "status": "archived",
+      "status": "active",
       "stock": "",
       "optionName": "",
       "options": [],
@@ -466,7 +492,11 @@
       "tags": [
         "Ropa"
       ],
-      "vendor": "Sweetie.and.psycho"
+      "vendor": "Sweetie.and.psycho",
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": false
     },
     {
       "id": "ganchitos-kuromi",
