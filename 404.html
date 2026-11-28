@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Sweetie &amp; Psycho</title>
+<script>
+  // Enlaces viejos (por ejemplo de Shopify) que ya no existen: llevar a la tienda.
+  var site = "https://clafigue8.github.io/Sweetieandpsycho-/";
+  var path = location.pathname.replace(/\/+$/, "");
+  var m = path.match(/\/products\/([^\/?#]+)/) || null;
+  location.replace(m ? site + "#/producto/" + m[1] : site);
+</script></head>
+<body><p><a href="https://clafigue8.github.io/Sweetieandpsycho-/">Ir a Sweetie &amp; Psycho</a></p></body></html>

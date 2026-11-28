@@ -554,3 +554,9 @@ a.btn.block { text-align: center; }
   .prod-top span { font-family: var(--heading); font-size: .9rem; color: var(--muted); }
   .gallery { padding: 1rem 1rem .4rem; }
 }
+
+/* Contenido básico para Google (la tienda lo reemplaza al cargar) */
+.seo-static { padding: 2rem 0; color: var(--muted); }
+.seo-static img { max-width: 260px; height: auto; border-radius: var(--radius); }
+.seo-static h1 { font-family: var(--heading); color: var(--text); }
+.seo-static ul { columns: 2 220px; padding-left: 1.2rem; }

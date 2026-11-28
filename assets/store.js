@@ -39,6 +39,8 @@
       const res = await fetch("data/store.json?v=" + Date.now());
       DATA = await res.json();
     }
+    // Páginas para Google (products/…, collections/…): mostrar ese producto o colección.
+    if (window.INITIAL_ROUTE && !location.hash) history.replaceState(null, "", window.INITIAL_ROUTE);
     applyTheme();
     renderChrome(usePreview && preview);
     pruneCart();
@@ -64,7 +66,7 @@
 
   function renderChrome(isPreview) {
     const s = DATA.store;
-    document.title = s.name + (s.tagline ? " — " + s.tagline : "");
+    if (!document.querySelector('link[rel="canonical"]')) document.title = s.name + (s.tagline ? " — " + s.tagline : "");
     $("#brand").innerHTML = s.logo
       ? `<img src="${esc(s.logo)}" alt="${esc(s.name)}">`
       : esc(s.name);

@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administrar tienda</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-  <link rel="stylesheet" href="admin.css?v=20261128e">
+  <link rel="stylesheet" href="admin.css?v=20261128f">
 </head>
 <body>
 
@@ -149,6 +149,11 @@
             <label>Lema<input name="store.tagline"></label>
             <div class="img-field" data-field="store.logo"><span>Logo (opcional, reemplaza el nombre)</span></div>
             <label>Barra de anuncio (vacío para ocultar)<input name="store.announcement"></label>
+
+            <h2>Google</h2>
+            <p class="muted" style="font-size:.85rem">Así aparece tu tienda en los resultados de Google. Usa palabras que la gente busca (por ejemplo: accesorios, Tegucigalpa, Honduras).</p>
+            <label>Título en Google (máx. 60 letras)<input name="store.seoTitle" maxlength="70"></label>
+            <label>Descripción en Google (máx. 155 letras)<textarea name="store.seoDescription" rows="3" maxlength="170"></textarea></label>
 
             <p class="muted">El carrusel y las secciones de la página de inicio se editan en la pestaña “Inicio”.</p>
           </form>
@@ -416,6 +421,6 @@
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
-  <script src="admin.js?v=20261128e"></script>
+  <script src="admin.js?v=20261128f"></script>
 </body>
 </html>
