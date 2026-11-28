@@ -333,6 +333,34 @@
   ],
   "products": [
     {
+      "id": "medias-a-la-cintura",
+      "name": "Medias a la cintura",
+      "description": "",
+      "price": 240,
+      "comparePrice": 0,
+      "stock": "",
+      "images": [
+        "assets/products/producto-mwzq7x07.webp",
+        "assets/products/producto-mwzq8284.webp",
+        "assets/products/producto-mwzq87bd.webp"
+      ],
+      "collections": [
+        "psycho-girls",
+        "medias"
+      ],
+      "optionName": "",
+      "options": [],
+      "paymentLink": "",
+      "status": "active",
+      "featured": true,
+      "restock": false,
+      "restockQty": "",
+      "restockNote": "",
+      "trending": true,
+      "tags": [],
+      "createdAt": "2026-11-28"
+    },
+    {
       "id": "chaqueta-talla-l",
       "name": "Chaqueta Talla L",
       "description": "",
@@ -577,6 +605,35 @@
       "paymentLink": "",
       "featured": false,
       "createdAt": "2026-11-12",
+      "tags": [
+        "Anillos Match",
+        "Spiderman"
+      ],
+      "vendor": "Sweetie.and.psycho"
+    },
+    {
+      "id": "anillos-match-arana-copia",
+      "name": "Anillos match araña (copia)",
+      "description": "",
+      "price": 350,
+      "comparePrice": 0,
+      "images": [
+        "assets/products/anillos-match-arana-1.webp",
+        "assets/products/anillos-match-arana-2.webp",
+        "assets/products/anillos-match-arana-3.webp",
+        "assets/products/anillos-match-arana-4.webp"
+      ],
+      "collections": [
+        "accesorios",
+        "accesorios-match"
+      ],
+      "status": "draft",
+      "stock": "",
+      "optionName": "",
+      "options": [],
+      "paymentLink": "",
+      "featured": false,
+      "createdAt": "2026-11-28",
       "tags": [
         "Anillos Match",
         "Spiderman"
