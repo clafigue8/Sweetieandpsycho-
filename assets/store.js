@@ -525,12 +525,14 @@
       Number(p.stock) <= 0 ? "Agotado" : Number(p.stock) <= 3 ? `¡Solo quedan ${p.stock}!` : "Disponible";
     $("#product-modal").innerHTML = `
       <button class="icon-btn close" data-close="product" aria-label="Cerrar">✕</button>
+      <div class="prod-top"><button data-close="product">← Volver</button><span>${esc(DATA.store.name)}</span></div>
       <div class="gallery">
         <div class="gallery-main">${media(p, img)}</div>
         ${imgs.length > 1 ? `<div class="thumbs">${imgs.map((src, i) =>
           `<button class="${i === img ? "active" : ""}" data-img="${i}"><img src="${esc(src)}" alt=""></button>`).join("")}</div>` : ""}
       </div>
       <div class="detail">
+        <div class="prod-brand">${esc(DATA.store.name)}</div>
         <h2>${esc(p.name)}</h2>
         ${rs ? `<a class="rating" href="#prod-reviews" data-jump>${starsHtml(rs.avg)} <small>${rs.avg.toFixed(1)} · ${rs.count} opinión${rs.count > 1 ? "es" : ""}</small></a>` : ""}
         <div class="price">${money(priceOf(p, opt))}${sale ? `<s>${money(p.comparePrice)}</s>` : ""}</div>
