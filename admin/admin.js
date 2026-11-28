@@ -398,16 +398,87 @@
     finally { btn.disabled = false; btn.textContent = "Ponerle marco a la foto principal"; }
   };
 
+  // ---------- Recortar foto antes de subir ----------
+  // Devuelve un archivo recortado, el original ("Sin recortar") o null ("Quitar esta foto").
+  let cropDefaultAr = 1;
+  function cropPhoto(file, { aspect = null, title = "Recortar foto", count = "" } = {}) {
+    return new Promise(async (resolve) => {
+      let bmp;
+      try { bmp = await createImageBitmap(file); } catch { resolve(file); return; }
+      const dlg = $("#crop-dialog"), stage = $("#crop-stage"), cv = $("#crop-canvas"), zoomEl = $("#crop-zoom");
+      const st = { zoom: 1, ox: 0, oy: 0, rot: 0, ar: aspect || cropDefaultAr };
+      $("#crop-title").textContent = title; $("#crop-count").textContent = count;
+      $("#crop-aspects").hidden = !!aspect;
+      const dims = () => (st.rot % 180 ? [bmp.height, bmp.width] : [bmp.width, bmp.height]);
+      const ratio = () => (st.ar === "orig" ? dims()[0] / dims()[1] : Number(st.ar));
+      const scaleFor = (W, H) => { const [iw, ih] = dims(); return Math.max(W / iw, H / ih) * st.zoom; };
+      function clamp(W, H) {
+        const [iw, ih] = dims(), s = scaleFor(W, H);
+        const mx = Math.max(0, (iw * s - W) / 2 / W), my = Math.max(0, (ih * s - H) / 2 / H);
+        st.ox = Math.min(mx, Math.max(-mx, st.ox)); st.oy = Math.min(my, Math.max(-my, st.oy));
+      }
+      function paint(ctx, W, H) {
+        clamp(W, H);
+        const s = scaleFor(W, H);
+        ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H);
+        ctx.save(); ctx.translate(W / 2 + st.ox * W, H / 2 + st.oy * H); ctx.rotate(st.rot * Math.PI / 180);
+        ctx.drawImage(bmp, -bmp.width * s / 2, -bmp.height * s / 2, bmp.width * s, bmp.height * s); ctx.restore();
+      }
+      function draw() {
+        stage.style.aspectRatio = String(ratio());
+        const W = stage.clientWidth || 500, H = W / ratio(), dpr = window.devicePixelRatio || 1;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); paint(ctx, W, H);
+        document.querySelectorAll("#crop-aspects button").forEach((b) => b.classList.toggle("active", b.dataset.ar === String(st.ar)));
+      }
+      const pts = new Map(); let pinch0 = 0, zoom0 = 1;
+      const dist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+      stage.onpointerdown = (e) => { stage.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (pts.size === 2) { pinch0 = dist(); zoom0 = st.zoom; } };
+      stage.onpointermove = (e) => {
+        if (!pts.has(e.pointerId)) return;
+        const prev = pts.get(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pts.size === 2) { st.zoom = Math.min(4, Math.max(1, zoom0 * dist() / pinch0)); zoomEl.value = st.zoom; }
+        else { st.ox += (e.clientX - prev.x) / stage.clientWidth; st.oy += (e.clientY - prev.y) / stage.clientHeight; }
+        draw();
+      };
+      stage.onpointerup = stage.onpointercancel = (e) => pts.delete(e.pointerId);
+      stage.onwheel = (e) => { e.preventDefault(); st.zoom = Math.min(4, Math.max(1, st.zoom * (e.deltaY < 0 ? 1.08 : 0.92))); zoomEl.value = st.zoom; draw(); };
+      zoomEl.value = 1; zoomEl.oninput = () => { st.zoom = Number(zoomEl.value); draw(); };
+      $("#crop-rotate").onclick = () => { st.rot = (st.rot + 90) % 360; st.ox = st.oy = 0; draw(); };
+      $("#crop-aspects").onclick = (e) => { const b = e.target.closest("[data-ar]"); if (!b) return; st.ar = b.dataset.ar === "orig" ? "orig" : Number(b.dataset.ar); cropDefaultAr = st.ar; st.ox = st.oy = 0; draw(); };
+      const finish = (v) => { dlg.close(); resolve(v); };
+      $("#crop-none").onclick = () => finish(file);
+      $("#crop-skip").onclick = () => finish(null);
+      dlg.oncancel = (e) => { e.preventDefault(); finish(file); };
+      $("#crop-ok").onclick = async () => {
+        const Wd = stage.clientWidth, Hd = Wd / ratio(), s = scaleFor(Wd, Hd);
+        const outW = Math.round(Math.min(1600, Wd / s)), outH = Math.round(outW / ratio());
+        const c = document.createElement("canvas"); c.width = outW; c.height = outH;
+        const ctx = c.getContext("2d"); ctx.scale(outW / Wd, outH / Hd); paint(ctx, Wd, Hd);
+        const blob = await new Promise((r) => c.toBlob(r, "image/webp", 0.9));
+        finish(new File([blob], "recorte.webp", { type: "image/webp" }));
+      };
+      dlg.showModal(); requestAnimationFrame(draw);
+    });
+  }
+
   $("#p-upload").onchange = async (e) => {
     const files = [...e.target.files]; e.target.value = "";
     const base = $("#p-form").name.value || "producto";
-    for (const file0 of files) {
+    for (const [n, file0] of files.entries()) {
       const isFirst = !editing.images.some((x) => !x.startsWith("uploading:"));
+      const framed = isFirst && frameCfg() && $("#p-frame").checked;
+      const [x0, y0, x1, y1] = framed ? frameCfg().box : [0, 0, 1, 1];
+      const cropped = await cropPhoto(file0, {
+        aspect: framed ? (x1 - x0) / (y1 - y0) : null,
+        title: framed ? "Foto principal (irá dentro del marco)" : "Recortar foto",
+        count: files.length > 1 ? `${n + 1} de ${files.length}` : "" });
+      if (!cropped) continue;
       const tmp = "uploading:" + Math.random();
       editing.images.push(tmp); drawImages();
       try {
-        let file = file0;
-        if (isFirst && frameCfg() && $("#p-frame").checked) file = await framePhoto(file0);
+        let file = cropped;
+        if (framed) file = await framePhoto(cropped);
         const path = await uploadImage(file, "assets/products/" + slug(base));
         const i = editing.images.indexOf(tmp);
         if (i >= 0) editing.images[i] = path;

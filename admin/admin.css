@@ -167,3 +167,15 @@ dialog form { padding: 1.2rem 1.4rem; }
   .thumb { width: 48px; height: 48px; }
   .top-actions .btn { padding: .45rem .7rem; }
 }
+
+/* Recortar foto */
+#crop-dialog { width: min(560px, 96vw); }
+.crop-stage { position: relative; width: 100%; border-radius: 12px; overflow: hidden; background: #222; touch-action: none; cursor: grab; }
+.crop-stage:active { cursor: grabbing; }
+.crop-stage canvas { display: block; width: 100%; height: 100%; }
+.crop-grid { position: absolute; inset: 0; pointer-events: none; border: 2px solid rgba(255,255,255,.8);
+  background-image: linear-gradient(rgba(255,255,255,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.35) 1px, transparent 1px);
+  background-size: 33.333% 33.333%; background-position: -1px -1px; }
+.crop-aspects { display: flex; gap: .4rem; flex-wrap: wrap; }
+.crop-aspects button { border: 1px solid var(--line); background: var(--bg); color: var(--text); border-radius: 99px; padding: .3rem .8rem; font-size: .85rem; }
+.crop-aspects button.active { background: var(--brand); border-color: var(--brand); color: #fff; }

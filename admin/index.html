@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administrar tienda</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-  <link rel="stylesheet" href="admin.css?v=20261128b">
+  <link rel="stylesheet" href="admin.css?v=20261128c">
 </head>
 <body>
 
@@ -334,6 +334,30 @@
     </form>
   </dialog>
 
+  <!-- Recortar foto -->
+  <dialog id="crop-dialog">
+    <div class="form" style="padding:1.1rem 1.2rem">
+      <div class="dlg-head"><h2 id="crop-title">Recortar foto</h2><span class="muted" id="crop-count"></span></div>
+      <div class="crop-aspects" id="crop-aspects">
+        <button type="button" data-ar="1">Cuadrada</button>
+        <button type="button" data-ar="0.8">Vertical 4:5</button>
+        <button type="button" data-ar="orig">Original</button>
+      </div>
+      <div class="crop-stage" id="crop-stage"><canvas id="crop-canvas"></canvas><div class="crop-grid"></div></div>
+      <p class="muted" style="font-size:.8rem;margin:0">Arrastra para mover la foto. Usa la barra (o pellizca con dos dedos) para acercar.</p>
+      <div class="row" style="align-items:center">
+        <span>🔍</span><input type="range" id="crop-zoom" min="1" max="4" step="0.01" value="1" style="flex:1">
+        <button type="button" class="btn ghost sm" id="crop-rotate" title="Girar">↻ Girar</button>
+      </div>
+      <div class="dlg-foot">
+        <button type="button" class="btn ghost" id="crop-skip">Quitar esta foto</button>
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" id="crop-none">Sin recortar</button>
+        <button type="button" class="btn" id="crop-ok">Listo ✓</button>
+      </div>
+    </div>
+  </dialog>
+
   <!-- Editor de opinión -->
   <dialog id="rv-dialog">
     <form method="dialog" class="form" id="rv-form">
@@ -392,6 +416,6 @@
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
-  <script src="admin.js?v=20261128b"></script>
+  <script src="admin.js?v=20261128c"></script>
 </body>
 </html>
