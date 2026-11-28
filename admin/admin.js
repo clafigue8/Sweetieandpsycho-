@@ -401,7 +401,7 @@
   // ---------- Recortar foto antes de subir ----------
   // Devuelve un archivo recortado, el original ("Sin recortar") o null ("Quitar esta foto").
   let cropDefaultAr = 1;
-  function cropPhoto(file, { aspect = null, title = "Recortar foto", count = "" } = {}) {
+  function cropPhoto(file, { aspect = null, title = "Recortar foto", count = "", frame = null } = {}) {
     return new Promise(async (resolve) => {
       let bmp;
       try { bmp = await createImageBitmap(file); } catch { resolve(file); return; }
@@ -409,6 +409,16 @@
       const st = { zoom: 1, ox: 0, oy: 0, rot: 0, ar: aspect || cropDefaultAr };
       $("#crop-title").textContent = title; $("#crop-count").textContent = count;
       $("#crop-aspects").hidden = !!aspect;
+      document.querySelector(".crop-grid").hidden = !!frame;
+      $("#crop-hint").textContent = frame ? "Así se verá tu foto principal con el marco. Arrastra y acerca para acomodarla."
+        : "Arrastra para mover la foto. Usa la barra (o pellizca con dos dedos) para acercar.";
+      // Medidas en pantalla: con marco, el lienzo es el marco completo y la foto va en su hueco.
+      function geom() {
+        const SW = stage.clientWidth || 500;
+        if (!frame) { const H = SW / ratio(); return { SW, SH: H, bx: 0, by: 0, W: SW, H }; }
+        const k = SW / (frame.size || 1000), [x0, y0, x1, y1] = frame.box;
+        return { SW, SH: SW, bx: x0 * k, by: y0 * k, W: (x1 - x0) * k, H: (y1 - y0) * k };
+      }
       const dims = () => (st.rot % 180 ? [bmp.height, bmp.width] : [bmp.width, bmp.height]);
       const ratio = () => (st.ar === "orig" ? dims()[0] / dims()[1] : Number(st.ar));
       const scaleFor = (W, H) => { const [iw, ih] = dims(); return Math.max(W / iw, H / ih) * st.zoom; };
@@ -425,10 +435,15 @@
         ctx.drawImage(bmp, -bmp.width * s / 2, -bmp.height * s / 2, bmp.width * s, bmp.height * s); ctx.restore();
       }
       function draw() {
-        stage.style.aspectRatio = String(ratio());
-        const W = stage.clientWidth || 500, H = W / ratio(), dpr = window.devicePixelRatio || 1;
-        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-        const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); paint(ctx, W, H);
+        stage.style.aspectRatio = frame ? "1" : String(ratio());
+        const g = geom(), dpr = window.devicePixelRatio || 1;
+        cv.width = Math.round(g.SW * dpr); cv.height = Math.round(g.SH * dpr);
+        const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        if (frame) {
+          ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, g.SW, g.SH);
+          ctx.save(); ctx.translate(g.bx, g.by); ctx.beginPath(); ctx.rect(0, 0, g.W, g.H); ctx.clip(); paint(ctx, g.W, g.H); ctx.restore();
+          ctx.drawImage(frame.img, 0, 0, g.SW, g.SH);
+        } else paint(ctx, g.W, g.H);
         document.querySelectorAll("#crop-aspects button").forEach((b) => b.classList.toggle("active", b.dataset.ar === String(st.ar)));
       }
       const pts = new Map(); let pinch0 = 0, zoom0 = 1;
@@ -438,7 +453,7 @@
         if (!pts.has(e.pointerId)) return;
         const prev = pts.get(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
         if (pts.size === 2) { st.zoom = Math.min(4, Math.max(1, zoom0 * dist() / pinch0)); zoomEl.value = st.zoom; }
-        else { st.ox += (e.clientX - prev.x) / stage.clientWidth; st.oy += (e.clientY - prev.y) / stage.clientHeight; }
+        else { const g = geom(); st.ox += (e.clientX - prev.x) / g.W; st.oy += (e.clientY - prev.y) / g.H; }
         draw();
       };
       stage.onpointerup = stage.onpointercancel = (e) => pts.delete(e.pointerId);
@@ -451,7 +466,7 @@
       $("#crop-skip").onclick = () => finish(null);
       dlg.oncancel = (e) => { e.preventDefault(); finish(file); };
       $("#crop-ok").onclick = async () => {
-        const Wd = stage.clientWidth, Hd = Wd / ratio(), s = scaleFor(Wd, Hd);
+        const g = geom(), Wd = g.W, Hd = g.H, s = scaleFor(Wd, Hd);
         const outW = Math.round(Math.min(1600, Wd / s)), outH = Math.round(outW / ratio());
         const c = document.createElement("canvas"); c.width = outW; c.height = outH;
         const ctx = c.getContext("2d"); ctx.scale(outW / Wd, outH / Hd); paint(ctx, Wd, Hd);
@@ -469,8 +484,10 @@
       const isFirst = !editing.images.some((x) => !x.startsWith("uploading:"));
       const framed = isFirst && frameCfg() && $("#p-frame").checked;
       const [x0, y0, x1, y1] = framed ? frameCfg().box : [0, 0, 1, 1];
+      let frameOpt = null;
+      if (framed) { try { frameOpt = { img: await loadFrame(), box: frameCfg().box, size: frameCfg().size || 1000 }; } catch { frameOpt = null; } }
       const cropped = await cropPhoto(file0, {
-        aspect: framed ? (x1 - x0) / (y1 - y0) : null,
+        aspect: framed ? (x1 - x0) / (y1 - y0) : null, frame: frameOpt,
         title: framed ? "Foto principal (irá dentro del marco)" : "Recortar foto",
         count: files.length > 1 ? `${n + 1} de ${files.length}` : "" });
       if (!cropped) continue;
